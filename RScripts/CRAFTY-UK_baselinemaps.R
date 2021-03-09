@@ -17,7 +17,7 @@ years = 2020:2090
 
 
 # basealc_cb_old = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/AFT/Basline allocation 2_from Calum 6 Jan 2021_all properly processed.csv")
-basealc_cb = read.csv(paste0(path_wd, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
+basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
 
 
 
@@ -61,7 +61,7 @@ colnames(basealc_cb)[12] = "NConifer.suit"
 colnames(basealc_cb)[15] = "Bioenergy.suit"
 
 
-match( colnames(basealc_cb)[7:20], capital_names$Capital)
+match( colnames(basealc_cb)[7:20], capital_names)
 capital_csv = basealc_cb[,7:20]
 
 ### Collect new capital files
