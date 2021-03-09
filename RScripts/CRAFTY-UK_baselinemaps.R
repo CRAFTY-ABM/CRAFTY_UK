@@ -1,11 +1,11 @@
-library(dplyr)
 
  
-path_wd = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
+
+path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Nextcloud/CRAFTY/Output/"
 
 setwd(path_wd)
- 
 
 source("RScripts/CRAFTY-UK_grid_common.R")
  

@@ -1,24 +1,19 @@
-library(exactextractr)
-library(sf)
-library(rgdal)
-library(raster)
-library(rgeos)
-# library(doSNOW)
 
-library(fasterize)
-# library(stars)
 
-library(doMC)
-library(randomForest)
-library(gbm)
+path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
+path_output =  "~/Nextcloud/CRAFTY/Output/"
+
+setwd(path_wd)
+
+source("RScripts/CRAFTY-UK_grid_common.R")
+
 
 proj4.LL = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 proj4.LL360 = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 +lon_wrap=180"
 proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.1502,0.247,0.8421,-20.4894 +units=m +no_defs"
 
-path_wd = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output"
-setwd(path_wd)
+ 
 
 CHESS_BNG_csv = read.csv("Basegrid/CHESS_1k_grid.csv") # BNG perhaps
 # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"
@@ -440,7 +435,7 @@ if (doSuitability) {
     ### Suitability maps
     # Suitability_rs = stack(paste0("CRAFTY UK Capital files/Suitability/ModelledBaseline/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
     
-    Suitability_rs = stack(paste0(path_wd, "Capital/Suitability/Baseline scenario files/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
+    Suitability_rs = stack(paste0(path_data, "Capital/Suitability/Baseline scenario files/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
     
     # ignore forest suiltability as we use woodland capital files
     
@@ -1166,19 +1161,19 @@ if (do4Capitals) {
     
     ############# CAPITAL MAPS
     ### Financial capital (NUTS)
-    fc_csv = read.csv(paste0(path_wd, "Capital/Capitals/Final version /F Projections.csv"))
+    fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /F Projections.csv"))
     (colnames(fc_csv))
     
     ### Manufactured capital (NUTS)
-    mc_csv = read.csv(paste0(path_wd, "Capital/Capitals/Final version /M Projections.csv"))
+    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /M Projections.csv"))
     (colnames(mc_csv))
     
     ### Human capital (LAD)
-    hc_csv = read.csv(paste0(path_wd, "Capital/Capitals/Final version /H Projections.csv"))
+    hc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /H Projections.csv"))
     head(colnames(hc_csv))
     
     ### Social capital (NUTS)
-    sc_csv = read.csv(paste0(path_wd, "Capital/Capitals/Final version /S Projections.csv"))
+    sc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /S Projections.csv"))
     head(colnames(sc_csv))
     
     
@@ -1322,7 +1317,7 @@ if (doUrban) {
     
      SSPs = paste0("SSP", 1:5)
     SSPyears = seq(2020, 2100, 10)
-    Urbanisation_path = paste0(path_wd, "/UrbanMask/UKSSP_urbanisation/")
+    Urbanisation_path = paste0(path_data, "/UrbanMask/UKSSP_urbanisation/")
     # list.files(urbanisation_path, pattern="tif$")
     
     ssp_idx = year_idx =  1 

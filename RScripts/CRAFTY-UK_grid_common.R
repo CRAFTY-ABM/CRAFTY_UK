@@ -12,6 +12,11 @@ library(doMC)
 library(randomForest)
 library(gbm)
 
+
+library(dplyr)
+
+
+
 proj4.LL = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 proj4.LL360 = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 +lon_wrap=180"
 proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.1502,0.247,0.8421,-20.4894 +units=m +no_defs"
@@ -23,21 +28,18 @@ proj4.SphericalMercator = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +
 proj4.OSGB1936 = proj4.SphericalMercator # proj4string(LAD_shp) # EPSG:27700
 proj4.OSNI1952 = "+proj=tmerc +lat_0=53.5 +lon_0=-8 +k=1 +x_0=200000 +y_0=250000 +ellps=airy +towgs84=482.5,-130.6,564.6,-1.042,-0.214,-0.631,8.15 +units=m +no_defs" # EPSG:29901
 
-
-
-path_wd = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
-setwd(path_wd)
-
+ 
+path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
+ 
 
 ### Read the NUTS data 
-LAD_shp = readOGR("Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp")
-NUTS_shp = readOGR("Boundaries/NUTS_Level_3__January_2018__Boundaries.shp")
+LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp"))
+NUTS_shp = readOGR(paste0(path_data, "Boundaries/NUTS_Level_3__January_2018__Boundaries.shp"))
 
  
 
 
-CHESS_BNG_csv = read.csv("Basegrid/CHESS_1k_grid.csv") # BNG perhaps
+CHESS_BNG_csv = read.csv(paste0(path_data, "Basegrid/CHESS_1k_grid.csv")) # BNG perhaps
 # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"
 # plot(UK_rs[[1]])
 #  
@@ -289,13 +291,13 @@ if (preprocessing) {
     write.csv(service_names, file = paste0(path_output, "/Service/Service_names_UK.csv"), quote = F, row.names = F)
     
 } else { 
-    aftnames = read.csv(paste0(path_wd, "/AFT/AFT_Names_UK.csv"))
+    aftnames = read.csv(paste0(path_data, "/AFT/AFT_Names_UK.csv"))
     
-    capital_names  = read.csv(paste0(path_wd, "/Capital/Capital_names_UK.csv"))$Capital
+    capital_names  = read.csv(paste0(path_data, "/Capital/Capital_names_UK.csv"))$Capital
     
-    service_names  = as.vector(read.csv(paste0(path_wd, "/Service/Service_names_UK.csv")))
+    service_names  = as.vector(read.csv(paste0(path_data, "/Service/Service_names_UK.csv")))
     
-    cellids = read.csv(paste0(path_wd, "/Basegrid/Cell_ID_XY_UK.csv"))
+    cellids = read.csv(paste0(path_data, "/Basegrid/Cell_ID_XY_UK.csv"))
 }
 
 
