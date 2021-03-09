@@ -38,6 +38,10 @@ NUTS_shp = readOGR(paste0(path_data, "Boundaries/NUTS_Level_3__January_2018__Bou
 
  
 
+## there are capital files beyond nuts boundary (e.g. Human Capital)
+# NUTS_r = rasterize(spTransform(NUTS_shp[,], proj4.BNG), CHESS_BNG_r, field = "objectid", fun ="last", background=NA)
+# NUTS_dummy_r = NUTS_r>0 
+
 
 CHESS_BNG_csv = read.csv(paste0(path_data, "Basegrid/CHESS_1k_grid.csv")) # BNG perhaps
 # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"

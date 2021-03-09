@@ -173,14 +173,6 @@ fillShetland <- function(r_in) {
 }
 
 
-### Read the NUTS data 
-LAD_shp = readOGR("Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp")
-NUTS_shp = readOGR("Boundaries/NUTS_Level_3__January_2018__Boundaries.shp")
-
-
-## there are capital files beyond nuts boundary (e.g. Human Capital)
-# NUTS_r = rasterize(spTransform(NUTS_shp[,], proj4.BNG), CHESS_BNG_r, field = "objectid", fun ="last", background=NA)
-# NUTS_dummy_r = NUTS_r>0 
 
 
 
@@ -396,12 +388,226 @@ if (doElevation) {
 Orkney_elev_df = data.frame(Elev = getValues(Orkney_elev_r), Slope = getValues(Orkney_slope_r), Aspect = getValues(Orkney_aspect_r))
 Shetland_elev_df = data.frame(Elev = getValues(Shetland_elev_r), Slope = getValues(Shetland_slope_r), Aspect = getValues(Shetland_aspect_r))
 
+ 
 
 
-### 
-proj4.SphericalMercator = proj4string(LAD_shp) # EPSG:3857
-proj4.OSGB1936 = proj4string(LAD_shp) # EPSG:27700
-proj4.OSNI1952 = "+proj=tmerc +lat_0=53.5 +lon_0=-8 +k=1 +x_0=200000 +y_0=250000 +ellps=airy +towgs84=482.5,-130.6,564.6,-1.042,-0.214,-0.631,8.15 +units=m +no_defs" # EPSG:29901
+
+
+do4Capitals = FALSE 
+
+
+if (do4Capitals) { 
+     
+    ############# CAPITAL MAPS
+    ### Financial capital (NUTS)
+    fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /F Projections.csv"))
+    (colnames(fc_csv))
+    
+    ### Manufactured capital (NUTS)
+    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /M Projections.csv"))
+    (colnames(mc_csv))
+    
+    ### Human capital (LAD)
+    hc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /H Projections.csv"))
+    head(colnames(hc_csv))
+    
+    ### Social capital (NUTS)
+    sc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /S Projections.csv"))
+    head(colnames(sc_csv))
+    
+    
+    str(colnames(fc_csv))
+    colnames(mc_csv)
+    colnames(hc_csv)
+    colnames(sc_csv)
+    
+    
+    
+    fc_idx = match(NUTS_shp$nuts318cd, fc_csv$nuts318cd)
+    mc_idx = match(NUTS_shp$nuts318cd, mc_csv$nuts318cd)
+    sc_idx = match(NUTS_shp$nuts318cd, sc_csv$nuts318cd)
+    
+    FC_shp = MC_shp= SC_shp = NUTS_shp
+    
+    FC_shp@data = cbind(  fc_csv[fc_idx, (ncol(fc_csv) -45 + 1):ncol(fc_csv) ])
+    MC_shp@data = cbind(  mc_csv[mc_idx, (ncol(mc_csv) -45 + 1):ncol(mc_csv) ])
+    SC_shp@data = cbind(  sc_csv[sc_idx, (ncol(sc_csv) -45 + 1):ncol(sc_csv) ])
+    
+    HC_shp = LAD_shp
+    hc_idx = match(LAD_shp$LAD19CD, hc_csv$LAD19CD)
+    HC_shp@data = cbind(  hc_csv[hc_idx, (ncol(hc_csv) -45 + 1):ncol(hc_csv) ])
+    
+    
+    # spplot(FC_shp, "St.HI_2050_SSP4")
+    # spplot(HC_shp, "LE_2050_SSP1")
+    
+    library(sf)
+    # library(randomcoloR)
+    my.dat_sf <- st_as_sf(SC_shp)
+    plot(my.dat_sf[,1]) # , max.plot=10, breaks=c(seq(from = 100, to = 5000, by = 500),5000),
+         # pal = distinctColorPalette(length(seq(from = 100, to = 5000, by = 500))),
+         # border=NA, key.pos=4)
+    
+    
+    # beginCluster()
+    library(doSNOW)
+    cl = makeCluster(24)
+    registerDoSNOW(cl)
+    
+    
+    four_capital_names = paste0(c("Social", "Financial", "Human", "Manufactured"), "Capital")
+    shp_names = c("SC_shp", "FC_shp", "HC_shp", "MC_shp")
+    c_idx = layer_idx = 1
+    
+    for (c_idx in 1:length(four_capital_names)) { 
+        
+        capital_name = four_capital_names[c_idx] 
+        shp_name = shp_names[c_idx]
+        print(capital_name)
+        
+        BNG_shp = spTransform(get(shp_name), CRSobj = proj4.BNG)
+        plot(st_as_sf(BNG_shp)["S_2020_SSP1"])
+             
+        layer_names = names(BNG_shp)
+        
+        foreach (layer_idx = 1:length(layer_names), .packages = c("raster")) %dopar% {
+            # foreach (layer_idx = 1, .packages = c("raster")) %dopar% {
+            
+            layer_name = layer_names[layer_idx]
+            print(layer_name)
+            
+            BNG_r_tmp = rasterize(BNG_shp[,], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
+            plot(BNG_r_tmp, add=F)
+            
+            plot(UK_BNG_r, add=F)
+            plot(BNG_r_tmp * CHESS_mask_r, add=T)
+            # 
+            BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
+            # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
+            
+            if (capital_name != "Human") { 
+                
+                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
+            } else { 
+                BNG_r_tmp3 = BNG_r_tmp2
+            }
+            
+            plot(BNG_r_tmp3)
+            plot(BNG_r_tmp3 - BNG_r_tmp2)
+            # 
+            # plot(UK_BNG_r, add=F)
+            # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
+            # 
+            # plot(CHESS_mask_r - !is.na(BNG_r_tmp), col=c("grey", "red"))
+            # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+            
+            
+            
+            BNG_extracted_tmp = extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+            
+            csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
+            
+            csv_df$capital = BNG_extracted_tmp
+            colnames(csv_df)[ncol(csv_df)] = capital_name
+            
+            writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
+            write.csv(csv_df, file =paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
+        }
+    }
+    
+    stopCluster(cl)
+}
+
+
+doWoodlandCapitals = FALSE 
+
+
+if (doWoodlandCapitals) { 
+    
+    
+}
+
+
+doUrban = TRUE 
+
+if (doUrban) { 
+    # urban scenario (Corine)
+    Urban2015_extracted = extract(LCM2015_dom_rs %in% c(20:21), CHESS_BNG_sp, method="simple", fun = count)
+    
+    Urban2015_csv_df = cbind(basealc_csv_df[, c("X", "Y")], FR_IMMUTABLE = Urban2015_extracted)
+    str(Urban2015_csv_df)
+    
+    write.csv(Urban2015_csv_df, file = paste0(path_output, "/UrbanMask/UrbanMask2020.csv"), quote = F, row.names = F)
+    
+    
+    ### Urbanisation scenarios
+    
+    
+    
+    
+    
+    print("do Urban")
+    
+    
+    # beginCluster()
+    library(doSNOW)
+    cl = makeCluster(12)
+    registerDoSNOW(cl)
+    
+    
+    
+    SSPs = paste0("SSP", 1:5)
+    SSPyears = seq(2020, 2100, 10)
+    Urbanisation_path = paste0(path_data, "/UrbanMask/UKSSP_urbanisation/")
+    # list.files(urbanisation_path, pattern="tif$")
+    
+    ssp_idx = year_idx =  1 
+    ssp_idx = year_idx =  5
+    
+    for (ssp_idx in seq_along(SSPs)) { 
+        
+        SSP_name = SSPs[ssp_idx]
+        print(SSP_name)
+        
+        foreach (year_idx = 1:length(SSPyears), .packages = c("raster")) %dopar% {
+            # foreach (layer_idx = 1, .packages = c("raster")) %dopar% {
+            
+            SSP_year = SSPyears[year_idx]
+            print(SSP_year)
+            
+            BNG_r_tmp = raster(paste0(Urbanisation_path, SSP_name, ".", SSP_year, ".tif"))
+            plot(BNG_r_tmp, add=F)
+            plot(UK_BNG_r, add=F)
+            plot(BNG_r_tmp * CHESS_mask_r, add=T)
+            # do not need to fill shetland and coastal pixels 
+            BNG_r_tmp3 = BNG_r_tmp * CHESS_mask_r 
+            
+            
+            BNG_extracted_tmp = extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+            
+            BNG_extracted_tmp = ifelse(BNG_extracted_tmp==1, yes = 1, no = 0)
+            
+            csv_df = data.frame( X = cellids$X_col, Y = cellids$Y_row)
+            
+            csv_df$FR_IMMUTABLE = BNG_extracted_tmp
+            colnames(csv_df)[ncol(csv_df)] = "FR_IMMUTABLE"
+            
+            # writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
+            write.csv(csv_df, file =paste0(path_output, "/UrbanMask/",SSP_name,"/UrbanMask_", SSP_name, "_", SSP_year,  ".csv"), quote = F, row.names = F)
+        }
+        
+    }
+    stopCluster(cl)
+    
+     
+}
+
+
+
+ 
+
+
+
 
 
 
@@ -1149,262 +1355,6 @@ if (doNFI) {
     
     
 }
-
-
-do4Capitals = FALSE 
-
-
-if (do4Capitals) { 
-    
-    
-    
-    
-    ############# CAPITAL MAPS
-    ### Financial capital (NUTS)
-    fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /F Projections.csv"))
-    (colnames(fc_csv))
-    
-    ### Manufactured capital (NUTS)
-    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /M Projections.csv"))
-    (colnames(mc_csv))
-    
-    ### Human capital (LAD)
-    hc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /H Projections.csv"))
-    head(colnames(hc_csv))
-    
-    ### Social capital (NUTS)
-    sc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /S Projections.csv"))
-    head(colnames(sc_csv))
-    
-    
-    str(colnames(fc_csv))
-    colnames(mc_csv)
-    colnames(hc_csv)
-    colnames(sc_csv)
-    
-    
-    
-    fc_idx = match(NUTS_shp$nuts318cd, fc_csv$nuts318cd)
-    mc_idx = match(NUTS_shp$nuts318cd, mc_csv$nuts318cd)
-    sc_idx = match(NUTS_shp$nuts318cd, sc_csv$nuts318cd)
-    
-    FC_shp = MC_shp= SC_shp = NUTS_shp
-    
-    FC_shp@data = cbind(  fc_csv[fc_idx, (ncol(fc_csv) -45 + 1):ncol(fc_csv) ])
-    MC_shp@data = cbind(  mc_csv[mc_idx, (ncol(mc_csv) -45 + 1):ncol(mc_csv) ])
-    SC_shp@data = cbind(  sc_csv[mc_idx, (ncol(sc_csv) -45 + 1):ncol(sc_csv) ])
-    
-    HC_shp = LAD_shp
-    hc_idx = match(LAD_shp$LAD19CD, hc_csv$LAD19CD)
-    HC_shp@data = cbind(  hc_csv[hc_idx, (ncol(hc_csv) -45 + 1):ncol(hc_csv) ])
-    
-    
-    # spplot(FC_shp, "St.HI_2050_SSP4")
-    # spplot(HC_shp, "LE_2050_SSP1")
-    
-    library(sf)
-    my.dat_sf <- st_as_sf(FC_shp)
-    plot(my.dat_sf[rev(variable.names)], max.plot=10, breaks=c(seq(from = 100, to = 5000, by = 500),5000),
-         pal = distinctColorPalette(length(seq(from = 100, to = 5000, by = 500))),
-         main = "TEST", border=NA, key.pos=4)
-    
-    
-    # beginCluster()
-    library(doSNOW)
-    cl = makeCluster(12)
-    registerDoSNOW(cl)
-    
-    
-    four_capital_names = paste0(c("Social", "Financial", "Human", "Manufactured"), "Capital")
-    shp_names = c("SC_shp", "FC_shp", "HC_shp", "MC_shp")
-    c_idx = layer_idx = 1
-    
-    for (c_idx in 1:length(four_capital_names)) { 
-        
-        capital_name = four_capital_names[c_idx] 
-        shp_name = shp_names[c_idx]
-        print(capital_name)
-        
-        BNG_shp = spTransform(get(shp_name), CRSobj = proj4.BNG)
-        
-        layer_names = names(BNG_shp)
-        
-        foreach (layer_idx = 1:length(layer_names), .packages = c("raster")) %dopar% {
-            # foreach (layer_idx = 1, .packages = c("raster")) %dopar% {
-            
-            layer_name = layer_names[layer_idx]
-            print(layer_name)
-            
-            BNG_r_tmp = rasterize(BNG_shp[,], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
-            plot(BNG_r_tmp, add=F)
-            
-            plot(UK_BNG_r, add=F)
-            plot(BNG_r_tmp * CHESS_mask_r, add=T)
-            # 
-            BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
-            # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-            
-            if (capital_name != "Human") { 
-                
-                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
-            } else { 
-                BNG_r_tmp3 = BNG_r_tmp2
-            }
-            
-            plot(BNG_r_tmp3)
-            plot(BNG_r_tmp3 - BNG_r_tmp2)
-            # 
-            # plot(UK_BNG_r, add=F)
-            # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
-            # 
-            # plot(CHESS_mask_r - !is.na(BNG_r_tmp), col=c("grey", "red"))
-            # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
-            
-            
-            
-            BNG_extracted_tmp = extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
-            
-            csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
-            
-            csv_df$capital = BNG_extracted_tmp
-            colnames(csv_df)[ncol(csv_df)] = capital_name
-            
-            writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
-            write.csv(csv_df, file =paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
-        }
-    }
-    
-    stopCluster(cl)
-}
-
-
-doWoodlandCapitals = FALSE 
-
-
-if (doWoodlandCapitals) { 
-    
-    
-}
-
-
-doUrban = TRUE 
-
-if (doUrban) { 
-    # urban scenario (Corine)
-    Urban2015_extracted = extract(LCM2015_dom_rs %in% c(20:21), CHESS_BNG_sp, method="simple", fun = count)
-    
-    Urban2015_csv_df = cbind(basealc_csv_df[, c("X", "Y")], FR_IMMUTABLE = Urban2015_extracted)
-    str(Urban2015_csv_df)
-    
-    write.csv(Urban2015_csv_df, file = paste0(path_output, "/UrbanMask/UrbanMask2020.csv"), quote = F, row.names = F)
-    
-     
-    ### Urbanisation scenarios
-    
-
-    
-    
-    
-    print("do Urban")
-    
-    
-    # beginCluster()
-    library(doSNOW)
-    cl = makeCluster(12)
-    registerDoSNOW(cl)
-    
-    
-    
-     SSPs = paste0("SSP", 1:5)
-    SSPyears = seq(2020, 2100, 10)
-    Urbanisation_path = paste0(path_data, "/UrbanMask/UKSSP_urbanisation/")
-    # list.files(urbanisation_path, pattern="tif$")
-    
-    ssp_idx = year_idx =  1 
-    ssp_idx = year_idx =  5
-    
-    for (ssp_idx in seq_along(SSPs)) { 
-        
-        SSP_name = SSPs[ssp_idx]
-        print(SSP_name)
-        
-        foreach (year_idx = 1:length(SSPyears), .packages = c("raster")) %dopar% {
-            # foreach (layer_idx = 1, .packages = c("raster")) %dopar% {
-            
-            SSP_year = SSPyears[year_idx]
-            print(SSP_year)
-            
-            BNG_r_tmp = raster(paste0(Urbanisation_path, SSP_name, ".", SSP_year, ".tif"))
-            plot(BNG_r_tmp, add=F)
-            plot(UK_BNG_r, add=F)
-            plot(BNG_r_tmp * CHESS_mask_r, add=T)
-            # do not need to fill shetland and coastal pixels 
-            BNG_r_tmp3 = BNG_r_tmp * CHESS_mask_r 
-             
-    
-            BNG_extracted_tmp = extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
-            
-            BNG_extracted_tmp = ifelse(BNG_extracted_tmp==1, yes = 1, no = 0)
-            
-            csv_df = data.frame( X = cellids$X_col, Y = cellids$Y_row)
-             
-            csv_df$FR_IMMUTABLE = BNG_extracted_tmp
-            colnames(csv_df)[ncol(csv_df)] = "FR_IMMUTABLE"
-            
-            # writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
-            write.csv(csv_df, file =paste0(path_output, "/UrbanMask/",SSP_name,"/UrbanMask_", SSP_name, "_", SSP_year,  ".csv"), quote = F, row.names = F)
-        }
-        
-    }
-    stopCluster(cl)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
