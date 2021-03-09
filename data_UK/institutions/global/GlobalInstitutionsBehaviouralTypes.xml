@@ -1,0 +1,4 @@
+<bTypes>
+	<bType label="CognitiveInst" serialID="100" class="org.volante.abm.agent.bt.CognitiveBT">
+	</bType>
+</bTypes>

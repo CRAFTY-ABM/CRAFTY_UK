@@ -1,0 +1,5 @@
+<regionalLaraModel>
+	<Boolean param="de.cesr.lara.components.param.LBasicPa:EVENTBUS_FORCE_SEQUENTIAL">true</Boolean>
+	<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_PREFERENCES">lara/LaraPreferences.xml</String>
+	<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_DCONFIG">lara/LaraDecisionConfigurations.xml</String>
+</regionalLaraModel>

@@ -1,0 +1,8 @@
+<cellInitialiser class="org.volante.abm.serialization.CsvAftPopulator">
+	<taggedHomeCells>false</taggedHomeCells>
+	<manageEveryHomeCell>true</manageEveryHomeCell>
+	<xColumn>X</xColumn>
+	<yColumn>Y</yColumn>
+	<unmanagedIdentifier>NOT_ASSIGNED</unmanagedIdentifier>
+	<csvFile>./worlds/%r/Baseline_map_UK.csv</csvFile>
+</cellInitialiser>

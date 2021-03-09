@@ -1,0 +1,23 @@
+<globalInstitutions>
+	<globalInstitution class="org.volante.abm.institutions.global.GlobalSubsidisingInstitution" 
+						id="GlobalSubsidising">
+		<btLabel>CognitiveInst</btLabel>
+		<serviceSubsidyFactor service="Meat">1.2</serviceSubsidyFactor>
+		<serviceSubsidyFactor service="Cereal">1.3</serviceSubsidyFactor>
+		
+		<serviceTrigger service = "Meat">
+			<trigger class="org.volante.abm.decision.trigger.UnmetDemandDT" id="UnmetDemandMeat">
+				<consideredService>Meat</consideredService>
+				<dcId>NN</dcId>
+			</trigger>
+		</serviceTrigger>
+		<serviceTrigger service = "Cereal">
+			<trigger class="org.volante.abm.decision.trigger.UnmetDemandDT" id="UnmetDemandCereal">
+				<consideredService>Cereal</consideredService>
+				<dcId>NN</dcId>
+			</trigger>	
+		</serviceTrigger>
+		
+		<overallEffect>1.0</overallEffect>
+	</globalInstitution>
+</globalInstitutions>

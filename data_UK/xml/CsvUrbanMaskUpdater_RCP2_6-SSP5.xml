@@ -1,0 +1,3 @@
+<updater class="org.volante.abm.update.CSVLandUseUpdater" X_COL="X" Y_COL="Y" yearInFilename="true" reapplyPreviousFile="true" restrictionColumn ="FR_IMMUTABLE" updateColumn = "FR_IMMUTABLE" updateFR="Urban" maskChar="1" updateChar="1">
+	<csvFile year="2020">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2020.csv</csvFile> 
+</updater>

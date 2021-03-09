@@ -1,0 +1,34 @@
+<world>
+	<region id="UK">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+   
+	<demandFile>xml/RegionalDemand.xml</demandFile>
+   <competitionFile>xml/Competition_linear_UK.xml</competitionFile>
+   <btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+	<updaterFile>xml/CsvLandUseUpdater_%s.xml</updaterFile>    
+
+   <!-- Regional institutions -->
+
+   <!-- Land use control institution (spatially explicit) -->
+    <institution
+   class="org.volante.abm.institutions.LanduseControllingInstitution">
+	</institution>  
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/AllocationTypeRestrictions_UK.csv</csvFileRestrictedAllocations>
+	</institution> 
+
+</region>
+</world>

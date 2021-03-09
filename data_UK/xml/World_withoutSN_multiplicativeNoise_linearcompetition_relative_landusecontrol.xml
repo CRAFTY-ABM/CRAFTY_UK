@@ -1,0 +1,46 @@
+<world>
+	<region id="UK">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="1" percentageTakeOvers="1" relativeThresholding="true"/> 
+   
+	<demandFile>xml/RegionalDemand.xml</demandFile>
+   <competitionFile>xml/Competition_linear_UK.xml</competitionFile>
+   <btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+	<updaterFile>xml/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
+	<updaterFile>xml/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
+
+   <!-- Regional institutions -->
+
+   <!-- Land use control institution (spatially explicit) -->
+    <institution
+   class="org.volante.abm.institutions.LanduseControllingInstitution">
+	</institution>  
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+	</institution>
+
+	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution"> -->
+    	<csvFileRestrictedAllocations>csv/PA_L1_Restrictions.csv</csvFileRestrictedAllocations>
+		<spatialLayer>PROTECTED_L1</spatialLayer>
+	</institution>
+
+	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/PA_L2_Restrictions.csv</csvFileRestrictedAllocations>
+		<spatialLayer>PROTECTED_L2</spatialLayer>
+	</institution>
+</region>
+</world>

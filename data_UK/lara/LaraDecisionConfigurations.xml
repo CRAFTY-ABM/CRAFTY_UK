@@ -1,0 +1,9 @@
+<decisonConfigurations>
+	<dConfig>
+		<id>OfAdoption</id>
+		<preference>WAttitude</preference>
+		<preference>WSubjectiveNorm</preference>
+		<preference>WPBC</preference>
+		<singleSelectedBoExpected>true</singleSelectedBoExpected>
+	</dConfig>
+</decisonConfigurations>
