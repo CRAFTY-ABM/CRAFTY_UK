@@ -13,7 +13,7 @@ proj4.LL = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 proj4.LL360 = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 +lon_wrap=180"
 proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.1502,0.247,0.8421,-20.4894 +units=m +no_defs"
 
- 
+
 
 CHESS_BNG_csv = read.csv("Basegrid/CHESS_1k_grid.csv") # BNG perhaps
 # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"
@@ -388,7 +388,98 @@ if (doElevation) {
 Orkney_elev_df = data.frame(Elev = getValues(Orkney_elev_r), Slope = getValues(Orkney_slope_r), Aspect = getValues(Orkney_aspect_r))
 Shetland_elev_df = data.frame(Elev = getValues(Shetland_elev_r), Slope = getValues(Shetland_slope_r), Aspect = getValues(Shetland_aspect_r))
 
- 
+
+
+
+doSuitability = FALSE
+
+if (doSuitability) {
+    
+    ### Suitability maps
+    # Suitability_rs = stack(paste0("CRAFTY UK Capital files/Suitability/ModelledBaseline/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
+    
+    # 
+    # suitability_years = c()
+    # 
+    # for (suit_idx in seq_along(suitability_years)) {  
+    
+    
+    Suitability_rs = stack(paste0(path_data, "Capital/Suitability/Baseline scenario files/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
+    
+    # ignore forest suiltability as we use woodland capital files
+    
+    # plot(Suitability_rs)
+    # plot(sum(Suitability_rs))
+    
+    
+    endCluster()
+    # beginCluster(12)
+    # cl = makeCluster()
+    # registerDoSNOW(cl)
+    
+    
+    
+    
+    suitability_names = paste0(c("Arable", "Wetland", "ImprovedGrassland", "SemiNaturalGrassland"), "_Suitability")
+    
+    s_idx = 1
+    
+    suitability_extracted_m = foreach (s_idx = 1:length(suitability_names), .combine = "cbind") %do% { 
+        
+        suitability_name = suitability_names[s_idx] 
+        
+        print(suitability_name)
+        
+        BNG_r_tmp = projectRaster(Suitability_rs[[s_idx]], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
+        
+        
+        BNG_r_tmp2 = fillShetland(BNG_r_tmp)
+        
+        
+        # plot(BNG_r_tmp2, add=F)
+        # plot(CHESS_mask_r, col="red", add=T) 
+        
+        BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
+        
+        # are there coastal pixels left empy? 
+        # plot(CHESS_mask_r, col="red")
+        # plot(BNG_r_tmp3, add=T)
+        # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+        
+        
+        if (FALSE) { 
+            par(mfrow=c(1,1))    
+            plot(Orkney_NUTS_BNG_r, add=F, col="white")
+            plot(BNG_r_tmp3, add=T)
+            plot(CHESS_BNG_r, add=T)
+            plot(BNG_r_tmp3, add=T)
+            
+            plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+            
+            plot(Orkney_NUTS_BNG_shp, add=T)
+            
+            plot(Shetland_NUTS_BNG_r, add=F)
+            plot(BNG_r_tmp3, add=T)
+            # plot(CHESS_mask_r, add=T)
+        }
+        
+        
+        # plot(CHESS_BNG_sp, add=T)
+        writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Suitability/CRAFTY_UK_", suitability_name, ".tif"), overwrite=T)
+        
+        extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+    }
+    
+    csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
+    
+    suitability_extracted_m[is.na(suitability_extracted_m)] = 0 
+    
+    csv_df_out = cbind(csv_df, suitability_extracted_m)
+    colnames(csv_df_out)[6:9] = suitability_names
+    
+    write.csv(csv_df_out, file =paste0(path_output, "/Capital/Suitability/CRAFTY_UK_Suitability_Baseline.csv"), quote = F, row.names = F)
+}
+# }
 
 
 
@@ -397,13 +488,13 @@ do4Capitals = FALSE
 
 
 if (do4Capitals) { 
-     
+    
     ############# CAPITAL MAPS
     ### Financial capital (NUTS)
     fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /F Projections.csv"))
     (colnames(fc_csv))
     
-    ### Manufactured capital (NUTS)
+    ### Manufactured capital (LAD)
     mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /M Projections.csv"))
     (colnames(mc_csv))
     
@@ -422,20 +513,21 @@ if (do4Capitals) {
     colnames(sc_csv)
     
     
-    
     fc_idx = match(NUTS_shp$nuts318cd, fc_csv$nuts318cd)
-    mc_idx = match(NUTS_shp$nuts318cd, mc_csv$nuts318cd)
     sc_idx = match(NUTS_shp$nuts318cd, sc_csv$nuts318cd)
     
-    FC_shp = MC_shp= SC_shp = NUTS_shp
+    FC_shp = SC_shp = NUTS_shp
     
     FC_shp@data = cbind(  fc_csv[fc_idx, (ncol(fc_csv) -45 + 1):ncol(fc_csv) ])
-    MC_shp@data = cbind(  mc_csv[mc_idx, (ncol(mc_csv) -45 + 1):ncol(mc_csv) ])
     SC_shp@data = cbind(  sc_csv[sc_idx, (ncol(sc_csv) -45 + 1):ncol(sc_csv) ])
     
-    HC_shp = LAD_shp
+    HC_shp = MC_shp = LAD_shp
     hc_idx = match(LAD_shp$LAD19CD, hc_csv$LAD19CD)
     HC_shp@data = cbind(  hc_csv[hc_idx, (ncol(hc_csv) -45 + 1):ncol(hc_csv) ])
+    
+    mc_idx = match(LAD_shp$LAD19CD, mc_csv$LAD19CD)
+    
+    MC_shp@data = cbind(  mc_csv[mc_idx, (ncol(mc_csv) -45 + 1):ncol(mc_csv) ])
     
     
     # spplot(FC_shp, "St.HI_2050_SSP4")
@@ -443,15 +535,15 @@ if (do4Capitals) {
     
     library(sf)
     # library(randomcoloR)
-    my.dat_sf <- st_as_sf(SC_shp)
+    my.dat_sf <- st_as_sf(MC_shp)
     plot(my.dat_sf[,1]) # , max.plot=10, breaks=c(seq(from = 100, to = 5000, by = 500),5000),
-         # pal = distinctColorPalette(length(seq(from = 100, to = 5000, by = 500))),
-         # border=NA, key.pos=4)
+    # pal = distinctColorPalette(length(seq(from = 100, to = 5000, by = 500))),
+    # border=NA, key.pos=4)
     
     
     # beginCluster()
     library(doSNOW)
-    cl = makeCluster(24)
+    cl = makeCluster(23)
     registerDoSNOW(cl)
     
     
@@ -466,8 +558,8 @@ if (do4Capitals) {
         print(capital_name)
         
         BNG_shp = spTransform(get(shp_name), CRSobj = proj4.BNG)
-        plot(st_as_sf(BNG_shp)["S_2020_SSP1"])
-             
+        plot(st_as_sf(BNG_shp)[,1])
+        
         layer_names = names(BNG_shp)
         
         foreach (layer_idx = 1:length(layer_names), .packages = c("raster")) %dopar% {
@@ -485,7 +577,7 @@ if (do4Capitals) {
             BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
             # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
             
-            if (capital_name != "Human") { 
+            if (!(capital_name %in% c("Manufactured", "Human"))) { 
                 
                 BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
             } else { 
@@ -510,8 +602,8 @@ if (do4Capitals) {
             csv_df$capital = BNG_extracted_tmp
             colnames(csv_df)[ncol(csv_df)] = capital_name
             
-            writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
-            write.csv(csv_df, file =paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
+            writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Capitals/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
+            write.csv(csv_df, file =paste0(path_output, "/Capital/Capitals/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
         }
     }
     
@@ -525,7 +617,109 @@ doWoodlandCapitals = FALSE
 if (doWoodlandCapitals) { 
     
     
+    woodland_aft_tb = read.csv(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/ESC_species_to_AFT.csv"))
+    
+    woodland_scenarios = "baseline_1991-2011"
+    
+    # woodland_aft_tb$Species.code[-8]
+    
+    
+    
+    
+    Woodland_rs = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", woodland_scenario, "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_baseline_mdAdj.tif")) # Dec 2020
+    
+    proj4string(Woodland_rs) = proj4.BNG
+    
+    
+    
+    names(Woodland_rs) = woodland_aft_tb$Species.code[-8]
+    
+    Woodland_rs$Mixed = mean(Woodland_rs[[c("SS", "SP", "BE", "SOK", "SBI")]])
+    
+    Woodland_rs_AFT = Woodland_rs[[-2]]
+    woodland_names = c("NNBroadleaf.suit", # Beech 
+                       "Nbroadleaf.suit",  # Sessile oak
+                       "NConifer.suit",    # Scots pine
+                       "NNConifer.suit",   # Sitka spruce
+                       "AgroForestry.suit", # Sycamore
+                       "Bioenergy.suit",    # Willow
+                       "Tree.suit")         # Mixed (SS, SP, BE, SOK, SBI)
+    
+    names(Woodland_rs_AFT) = woodland_names
+    
+    
+    plot(Woodland_rs_AFT)
+    # plot(sum(Suitability_rs))
+    
+    
+    endCluster()
+    # beginCluster(12)
+    # cl = makeCluster()
+    # registerDoSNOW(cl)
+    
+    
+    rm(s_idx)
+    
+    w_idx = 1
+    
+    woodland_extracted_m = foreach (w_idx = seq_along(woodland_names), .combine = "cbind") %do% { 
+        
+        woodland_name = woodland_names[w_idx] 
+        
+        print(woodland_name)
+        
+        BNG_r_tmp = projectRaster(Woodland_rs_AFT[[w_idx]], CHESS_BNG_r, field = woodland_name, fun ="last", background=0)
+        
+        
+        BNG_r_tmp2 = fillShetland(BNG_r_tmp)
+        
+        
+        # plot(BNG_r_tmp2, add=F)
+        # plot(CHESS_mask_r, col="red", add=T) 
+        
+        BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
+        
+        # are there coastal pixels left empy? 
+        # plot(CHESS_mask_r, col="red")
+        # plot(BNG_r_tmp3, add=T)
+        # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+        
+        
+        if (FALSE) { 
+            par(mfrow=c(1,1))    
+            plot(Orkney_NUTS_BNG_r, add=F, col="white")
+            plot(BNG_r_tmp3, add=T)
+            plot(CHESS_BNG_r, add=T)
+            plot(BNG_r_tmp3, add=T)
+            
+            plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+            
+            plot(Orkney_NUTS_BNG_shp, add=T)
+            
+            plot(Shetland_NUTS_BNG_r, add=F)
+            plot(BNG_r_tmp3, add=T)
+            # plot(CHESS_mask_r, add=T)
+        }
+        
+        
+        # plot(CHESS_BNG_sp, add=T)
+        writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_", woodland_name, ".tif"), overwrite=T)
+        
+        extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+    }
+    
+    csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
+    
+    woodland_extracted_m[is.na(woodland_extracted_m)] = 0 
+    
+    csv_df_out = cbind(csv_df, woodland_extracted_m)
+    colnames(csv_df_out)[6:12] = woodland_names
+    
+    write.csv(csv_df_out, file =paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_Woodland_Baseline.csv"), quote = F, row.names = F)
 }
+
+ 
+ 
 
 
 doUrban = TRUE 
@@ -599,14 +793,8 @@ if (doUrban) {
     }
     stopCluster(cl)
     
-     
+    
 }
-
-
-
- 
-
-
 
 
 
@@ -634,89 +822,6 @@ if (doFlood) {
     writeRaster(Flood_UK_bng, filename = paste0(path_output, "/FloodRisk_IH130_UK_1km.tif"), overwrite=T)
 }
 
-doSuitability = FALSE
-
-if (doSuitability) {
-    
-    ### Suitability maps
-    # Suitability_rs = stack(paste0("CRAFTY UK Capital files/Suitability/ModelledBaseline/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
-    
-    Suitability_rs = stack(paste0(path_data, "Capital/Suitability/Baseline scenario files/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
-    
-    # ignore forest suiltability as we use woodland capital files
-    
-    # plot(Suitability_rs)
-    # plot(sum(Suitability_rs))
-    
-    
-    endCluster()
-    # beginCluster(12)
-    # cl = makeCluster()
-    # registerDoSNOW(cl)
-    
-    
-    
-    
-    suitability_names = paste0(c("Arable", "Wetland", "ImprovedGrassland", "SemiNaturalGrassland"), "_Suitability")
-    
-    s_idx = 1
-    
-    suitability_extracted_m = foreach (s_idx = 1:length(suitability_names), .combine = "cbind") %do% { 
-        
-        suitability_name = suitability_names[s_idx] 
-        
-        print(suitability_name)
-        
-        BNG_r_tmp = projectRaster(Suitability_rs[[s_idx]], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
-        
-        
-        BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-        
-        
-        # plot(BNG_r_tmp2, add=F)
-        # plot(CHESS_mask_r, col="red", add=T) 
-        
-        BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
-        
-        # are there coastal pixels left empy? 
-        # plot(CHESS_mask_r, col="red")
-        # plot(BNG_r_tmp3, add=T)
-        # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
-        
-        
-        if (FALSE) { 
-            par(mfrow=c(1,1))    
-            plot(Orkney_NUTS_BNG_r, add=F, col="white")
-            plot(BNG_r_tmp3, add=T)
-            plot(CHESS_BNG_r, add=T)
-            plot(BNG_r_tmp3, add=T)
-            
-            plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
-            
-            plot(Orkney_NUTS_BNG_shp, add=T)
-            
-            plot(Shetland_NUTS_BNG_r, add=F)
-            plot(BNG_r_tmp3, add=T)
-            # plot(CHESS_mask_r, add=T)
-        }
-        
-        
-        # plot(CHESS_BNG_sp, add=T)
-        writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Suitability/CRAFTY_UK_", suitability_name, ".tif"), overwrite=T)
-        
-        extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
-    }
-    
-    csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
-    
-    suitability_extracted_m[is.na(suitability_extracted_m)] = 0 
-    
-    csv_df_out = cbind(csv_df, suitability_extracted_m)
-    colnames(csv_df_out)[6:9] = suitability_names
-    
-    write.csv(csv_df_out, file =paste0(path_output, "/Suitability/CRAFTY_UK_Suitability.csv"), quote = F, row.names = F)
-    
-}
 
 
 doRAMSAR = FALSE  

@@ -77,7 +77,7 @@ capital_csv[, "Igrass.suit"] = suitability_df$ImprovedGrassland_Suitability / ma
 capital_csv[, "SNGrass.suit"] = suitability_df$SemiNaturalGrassland_Suitability / max( suitability_df$SemiNaturalGrassland_Suitability, na.rm=T)
 
 
-summary(capital_csv)
+# summary(capital_csv)
 
 # Woodland capitals
 
@@ -87,88 +87,43 @@ summary(capital_csv)
 # plot(basealc_cb$Bioenergy.suit, woodland_df$bioenergy_YC)
 # 
 # capital_csv$NNBroadleaf.suit = woodland_df$non.native.broadleaf_YC
+# unused native woodland (SBI)
 # capital_csv$Nbroadleaf.suit = woodland_df$native.broadleaf_YC
 # capital_csv$NConifer.suit = woodland_df$native.conifer_YC
 # capital_csv$NNConifer.suit = woodland_df$non.native.conifer_YC
 # capital_csv$AgroForestry.suit = woodland_df$agroforestry_YC
 # capital_csv$Bioenergy.suit = woodland_df$bioenergy_YC
-# capital_csv$Tree.suit = woodland_df$`native-woodland_YC` ??
-
+# capital_csv$Tree.suit = woodland_df$Mixed
 
 
 # library(tidyverse)
-woodland_df = read.csv("CRAFTY UK Capital files/Woodland capital/Baseline and RCP85 (Oct 2020)/woodlandCapitals_CHESSbaseline.csv", sep=",")
-# colnames(woodland_df)[5:12] = capital_names[c(8,9,10,11,)]
+woodland_df = read.csv(paste0(path_output, "Capital/Woodland capital/CRAFTY_UK_Woodland_Baseline.csv"), sep=",")
+colnames(woodland_df) # [6:12] = capital_names[c(8,9,10,11,)]
 
 # capital_csv$NNBroadleaf.suit = woodland_df$non.native.broadleaf_YC
+# unused native woodland (SBI)
 # capital_csv$Nbroadleaf.suit = woodland_df$native.broadleaf_YC
 # capital_csv$NConifer.suit = woodland_df$native.conifer_YC
 # capital_csv$NNConifer.suit = woodland_df$non.native.conifer_YC
 # capital_csv$AgroForestry.suit = woodland_df$agroforestry_YC
 # capital_csv$Bioenergy.suit = woodland_df$bioenergy_YC
-# capital_csv$Tree.suit = woodland_df$mixed_YC
-
-
+# capital_csv$Tree.suit = woodland_df$Mixed
 # woodland_df$mixed.YC / max(woodland_df$mixed.YC, na.rm=T)
 
-# create woodland raster stack (now using Calum's data)
-woodland_names =  as.character(capital_names[8:14])
+(woodland_names %in% as.character(capital_names[8:14]))
+ 
+woodland_df_tmp = data.frame(sapply(woodland_df[,woodland_names], FUN = function(x) x / max(x, na.rm=T)))
+colnames(woodland_df_tmp) = woodland_names
 
-layer_idx = 7
+# plot(woodland_df_tmp$NNBroadleaf.suit, woodland_df$NNBroadleaf.suit)
+# plot(woodland_df_tmp$Nbroadleaf.suit, woodland_df$Nbroadleaf.suit)
 
-tmp_woodland_dt = foreach (layer_idx = 1:length(woodland_names), .packages = c("raster")) %do% { 
-    layer_name = woodland_names[layer_idx]
-    print(layer_name)
-    
-    
-    BNG_r_tmp  = raster(SpatialPixelsDataFrame(CHESS_BNG_sp, data = data.frame(basealc_cb[, layer_name])))
-    # BNG_r_vs_tmp  = raster(SpatialPixelsDataFrame(CHESS_BNG_sp, data = data.frame(woodland_df$bioenergy.YC)))
-    # BNG_r_vs_tmp  = raster(SpatialPixelsDataFrame(CHESS_BNG_sp, data = data.frame(as.numeric(woodland_df$mixed.YC))))
-    # BNG_r_vs_tmp2  = raster(SpatialPixelsDataFrame(CHESS_BNG_sp, data = data.frame(woodland_df$native.woodland.YC)))
-    
-    # par(mfrow=c(1,3))
-    # plot(BNG_r_tmp, main = layer_name, sub = "Basline allocation 3_from Calum 5 Feb 2021")
-    # plot(BNG_r_vs_tmp, add=F, main = "mixed", sub = "From Vanessa (23 Oct 2020)")
-    # plo
-    # plot(UK_BNG_r, add=F)
-    # plot(BNG_r_tmp * CHESS_mask_r, add=T)
-    # # 
-    BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
-    BNG_r_tmp2 = fillShetland(BNG_r_tmp2)
-    plot(BNG_r_tmp2)
-    
-    # BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=NA, width = 3, n_interpol = 5)
-    BNG_r_tmp3 = BNG_r_tmp2
-    # plot(BNG_r_tmp3)
-    # plot(BNG_r_tmp3 - BNG_r_tmp2)
-    # 
-    # plot(UK_BNG_r, add=F)
-    # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
-    # 
-    # plot(CHESS_mask_r - !is.na(BNG_r_tmp), col=c("grey", "red"))
-    # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
-    
-    
-    
-    BNG_extracted_tmp = raster::extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
-    
-    # csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
-    # 
-    # csv_df$capital = BNG_extracted_tmp
-    # colnames(csv_df)[ncol(csv_df)] = layer_name
-    
-    # writeRaster(BNG_r_tmp3, filename =  paste0("Output/",layer_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
-    # write.csv(csv_df, file =paste0("Output/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
-    return(BNG_extracted_tmp)
-}
+str(woodland_df_tmp)
 
-tmp_woodland_dt2 = lapply(tmp_woodland_dt, FUN = function(x) x/max(x, na.rm=T))
+capital_csv[, woodland_names] = woodland_df_tmp
 
 
-tmp_woodland_res = do.call("cbind", tmp_woodland_dt2)
-colnames(tmp_woodland_res) = woodland_names
 
-capital_csv[, woodland_names] = tmp_woodland_res
 
 
 
@@ -201,7 +156,7 @@ capital_reord_df[is.na(capital_reord_df)] = 0
 capital_csv_df = cbind(basealc_csv_df[, c("X", "Y")], capital_reord_df[,])
 
 ## baseline capital with x and y (rnk)
-write.csv(capital_csv_df, file = "~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/capitals/Baseline/UK_capitals-2020.csv", quote = F, row.names = F)
+write.csv(capital_csv_df, file = paste0(path_output, "Capital/UK_capitals-2020.csv"), quote = F, row.names = F)
 
 
 # writeRaster(r2, filename = "borough.tif", overwrite=T)
@@ -215,16 +170,17 @@ basealc_csv_df = cbind(basealc_csv_df, capital_reord_df)
 # AFT 
 
 basealc_csv_df$FR = as.character(basealc_cb$AFT15)
+table(basealc_csv_df$FR)
 
 ## Replace current allocation by the LCM 2015 urban mask 
-Urban2015_csv_df = read.csv("Output/CRAFTY_GB_UrbanMask2015_Urban.csv")
+Urban2015_csv_df = read.csv( paste0(path_output, "UrbanMask/UrbanMask2020.csv"))
 str(Urban2015_csv_df)
 
 
-table(Urban2015_csv_df$Urban.mask==1)
+table(Urban2015_csv_df$FR_IMMUTABLE==1)
 
 
-basealc_csv_df$FR[Urban2015_csv_df$Urban.mask==1] = "Urban" 
+basealc_csv_df$FR[Urban2015_csv_df$FR_IMMUTABLE==1] = "Urban" 
 
 
 # Behavioural Type (BT)
@@ -236,13 +192,13 @@ basealc_csv_df$BT = 0
 # str(basealc_csv_df)
 
 # Baseline map
-write.csv(basealc_csv_df, file = paste0("~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/Baseline_map_UK.csv"), quote = F, row.names = F)
+write.csv(basealc_csv_df, file = paste0(path_output, "Basegrid/Baseline_map_UK.csv"), quote = F, row.names = F)
 
 
 ## Empty map
 basealc_csv_df$FR = "NOT_ASSIGNED"
 
-write.csv(basealc_csv_df, file = paste0("~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/Baseline_map_UK_empty.csv"), quote = F, row.names = F)
+write.csv(basealc_csv_df, file = paste0(path_output, "Basegrid/Baseline_map_UK_empty.csv"), quote = F, row.names = F)
 
 
 
@@ -265,23 +221,26 @@ demand_df$Year = years
 # Feb 2021 v4 (normalised capitals)
 # Food.crops:8378.547566220961 Fodder.crops:5322.216765406225 GF.redMeat:14005.200587797144 Fuel:287.6222050347335 Softwood:1079.6727248494208 Hardwood:1277.5827018438838 Biodiversity:27421.04993405298 Carbon:27749.622798286346 Recreation:26157.4837258607 Flood.reg:23783.079948011233 Employment:22634.701520100836 Ldiversity:25608.141982522062 GF.milk:8123.276727664139 }
 
-demand_df$Food.crops = 8378.547566220961 
-demand_df$Fodder.crops = 5322.216765406225
-demand_df$GF.redMeat= 14005.200587797144
-demand_df$Fuel = 287.6222050347335
-demand_df$Softwood = 1079.6727248494208
-demand_df$Hardwood = 1277.5827018438838
-demand_df$Biodiversity = 27421.04993405298
-demand_df$Carbon = 27749.622798286346
-demand_df$Recreation = 26157.4837258607
-demand_df$Flood.reg = 23783.079948011233
-demand_df$Employment = 22634.701520100836
-demand_df$Ldiversity = 25608.141982522062
-demand_df$GF.milk = 8123.276727664139
+# Mar 2021 v5 (gap-filled and new input files)
+# FOod.crops: 8126.127483719713 Fodder.crops:5159.215662720631 GF.redMeat:14132.341340761652 Fuel:289.60138136502195 Softwood:1257.6074197171397 Hardwood:1282.369238930499 Biodiversity:28309.846374701745 Carbon:28686.54821324183 Recreation:26989.762914758696 Flood.reg:24699.906842365253 Employment:22695.964383369457 Ldiversity:26396.84839747337 GF.milk:8008.22563578971 }
+
+demand_df$Food.crops = 8126.127483719713 
+demand_df$Fodder.crops = 5159.215662720631
+demand_df$GF.redMeat= 14132.341340761652
+demand_df$Fuel = 289.60138136502195
+demand_df$Softwood = 1257.6074197171397
+demand_df$Hardwood = 1282.369238930499
+demand_df$Biodiversity = 28309.846374701745
+demand_df$Carbon = 28686.54821324183
+demand_df$Recreation = 26989.762914758696
+demand_df$Flood.reg = 24699.906842365253
+demand_df$Employment = 22695.964383369457
+demand_df$Ldiversity = 26396.84839747337
+demand_df$GF.milk = 8008.22563578971
 
 demand_df_org = demand_df
 
-write.csv(demand_df, file = "~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/demand/Baseline_demands_UK.csv", quote = F, row.names = F)
+write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
 
 
 # 50% increased food demand
@@ -292,7 +251,7 @@ demand_df$GF.milk = demand_df_org$GF.milk * 1.5
 
 
 
-write.csv(demand_df, file = "~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/demand/Baseline_demands_increasedFood_UK.csv", quote = F, row.names = F)
+write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_increasedFood_UK.csv"), quote = F, row.names = F)
 
 
 # 50% decreased food demand
@@ -302,12 +261,15 @@ demand_df$GF.redMeat= demand_df_org$GF.redMeat * 0.5
 demand_df$GF.milk = demand_df_org$GF.milk * 0.5 
 
 
-write.csv(demand_df, file = "~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/demand/Baseline_demands_decreasedFood_UK.csv", quote = F, row.names = F)
+write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_decreasedFood_UK.csv"), quote = F, row.names = F)
+
+
+stop("ends here")
 
 
 # PLUM 
 
-plum_demand = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Demand/PLUM_demands1_16Feb2021_fromCalum.csv")
+plum_demand = read.csv(paste0(path_data, "/Demand/PLUM_demands1_16Feb2021_fromCalum.csv"))
 
 
 SSP_names = paste0("SSP", 1:5)
@@ -340,7 +302,7 @@ for (ssp_idx in 1:5) {
     
     demand_ssp = demand_df_org
     demand_ssp[,food_names_full] = demand_df_org[,food_names_full] * pd_tmp[[ssp_idx]][1:71, food_names[-3]]
-    write.csv(demand_ssp, file = paste0("~/Nextcloud/workspace_newEU/CRAFTY_UK_development/data_UK_development/worlds/UK/demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
+    write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
     
  }
 
