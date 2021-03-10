@@ -1,7 +1,7 @@
 <world>
 	<region id="UK">
 	
-	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="0.5" percentageTakeOvers="0.5" relativeThresholding="true"/> 
    
 	<demandFile>xml/RegionalDemand.xml</demandFile>
    <competitionFile>xml/Competition_linear_UK.xml</competitionFile>
@@ -27,7 +27,7 @@
 	<initialiserFile>xml/Initialiser.xml</initialiserFile>
 	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
 
-	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+	<updaterFile>xml/CsvUrbanMaskUpdater_SSP5.xml</updaterFile>
 	<updaterFile>xml/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
 	<updaterFile>xml/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
 
