@@ -623,7 +623,7 @@ if (doWoodlandCapitals) {
     
     # woodland_aft_tb$Species.code[-8]
     
-    
+    woodland_scenario = woodland_scenarios[1]
     
     
     Woodland_rs = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", woodland_scenario, "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_baseline_mdAdj.tif")) # Dec 2020
@@ -637,12 +637,12 @@ if (doWoodlandCapitals) {
     Woodland_rs$Mixed = mean(Woodland_rs[[c("SS", "SP", "BE", "SOK", "SBI")]])
     
     Woodland_rs_AFT = Woodland_rs[[-2]]
-    woodland_names = c("NNBroadleaf.suit", # Beech 
-                       "Nbroadleaf.suit",  # Sessile oak
-                       "NConifer.suit",    # Scots pine
-                       "NNConifer.suit",   # Sitka spruce
-                       "AgroForestry.suit", # Sycamore
-                       "Bioenergy.suit",    # Willow
+    woodland_names = c("NNBroadleaf.suit", # Beech (BE)
+                       "Nbroadleaf.suit",  # Sessile oak (SOK)
+                       "NConifer.suit",    # Scots pine (SP)
+                       "NNConifer.suit",   # Sitka spruce (SS)
+                       "AgroForestry.suit", # Sycamore (SY)
+                       "Bioenergy.suit",    # Willow (WWL)
                        "Tree.suit")         # Mixed (SS, SP, BE, SOK, SBI)
     
     names(Woodland_rs_AFT) = woodland_names
