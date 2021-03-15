@@ -23,9 +23,10 @@ proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-1
 
 
 
-### 
-proj4.SphericalMercator = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs" # proj4string(LAD_shp) # EPSG:3857
-proj4.OSGB1936 = proj4.SphericalMercator # proj4string(LAD_shp) # EPSG:27700
+### https://gis.stackexchange.com/questions/34276/whats-the-difference-between-epsg4326-and-epsg900913
+proj4.SphericalMercator = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs"  #EPSG:900913
+# EPSG:3857
+proj4.OSGB1936 ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs"  # proj4string(LAD2019_shp) # EPSG:27700
 proj4.OSNI1952 = "+proj=tmerc +lat_0=53.5 +lon_0=-8 +k=1 +x_0=200000 +y_0=250000 +ellps=airy +towgs84=482.5,-130.6,564.6,-1.042,-0.214,-0.631,8.15 +units=m +no_defs" # EPSG:29901
 
  
@@ -33,10 +34,30 @@ path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
  
 
 ### Read the NUTS data 
-LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp"))
+# LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp"))
+LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__December_2019__Boundaries_UK_BFE.shp"))
+
 NUTS_shp = readOGR(paste0(path_data, "Boundaries/NUTS_Level_3__January_2018__Boundaries.shp"))
 
  
+# LAD_shp_osgb = spTransform(LAD_shp, proj4.OSGB1936)
+# 
+# sum(LAD_shp$Shape__Are)
+# sum(LAD_shp_osgb$Shape__Are)
+# sum(LAD2019_shp$Shape__Are)
+# 
+# rgeos::gArea(LAD_shp)
+# rgeos::gArea(LAD_shp_osgb)
+# 
+# rgeos::gArea(LAD2019_shp)
+
+
+# 
+# lad_area = rgeos::gArea(LAD_shp_osgb, byid = T)
+# lad2019_area = rgeos::gArea(LAD2019_shp, byid = T)
+# 
+# plot(lad_area, lad2019_area)
+# cor(lad_area, lad2019_area)
 
 ## there are capital files beyond nuts boundary (e.g. Human Capital)
 # NUTS_r = rasterize(spTransform(NUTS_shp[,], proj4.BNG), CHESS_BNG_r, field = "objectid", fun ="last", background=NA)
