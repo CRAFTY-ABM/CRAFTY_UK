@@ -40,6 +40,8 @@ setwd("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/")
 UK_LL = stack("Basegrid/ukcp18_tmax_wgs84.tif")
 UK_BNG = stack("Basegrid/ukcp18_tmax.tif")
 
+path_grip = "~/Nextcloud/CRAFTY GIS data/Road and railway data/"
+
 
 if (FALSE) {
   # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"
@@ -77,7 +79,6 @@ if (FALSE) {
   # writeOGR(GRI4_UK_Typ4,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ4", driver = "ESRI Shapefile")
   # writeOGR(GRI4_UK_Typ5,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ5", driver = "ESRI Shapefile")
   
-  path_grip = "~/Nextcloud/CRAFTY GIS data/Road and railway data/"
   
   GRIP4_Typ1_density = raster(paste0(path_grip, "GRIP4_Typ1_Density.tif"))
   GRIP4_Typ2_density =  raster(paste0(path_grip, "GRIP4_Typ2_Density.tif"))
@@ -161,6 +162,11 @@ writeOGR(LAD_shp2,dsn = path_grip, layer ="RoadCapital_LAD2019_USING_GRIP4_UK_BN
 
 
 write.csv2(LAD_shp2@data, row.names = F, quote = F, file = paste0(path_grip, "RoadCapital_LAD2019_USING_GRIP4_UK_BNG.csv"))
+
+
+LAD_shp2 = readOGR("~/Nextcloud/CRAFTY GIS data/Road and railway data/RoadCapital_LAD2019_USING_GRIP4_UK_BNG.shp")
+
+summary(LAD_shp2$RodCptl)
 
 
 # # roads <- shapefile("TZA_roads.shp")
