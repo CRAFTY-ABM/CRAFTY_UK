@@ -720,9 +720,7 @@ if (doWoodlandCapitals) {
 
  
  
-
-
-doUrban = TRUE 
+doUrban = FALSE 
 
 if (doUrban) { 
     # urban scenario (Corine)
@@ -736,9 +734,7 @@ if (doUrban) {
     
     ### Urbanisation scenarios
     
-    
-    
-    
+     
     
     print("do Urban")
     
@@ -752,7 +748,7 @@ if (doUrban) {
     
     SSPs = paste0("SSP", 1:5)
     SSPyears = seq(2020, 2100, 10)
-    Urbanisation_path = paste0(path_data, "/UrbanMask/UKSSP_urbanisation/")
+    Urbanisation_path = paste0(path_data, "/UrbanMask/UKSSP Urban Surface_v2/")
     # list.files(urbanisation_path, pattern="tif$")
     
     ssp_idx = year_idx =  1 
@@ -789,11 +785,9 @@ if (doUrban) {
             # writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
             write.csv(csv_df, file =paste0(path_output, "/UrbanMask/",SSP_name,"/UrbanMask_", SSP_name, "_", SSP_year,  ".csv"), quote = F, row.names = F)
         }
-        
     }
     stopCluster(cl)
-    
-    
+     
 }
 
 
