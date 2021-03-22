@@ -29,18 +29,17 @@ library(doSNOW)
 # https://www.globio.info/download-grip-dataset
 # Meijer, J.R., Huijbegts, M.A.J., Schotten, C.G.J. and Schipper, A.M. (2018): Global patterns of current and future road infrastructure. Environmental Research Letters, 13-064006. Data is available at www.globio.info
 # https://www.gov.uk/speed-limits
-# 
-# 
-
-
-
 
 setwd("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/")
 
-UK_LL = stack("Basegrid/ukcp18_tmax_wgs84.tif")
-UK_BNG = stack("Basegrid/ukcp18_tmax.tif")
+source("../../CRAFTY/CRAFTY_UK/RScripts/CRAFTY-UK_grid_common.R")
+# UK_LL = stack("Basegrid/ukcp18_tmax_wgs84.tif") # wo Shetland islands
+# UK_BNG = stack("Basegrid/ukcp18_tmax.tif")
 
-path_grip = "~/Nextcloud/CRAFTY GIS data/Road and railway data/"
+UK_BNG = stack("LCM/LCM2015_UK_1km_dominated.tif")
+UK_LL  = projectRaster(UK_BNG, crs = crs(proj4.LL))
+
+path_grip = "~/Nextcloud/CRAFTY GIS data/GRIP4_Region4_vector_shp_EU/"
 
 
 if (FALSE) {
@@ -48,37 +47,38 @@ if (FALSE) {
   # plot(UK_rs[[1]])
   # 
   
-  
-  
+   
   # Clip the transportation data 
-  grip4_shp = readOGR("GRIP4_Region4_vector_shp_EU/GRIP4_region4_UK.shp")
+  grip4_shp = readOGR(dsn = path_grip, layer ="GRIP4_region4")
   
   
   beginCluster()
   
   GRI4_UK_shp = crop(grip4_shp, UK_LL)
   endCluster()
-  writeOGR(GRI4_UK_shp,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_cropped", driver = "ESRI Shapefile")
+  writeOGR(GRI4_UK_shp, dsn = path_grip, layer ="GRIP4_region4_UK_cropped", driver = "ESRI Shapefile")
   rm(grip4_shp)
   
+ 
   
-  # } else { 
-  #   GRI4_UK_shp = readOGR("~/Nextcloud/CRAFTY GIS data/Road and railway data//GRIP4_region4_UK_BNG.shp")
-  # }
-  
-  # Type 1 
+  # Type 1 to 5 
   GRI4_UK_Typ1 = GRI4_UK_shp[GRI4_UK_shp$GP_RTP == 1,]
   GRI4_UK_Typ2 = GRI4_UK_shp[GRI4_UK_shp$GP_RTP == 2,]
   GRI4_UK_Typ3 = GRI4_UK_shp[GRI4_UK_shp$GP_RTP == 3,]
   GRI4_UK_Typ4 = GRI4_UK_shp[GRI4_UK_shp$GP_RTP == 4,]
   GRI4_UK_Typ5 = GRI4_UK_shp[GRI4_UK_shp$GP_RTP == 5,]
   
-  # writeOGR(GRI4_UK_Typ1,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ1", driver = "ESRI Shapefile")
-  # writeOGR(GRI4_UK_Typ2,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ2", driver = "ESRI Shapefile")
-  # writeOGR(GRI4_UK_Typ3,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ3", driver = "ESRI Shapefile")
-  # writeOGR(GRI4_UK_Typ4,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ4", driver = "ESRI Shapefile")
-  # writeOGR(GRI4_UK_Typ5,dsn = "GRIP4_Region4_vector_shp_EU", layer ="GRIP4_region4_UK_BNG_Typ5", driver = "ESRI Shapefile")
+  # in LL 
+  writeOGR(GRI4_UK_Typ1,dsn =path_grip, layer ="GRIP4_region4_UK_LL_Typ1", driver = "ESRI Shapefile", overwrite_layer = T)
+  writeOGR(GRI4_UK_Typ2,dsn = path_grip, layer ="GRIP4_region4_UK_LL_Typ2", driver = "ESRI Shapefile", overwrite_layer = T)
+  writeOGR(GRI4_UK_Typ3,dsn = path_grip, layer ="GRIP4_region4_UK_LL_Typ3", driver = "ESRI Shapefile", overwrite_layer = T)
+  writeOGR(GRI4_UK_Typ4,dsn = path_grip, layer ="GRIP4_region4_UK_LL_Typ4", driver = "ESRI Shapefile", overwrite_layer = T)
+  writeOGR(GRI4_UK_Typ5,dsn =path_grip, layer ="GRIP4_region4_UK_LL_Typ5", driver = "ESRI Shapefile", overwrite_layer = T)
   
+  
+  #### 
+  ### Reproject LL to BNG and create raster files using ArcMAP line density toolbox (map unit should be meters) 
+  ###
   
   GRIP4_Typ1_density = raster(paste0(path_grip, "GRIP4_Typ1_Density.tif"))
   GRIP4_Typ2_density =  raster(paste0(path_grip, "GRIP4_Typ2_Density.tif"))
@@ -102,7 +102,7 @@ if (FALSE) {
   endCluster()
   
   
-  writeRaster(GRIP4_density_rs, filename =  "GRIP4_Region4_vector_shp_EU/GRIP4_region4_UK_density.tif")
+  writeRaster(GRIP4_density_rs, filename =  paste0(path_grip, "/GRIP4_region4_UK_density.tif"), overwrite=T)
 }
 
 GRIP4_density_rs = stack(paste0(path_grip, "GRIP4_region4_UK_BNG_Density.tif"))
@@ -114,20 +114,14 @@ dens_weights = speed_limit / sum(speed_limit)
 
 RoadCapital = sum(stack( sapply(1:5, FUN = function(x) GRIP4_density_rs[[x]] * dens_weights[x] )  ), na.rm=T) 
 # 
-# pdf("RoadDensity_UK.pdf", width = 12, height = 16)
-# par(mfrow=c(1,1), mar=c(4,4,4,4), oma=4)
-# plot(RoadCapital, main = "Road capital (weighted road density)")
-# plot(GRIP4_density_rs, main = paste0("Road type", 1:5, " (km/km2)"))
-# dev.off() 
-
+ 
  
 ### Read the NUTS data 
 LAD_shp = readOGR("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Boundaries/Local_Authority_Districts__December_2019__Boundaries_UK_BFE.shp")
 
 beginCluster(16)
 
-# GRIP4_density_rs_BNG = projectRaster(GRIP4_density_rs, crs = proj4string(LAD_shp))
-# writeRaster(GRIP4_density_rs_BNG, filename =  "GRIP4_Region4_vector_shp_EU/GRIP4_region4_UK_BNG_density.tif")
+ 
 
 
 RoadCapital_BNG = projectRaster(RoadCapital, crs = proj4string(LAD_shp))
@@ -136,11 +130,10 @@ beginCluster(16)
 a = extract(RoadCapital_BNG, y = LAD_shp[1:328,],   FUN = function(x) mean(x, na.rm=T))
 b = extract(RoadCapital_BNG, y = LAD_shp[329,], FUN = function(x) mean(x, na.rm=T))
 c = extract(RoadCapital_BNG, y = LAD_shp[330:351,],  FUN = function(x) mean(x, na.rm=T))
-
 d = extract(RoadCapital_BNG, y = LAD_shp[352:382,],  FUN = function(x) mean(x, na.rm=T))
 endCluster()
 
-dens = c(sapply(a, mean),sapply(b, mean), sapply(c, mean, na.rm=T), sapply(d, mean, na.rm=T))
+dens = c(sapply(a, mean, na.rm=T),sapply(b, mean, na.rm=T), sapply(c, mean, na.rm=T), sapply(d, mean, na.rm=T))
 dens[is.na(dens)] = 0 
 LAD_shp2 = LAD_shp
 LAD_shp2$dens = dens
@@ -148,9 +141,12 @@ LAD_shp2$dens = dens
 LAD_shp2$dens = NULL
 LAD_shp2$RoadCapital = dens
 plot(LAD_shp, col=scales::alpha("red", LAD_shp2$RoadCapital))
+
+
 library(sf)
+
 # 
-pdf("RoadDensity_UK.pdf", width = 12, height = 16)
+pdf(paste0(path_grip, "RoadDensity_UK.pdf"), width = 12, height = 16)
 par(mfrow=c(1,1), mar=c(4,4,4,4))
 plot(st_as_sf(LAD_shp2)[,"RoadCapital"], main="Road capital per LAD (km/km2)")
 plot(RoadCapital, main = "Weighted road density)")
@@ -158,13 +154,16 @@ plot(GRIP4_density_rs, main = paste0("Road type", 1:5, " (km/km2)"))
 dev.off()
 
 
-writeOGR(LAD_shp2,dsn = path_grip, layer ="RoadCapital_LAD2019_USING_GRIP4_UK_BNG", driver = "ESRI Shapefile")
+writeOGR(LAD_shp2,dsn = path_grip, layer ="RoadCapital_LAD2019_USING_GRIP4_UK_BNG", driver = "ESRI Shapefile", overwrite_layer = T)
 
 
 write.csv2(LAD_shp2@data, row.names = F, quote = F, file = paste0(path_grip, "RoadCapital_LAD2019_USING_GRIP4_UK_BNG.csv"))
 
 
-LAD_shp2 = readOGR("~/Nextcloud/CRAFTY GIS data/Road and railway data/RoadCapital_LAD2019_USING_GRIP4_UK_BNG.shp")
+
+
+
+LAD_shp2 = readOGR("~/Nextcloud/CRAFTY GIS data/GRIP4_Region4_vector_shp_EU/RoadCapital_LAD2019_USING_GRIP4_UK_BNG.shp")
 
 summary(LAD_shp2$RodCptl)
 
