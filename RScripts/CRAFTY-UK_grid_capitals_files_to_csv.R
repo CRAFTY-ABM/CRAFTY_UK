@@ -491,19 +491,19 @@ if (do4Capitals) {
     
     ############# CAPITAL MAPS
     ### Financial capital (NUTS)
-    fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /F Projections.csv"))
+    fc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/F Projections.csv"))
     (colnames(fc_csv))
     
     ### Manufactured capital (LAD)
-    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /M Projections.csv"))
+    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/M Projections.csv"))
     (colnames(mc_csv))
     
     ### Human capital (LAD)
-    hc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /H Projections.csv"))
+    hc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/H Projections.csv"))
     head(colnames(hc_csv))
     
     ### Social capital (NUTS)
-    sc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version /S Projections.csv"))
+    sc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/S Projections.csv"))
     head(colnames(sc_csv))
     
     
@@ -533,10 +533,10 @@ if (do4Capitals) {
     # spplot(FC_shp, "St.HI_2050_SSP4")
     # spplot(HC_shp, "LE_2050_SSP1")
     
-    library(sf)
+    # library(sf)
     # library(randomcoloR)
-    my.dat_sf <- st_as_sf(MC_shp)
-    plot(my.dat_sf[,1]) # , max.plot=10, breaks=c(seq(from = 100, to = 5000, by = 500),5000),
+    # my.dat_sf <- st_as_sf(MC_shp)
+    # plot(my.dat_sf[,1]) # , max.plot=10, breaks=c(seq(from = 100, to = 5000, by = 500),5000),
     # pal = distinctColorPalette(length(seq(from = 100, to = 5000, by = 500))),
     # border=NA, key.pos=4)
     
@@ -637,6 +637,11 @@ if (doWoodlandCapitals) {
     Woodland_rs$Mixed = mean(Woodland_rs[[c("SS", "SP", "BE", "SOK", "SBI")]])
     
     Woodland_rs_AFT = Woodland_rs[[-2]]
+    
+    # sum of SBI and SOK
+    Woodland_rs_AFT$SOK = Woodland_rs$SBI + Woodland_rs$SOK
+    
+    
     woodland_names = c("NNBroadleaf.suit", # Beech (BE)
                        "Nbroadleaf.suit",  # Sessile oak (SOK)
                        "NConifer.suit",    # Scots pine (SP)
@@ -644,8 +649,10 @@ if (doWoodlandCapitals) {
                        "AgroForestry.suit", # Sycamore (SY)
                        "Bioenergy.suit",    # Willow (WWL)
                        "Tree.suit")         # Mixed (SS, SP, BE, SOK, SBI)
-    
     names(Woodland_rs_AFT) = woodland_names
+    
+
+
     
     
     plot(Woodland_rs_AFT)

@@ -224,19 +224,22 @@ demand_df$Year = years
 # Mar 2021 v5 (gap-filled and new input files)
 # FOod.crops: 8126.127483719713 Fodder.crops:5159.215662720631 GF.redMeat:14132.341340761652 Fuel:289.60138136502195 Softwood:1257.6074197171397 Hardwood:1282.369238930499 Biodiversity:28309.846374701745 Carbon:28686.54821324183 Recreation:26989.762914758696 Flood.reg:24699.906842365253 Employment:22695.964383369457 Ldiversity:26396.84839747337 GF.milk:8008.22563578971 }
 
-demand_df$Food.crops = 8126.127483719713 
-demand_df$Fodder.crops = 5159.215662720631
-demand_df$GF.redMeat= 14132.341340761652
-demand_df$Fuel = 289.60138136502195
-demand_df$Softwood = 1257.6074197171397
-demand_df$Hardwood = 1282.369238930499
-demand_df$Biodiversity = 28309.846374701745
-demand_df$Carbon = 28686.54821324183
-demand_df$Recreation = 26989.762914758696
-demand_df$Flood.reg = 24699.906842365253
-demand_df$Employment = 22695.964383369457
-demand_df$Ldiversity = 26396.84839747337
-demand_df$GF.milk = 8008.22563578971
+# Mar 2021 v6 (corrected capital files + woodland birch used)
+# Food.crops:8186.229643935867 Fodder.crops:5195.6357670440475 GF.redMeat:14233.540939524457 Fuel:294.1256370164427 Softwood:1274.8785411470271 Hardwood:1258.1800902584848 Biodiversity:28122.792000184014 Carbon:28502.636537674378 Recreation:26807.957490814428 Flood.reg:24496.907266274775 Employment:22784.291240906572 Ldiversity:26176.1295300495 GF.milk:8079.904698263504 }
+ 
+demand_df$Food.crops = 8186.229643935867 
+demand_df$Fodder.crops = 5195.6357670440475
+demand_df$GF.redMeat= 14233.540939524457
+demand_df$Fuel = 294.1256370164427
+demand_df$Softwood = 1274.8785411470271
+demand_df$Hardwood = 1258.1800902584848
+demand_df$Biodiversity = 28122.792000184014
+demand_df$Carbon = 28502.636537674378
+demand_df$Recreation = 26807.957490814428
+demand_df$Flood.reg = 24496.907266274775
+demand_df$Employment = 22784.291240906572
+demand_df$Ldiversity = 26176.1295300495
+demand_df$GF.milk = 8079.904698263504
 
 demand_df_org = demand_df
 
@@ -264,7 +267,6 @@ demand_df$GF.milk = demand_df_org$GF.milk * 0.5
 write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_decreasedFood_UK.csv"), quote = F, row.names = F)
 
 
-stop("ends here")
 
 
 # PLUM 
@@ -305,6 +307,7 @@ for (ssp_idx in 1:5) {
     write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
     
  }
+stop("ends here")
 
 
 ## Food demand increase decrease
