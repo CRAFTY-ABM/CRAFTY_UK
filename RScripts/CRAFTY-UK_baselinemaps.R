@@ -125,8 +125,6 @@ capital_csv[, woodland_names] = woodland_df_tmp
 
 
 
-
-
 # Capitals
 sc_df = read.csv(paste0(path_output, "Capital/Capitals/SocialCapital/CRAFTY_UK_SocialCapital_S_2020_SSP1.csv"), sep=",")
 fc_df = read.csv(paste0(path_output, "Capital/Capitals/FinancialCapital/CRAFTY_UK_FinancialCapital_F_2020_SSP1.csv"), sep=",")
@@ -157,6 +155,14 @@ capital_csv_df = cbind(basealc_csv_df[, c("X", "Y")], capital_reord_df[,])
 
 ## baseline capital with x and y (rnk)
 write.csv(capital_csv_df, file = paste0(path_output, "Capital/UK_capitals-2020.csv"), quote = F, row.names = F)
+
+
+# strange strip 
+# which((capital_csv_df$X == 234) & (capital_csv_df$Y == 930)) # 8975 
+which((capital_csv_df$X == 226) & (capital_csv_df$Y == 940)) # 8975
+
+fc_df[8975,]
+capital_csv_df[7321, "Financial"]
 
 
 # writeRaster(r2, filename = "borough.tif", overwrite=T)
@@ -225,21 +231,21 @@ demand_df$Year = years
 # FOod.crops: 8126.127483719713 Fodder.crops:5159.215662720631 GF.redMeat:14132.341340761652 Fuel:289.60138136502195 Softwood:1257.6074197171397 Hardwood:1282.369238930499 Biodiversity:28309.846374701745 Carbon:28686.54821324183 Recreation:26989.762914758696 Flood.reg:24699.906842365253 Employment:22695.964383369457 Ldiversity:26396.84839747337 GF.milk:8008.22563578971 }
 
 # Mar 2021 v6 (corrected capital files + woodland birch used)
-# Food.crops:8186.229643935867 Fodder.crops:5195.6357670440475 GF.redMeat:14233.540939524457 Fuel:294.1256370164427 Softwood:1274.8785411470271 Hardwood:1258.1800902584848 Biodiversity:28122.792000184014 Carbon:28502.636537674378 Recreation:26807.957490814428 Flood.reg:24496.907266274775 Employment:22784.291240906572 Ldiversity:26176.1295300495 GF.milk:8079.904698263504 }
- 
-demand_df$Food.crops = 8186.229643935867 
-demand_df$Fodder.crops = 5195.6357670440475
-demand_df$GF.redMeat= 14233.540939524457
+# Food.crops:8186.423703690629 Fodder.crops:5195.649612371075 GF.redMeat:14264.19945262999 Fuel:294.1256370164427 Softwood:1276.0841605779758 Hardwood:1258.1920655673368 Biodiversity:28367.838824467522 Carbon:28748.378631788495 Recreation:27051.50444290339 Flood.reg:24740.48409909865 Employment:22819.729784500967 Ldiversity:26418.315484676514 GF.milk:8079.994507255595 }
+    
+demand_df$Food.crops = 8186.423703690629 
+demand_df$Fodder.crops = 5195.649612371075
+demand_df$GF.redMeat= 14264.19945262999
 demand_df$Fuel = 294.1256370164427
-demand_df$Softwood = 1274.8785411470271
-demand_df$Hardwood = 1258.1800902584848
-demand_df$Biodiversity = 28122.792000184014
-demand_df$Carbon = 28502.636537674378
-demand_df$Recreation = 26807.957490814428
-demand_df$Flood.reg = 24496.907266274775
-demand_df$Employment = 22784.291240906572
-demand_df$Ldiversity = 26176.1295300495
-demand_df$GF.milk = 8079.904698263504
+demand_df$Softwood = 1276.0841605779758
+demand_df$Hardwood = 1258.1920655673368
+demand_df$Biodiversity = 28367.838824467522
+demand_df$Carbon = 28748.378631788495
+demand_df$Recreation = 27051.50444290339
+demand_df$Flood.reg = 24740.48409909865
+demand_df$Employment = 22819.729784500967
+demand_df$Ldiversity = 26418.315484676514
+demand_df$GF.milk = 8079.994507255595
 
 demand_df_org = demand_df
 
