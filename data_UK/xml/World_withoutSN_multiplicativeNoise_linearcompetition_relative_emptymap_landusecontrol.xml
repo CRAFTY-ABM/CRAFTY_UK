@@ -8,16 +8,8 @@
    <btFile>agents/BehaviouralTypes.xml</btFile>
    <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
    
-   <!--<cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		-->
+   <cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
 
-   <cellInitialiser class="org.volante.abm.serialization.CsvAftPopulator">
-	<taggedHomeCells>false</taggedHomeCells>
-	<manageEveryHomeCell>true</manageEveryHomeCell>
-	<xColumn>X</xColumn>
-	<yColumn>Y</yColumn>
-	<unmanagedIdentifier>NOT_ASSIGNED</unmanagedIdentifier>
-	<csvFile>./worlds/%r/Baseline_map_UK_empty.csv</csvFile>
-</cellInitialiser>
 
 
 	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->

@@ -1,0 +1,8 @@
+<updater class="org.volante.abm.update.CSVCapitalUpdater" X_COL="X" Y_COL="Y" yearInFilename="true" reapplyPreviousFile="true">
+ 		<csvFile year="2020">worlds/%r/capitals/%s/%r_capitals-%s_2020.csv</csvFile>
+		<csvFile year="2030">worlds/%r/capitals/%s/%r_capitals-%s_2030.csv</csvFile>
+ 		<csvFile year="2040">worlds/%r/capitals/%s/%r_capitals-%s_2040.csv</csvFile>
+ 		<csvFile year="2050">worlds/%r/capitals/%s/%r_capitals-%s_2050.csv</csvFile>
+ 		<csvFile year="2060">worlds/%r/capitals/%s/%r_capitals-%s_2060.csv</csvFile>
+ 		<csvFile year="2070">worlds/%r/capitals/%s/%r_capitals-%s_2070.csv</csvFile>
+</updater>

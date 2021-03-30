@@ -399,89 +399,175 @@ if (doSuitability) {
     # Suitability_rs = stack(paste0("CRAFTY UK Capital files/Suitability/ModelledBaseline/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
     
     # 
-    # suitability_years = c()
+    suitability_years = c(2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070)
     # 
     # for (suit_idx in seq_along(suitability_years)) {  
     
     
-    Suitability_rs = stack(paste0(path_data, "Capital/Suitability/Baseline scenario files/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
-    
     # ignore forest suiltability as we use woodland capital files
+    # ignore arable as we have adjusted arable below
     
-    # plot(Suitability_rs)
-    # plot(sum(Suitability_rs))
+    Suitability_RCP85_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Baseline scenario files RCP85 Feb 2021/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
     
+    names(Suitability_RCP85_rs_l) = suitability_years
     
-    endCluster()
+    # Scenarios adjusted by dIAP (riam), # arable 
+    Suitability_Arable_rs_l = lapply(c(45, 85), FUN = function(rcp) lapply(suitability_years[-c(1:2)], FUN = function(year) {
+        # print(year);
+        raster(paste0(path_data, "Capital/Suitability/New arable suitability/RCP", rcp ,"_", year, "_YD.tif")); # originally it's rcP(!) not rcp.. 
+    }) %>% stack # Mar 2021 
+    )
+    names(Suitability_Arable_rs_l) = c("RCP4_5", "RCP8_5")
+    names(Suitability_Arable_rs_l[[1]]) = suitability_years[-c(1,2)] 
+    names(Suitability_Arable_rs_l[[2]]) = suitability_years[-c(1,2)] 
+    
+    # correct < 0 values
+    Suitability_Arable_rs_l[[1]]= raster::clamp(Suitability_Arable_rs_l[[1]], lower=0, useCalue = T)
+    Suitability_Arable_rs_l[[2]]= raster::clamp(Suitability_Arable_rs_l[[2]], lower=0, useCalue = T)
+    
+    # Method
+    # 1.       Standardise RiAM yield between 0 and 12 (max for Europe in both scenarios, UK max was 11.4)
+    # 2.       Correct where zero at baseline to the value of 2020 (which could also be zero).
+    # 3.       Calculate standardised yield anomaly (scenario – baseline standardised yield)
+    # 4.       Interpolate to 1km SYAnomaly using IDW and 9 points (self and surrounding cells) to provide values at edges.
+    # a.       Note I didn’t restrict the range on these points to make sure the area outside of the points is well covered but obviously the further from data the less reliable.
+    # b.       I used IDW as in theory the data for a given cell is “correct”. Alternatives such as kriging allow distant cells more influence.
+    # 5.       Calculate Mask from baseline maps where yield = 0 (black areas on map below)
+    # 6.       Calculate scenario yield = Baseline yield map + (1kmSYAnomaly * YieldMask)
+    # 
+    # Stage two fixes most errors and most of the fixes are in Scotland. On stage 2 there are still some locations outside of masked regions that swap from zero to high at later scenarios. But there aren’t many and I’m not sure we have time to massage the data much more. It may be that our mask is too small.
+    # 
+    # plot(Suitability_RCP85_rs_l[["2000"]][[1]]) # 2000 Arable
+    # plot(Suitability_RCP85_rs_l[["2010"]][[1]]) # 2000 Arable
+    # 
+    # par(mfrow=c(3,3))
+    # plot(Suitability_RCP85_rs_l[[1]][[1]], zlim=c(0,max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2000
+    # plot(Suitability_RCP85_rs_l[[2]][[1]], zlim= c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2000
+    # plot(Suitability_RCP85_rs_l[[3]][[1]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]]))))# 2000
+    # plot(Suitability_RCP85_rs_l[[4]][[1]], zlim= c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2000
+    # plot(Suitability_Arable_rs_l[[1]][[1]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2020-2070
+    # plot(Suitability_Arable_rs_l[[2]][[1]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2020-2070
+    # plot(Suitability_Arable_rs_l[[1]][[2]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2020-2070
+    # plot(Suitability_Arable_rs_l[[2]][[2]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2020-2070
+    # 
+    # plot(Suitability_Arable_rs_l[[1]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[1]])))) # 2020-2070
+    # plot(Suitability_Arable_rs_l[[2]], zlim=c(0, max(maxValue(Suitability_Arable_rs_l[[2]])))) # 2020-2070
+    # 
+    # plot(Suitability_Arable_rs_l[[1]][[2]])       # RCP45 2020
+    # plot(Suitability_Arable_rs_l[[2]][[2]])       # RCP85 2030      
+    # 
+    # # plot(Suitability_rs)
+    # # plot(sum(Suitability_rs))
+    # 
+    # 
+    # endCluster()
     # beginCluster(12)
     # cl = makeCluster()
     # registerDoSNOW(cl)
     
     
+    # Conclusion (29 Mar 2021 by ABS)
+    # 2000 for the baseline 
+    # take arable suitability from 2030 onward
     
+    
+    # baseline (the first snapshot of RCP85)
+    Suitability_Baseline_rs = Suitability_RCP85_rs_l[["2000"]] # 2000 is our baseline
+    
+    # RCP85
+    Suitability_RCP85_rs_l_final = Suitability_RCP85_rs_l[-c(2:3)]
+    names(Suitability_RCP85_rs_l_final)[1] = "2020" # 2000 is our new 2020 
+    
+    Suitability_RCP85_rs_l_final[["2030"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2030"]]
+    Suitability_RCP85_rs_l_final[["2040"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2040"]]
+    Suitability_RCP85_rs_l_final[["2050"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2050"]]
+    Suitability_RCP85_rs_l_final[["2060"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2060"]]
+    Suitability_RCP85_rs_l_final[["2070"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2070"]]
+
     
     suitability_names = paste0(c("Arable", "Wetland", "ImprovedGrassland", "SemiNaturalGrassland"), "_Suitability")
     
-    s_idx = 1
     
-    suitability_extracted_m = foreach (s_idx = 1:length(suitability_names), .combine = "cbind") %do% { 
-        
-        suitability_name = suitability_names[s_idx] 
-        
-        print(suitability_name)
-        
-        BNG_r_tmp = projectRaster(Suitability_rs[[s_idx]], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
-        
-        
-        BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-        
-        
-        # plot(BNG_r_tmp2, add=F)
-        # plot(CHESS_mask_r, col="red", add=T) 
-        
-        BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
-        
-        # are there coastal pixels left empy? 
-        # plot(CHESS_mask_r, col="red")
-        # plot(BNG_r_tmp3, add=T)
-        # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+    
+    suitability_scenario_names = c("Baseline", "RCP8_5")
+    suitability_scenario_rs_l = list(list(Suitability_Baseline_rs), Suitability_RCP85_rs_l_final)
+    
+    scen_idx = 1 
+    year_idx = 1 
+    
+    
+    for (scen_idx in seq_along(suitability_scenario_names)) { 
         
         
-        if (FALSE) { 
-            par(mfrow=c(1,1))    
-            plot(Orkney_NUTS_BNG_r, add=F, col="white")
-            plot(BNG_r_tmp3, add=T)
-            plot(CHESS_BNG_r, add=T)
-            plot(BNG_r_tmp3, add=T)
+        scenario_name_tmp = suitability_scenario_names[scen_idx]
+        suitability_scenario_tmp = suitability_scenario_rs_l[[scen_idx]]
+        nyear = length(suitability_scenario_tmp)
+        
+        years_tmp = suitability_years[-c(1:2)][1:nyear]
+        
+        for (year_idx in seq_along(years_tmp)) { 
             
-            plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+            year_tmp = years_tmp[year_idx]
+            outname_tmp = ifelse(scenario_name_tmp=="Baseline", yes = scenario_name_tmp, no =  paste0(scenario_name_tmp, "_", year_tmp))
+            print(outname_tmp)
+            suitability_extracted_m = foreach (s_idx = 1:length(suitability_names), .combine = "cbind") %do% { 
+                
+                suitability_name = suitability_names[s_idx] 
+                
+                print(suitability_name)
+                
+                BNG_r_tmp = projectRaster(suitability_scenario_tmp[[year_idx]][[s_idx]], CHESS_BNG_r, fun ="last", background=0)
+                
+                
+                BNG_r_tmp2 = fillShetland(BNG_r_tmp)
+                
+                
+                # plot(BNG_r_tmp2, add=F)
+                # plot(CHESS_mask_r, col="red", add=T) 
+                
+                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
+                
+                # are there coastal pixels left empy? 
+                # plot(CHESS_mask_r, col="red")
+                # plot(BNG_r_tmp3, add=T)
+                # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+                
+                
+                if (FALSE) { 
+                    par(mfrow=c(1,1))    
+                    plot(Orkney_NUTS_BNG_r, add=F, col="white")
+                    plot(BNG_r_tmp3, add=T)
+                    plot(CHESS_BNG_r, add=T)
+                    plot(BNG_r_tmp3, add=T)
+                    
+                    plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+                    
+                    plot(Orkney_NUTS_BNG_shp, add=T)
+                    
+                    plot(Shetland_NUTS_BNG_r, add=F)
+                    plot(BNG_r_tmp3, add=T)
+                    # plot(CHESS_mask_r, add=T)
+                }
+                
+                
+                # plot(CHESS_BNG_sp, add=T)
+                writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Suitability/CRAFTY_UK_",outname_tmp, "_", suitability_name, ".tif"), overwrite=T)
+                
+                extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+            }
             
-            plot(Orkney_NUTS_BNG_shp, add=T)
+            csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
             
-            plot(Shetland_NUTS_BNG_r, add=F)
-            plot(BNG_r_tmp3, add=T)
-            # plot(CHESS_mask_r, add=T)
+            suitability_extracted_m[is.na(suitability_extracted_m)] = 0 
+            
+            csv_df_out = cbind(csv_df, suitability_extracted_m)
+            colnames(csv_df_out)[6:9] = suitability_names
+            
+            write.csv(csv_df_out, file =paste0(path_output, "/Capital/Suitability/CRAFTY_UK_Suitability_", outname_tmp, ".csv"), quote = F, row.names = F)
         }
-        
-        
-        # plot(CHESS_BNG_sp, add=T)
-        writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Suitability/CRAFTY_UK_", suitability_name, ".tif"), overwrite=T)
-        
-        extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
     }
     
-    csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
-    
-    suitability_extracted_m[is.na(suitability_extracted_m)] = 0 
-    
-    csv_df_out = cbind(csv_df, suitability_extracted_m)
-    colnames(csv_df_out)[6:9] = suitability_names
-    
-    write.csv(csv_df_out, file =paste0(path_output, "/Capital/Suitability/CRAFTY_UK_Suitability_Baseline.csv"), quote = F, row.names = F)
 }
-# }
-
-
 
 
 do4Capitals = FALSE 
@@ -619,114 +705,144 @@ if (doWoodlandCapitals) {
     
     woodland_aft_tb = read.csv(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/ESC_species_to_AFT.csv"))
     
-    woodland_scenarios = "baseline_1991-2011"
     
-    # woodland_aft_tb$Species.code[-8]
-    
-    woodland_scenario = woodland_scenarios[1]
+    woodland_years = seq(2020, 2070, 10)
+    woodland_scenario_years = paste0(woodland_years-10, "_", woodland_years+10)
     
     
-    Woodland_rs = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", woodland_scenario, "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_baseline_mdAdj.tif")) # Dec 2020
+    # baseline
+    Woodland_baseline_rs = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "baseline_1991-2011", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_baseline_mdAdj.tif")) # Dec 2020
+    proj4string(Woodland_baseline_rs) = proj4.BNG
     
-    proj4string(Woodland_rs) = proj4.BNG
+    # RCP45 
+    Woodland_RCP45_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
+        x = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "RCP45", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj.tif"));
+        proj4string(x) = proj4.BNG; 
+        return(x)}) # Dec 2020
     
+    Woodland_RCP85_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
+        x = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "RCP85", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj.tif"));
+                  proj4string(x) = proj4.BNG; 
+                  return(x)}) # Dec 2020
     
-    
-    names(Woodland_rs) = woodland_aft_tb$Species.code[-8]
-    
-    Woodland_rs$Mixed = mean(Woodland_rs[[c("SS", "SP", "BE", "SOK", "SBI")]])
-    
-    Woodland_rs_AFT = Woodland_rs[[-2]]
-    
-    # sum of SBI and SOK
-    Woodland_rs_AFT$SOK = Woodland_rs$SBI + Woodland_rs$SOK
-    
-    
-    woodland_names = c("NNBroadleaf.suit", # Beech (BE)
-                       "Nbroadleaf.suit",  # Sessile oak (SOK)
-                       "NConifer.suit",    # Scots pine (SP)
-                       "NNConifer.suit",   # Sitka spruce (SS)
-                       "AgroForestry.suit", # Sycamore (SY)
-                       "Bioenergy.suit",    # Willow (WWL)
-                       "Tree.suit")         # Mixed (SS, SP, BE, SOK, SBI)
-    names(Woodland_rs_AFT) = woodland_names
+       
+    woodland_rs_l = list(list(Woodland_baseline_rs), Woodland_RCP45_rs_l, Woodland_RCP85_rs_l)
+     
+    woodland_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
     
 
+    
+    scen_idx = 1 
+    year_idx = 1 
+    
 
     
-    
-    plot(Woodland_rs_AFT)
-    # plot(sum(Suitability_rs))
-    
-    
-    endCluster()
-    # beginCluster(12)
-    # cl = makeCluster()
-    # registerDoSNOW(cl)
-    
-    
-    rm(s_idx)
-    
-    w_idx = 1
-    
-    woodland_extracted_m = foreach (w_idx = seq_along(woodland_names), .combine = "cbind") %do% { 
-        
-        woodland_name = woodland_names[w_idx] 
-        
-        print(woodland_name)
-        
-        BNG_r_tmp = projectRaster(Woodland_rs_AFT[[w_idx]], CHESS_BNG_r, field = woodland_name, fun ="last", background=0)
+    for (scen_idx in seq_along(woodland_scenario_names)) { 
+         
+        print(scen_idx)
+        woodland_scenario_name_tmp = woodland_scenario_names[scen_idx]
+        woodland_rs_l_tmp = woodland_rs_l[[scen_idx]]
+         
+        nyear = length(woodland_rs_l_tmp)
         
         
-        BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-        
-        
-        # plot(BNG_r_tmp2, add=F)
-        # plot(CHESS_mask_r, col="red", add=T) 
-        
-        BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
-        
-        # are there coastal pixels left empy? 
-        # plot(CHESS_mask_r, col="red")
-        # plot(BNG_r_tmp3, add=T)
-        # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
-        
-        
-        if (FALSE) { 
-            par(mfrow=c(1,1))    
-            plot(Orkney_NUTS_BNG_r, add=F, col="white")
-            plot(BNG_r_tmp3, add=T)
-            plot(CHESS_BNG_r, add=T)
-            plot(BNG_r_tmp3, add=T)
+        for (year_idx in 1:nyear) { 
             
-            plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+            year_tmp = woodland_years[year_idx]
             
-            plot(Orkney_NUTS_BNG_shp, add=T)
+            woodland_rs_tmp = woodland_rs_l_tmp[[year_idx]]
             
-            plot(Shetland_NUTS_BNG_r, add=F)
-            plot(BNG_r_tmp3, add=T)
-            # plot(CHESS_mask_r, add=T)
+            names(woodland_rs_tmp) = woodland_aft_tb$Species.code[-8]
+            
+            woodland_rs_tmp$Mixed = mean(woodland_rs_tmp[[c("SS", "SP", "BE", "SOK", "SBI")]])
+            
+            
+            
+            # sum of SBI and SOK
+            woodland_rs_tmp$SOK = woodland_rs_tmp$SBI + woodland_rs_tmp$SOK
+            
+            woodland_rs_tmp = woodland_rs_tmp[[-2]]
+            
+            
+             
+             
+            outname_tmp = ifelse(woodland_scenario_name_tmp=="Baseline", yes = woodland_scenario_name_tmp, no =  paste0(woodland_scenario_name_tmp, "_", year_tmp))
+            print(outname_tmp)
+            
+              
+            
+            plot(woodland_rs_tmp)
+            # plot(sum(Suitability_rs))
+            
+            
+            endCluster()
+            # beginCluster(12)
+            # cl = makeCluster()
+            # registerDoSNOW(cl)
+        
+            w_idx = 1
+            
+            woodland_extracted_m = foreach (w_idx = seq_along(woodland_names), .combine = "cbind") %do% { 
+                
+                woodland_name = woodland_names[w_idx] 
+                
+                print(woodland_name)
+                
+                BNG_r_tmp = projectRaster(woodland_rs_tmp[[w_idx]], CHESS_BNG_r, field = woodland_name, fun ="last", background=0)
+                
+                
+                BNG_r_tmp2 = fillShetland(BNG_r_tmp)
+                
+                
+                # plot(BNG_r_tmp2, add=F)
+                # plot(CHESS_mask_r, col="red", add=T) 
+                
+                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_mask_r, width = 3, n_interpol = 5)
+                
+                # are there coastal pixels left empy? 
+                # plot(CHESS_mask_r, col="red")
+                # plot(BNG_r_tmp3, add=T)
+                # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
+                
+                
+                if (FALSE) { 
+                    par(mfrow=c(1,1))    
+                    plot(Orkney_NUTS_BNG_r, add=F, col="white")
+                    plot(BNG_r_tmp3, add=T)
+                    plot(CHESS_BNG_r, add=T)
+                    plot(BNG_r_tmp3, add=T)
+                    
+                    plot(BNG_r_tmp3 - BNG_r_tmp2, add=T)
+                    
+                    plot(Orkney_NUTS_BNG_shp, add=T)
+                    
+                    plot(Shetland_NUTS_BNG_r, add=F)
+                    plot(BNG_r_tmp3, add=T)
+                    # plot(CHESS_mask_r, add=T)
+                }
+                
+                
+                # plot(CHESS_BNG_sp, add=T)
+                writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_",woodland_name, "_",  outname_tmp, ".tif"), overwrite=T)
+                
+                extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+            }
+            
+            csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
+            
+            woodland_extracted_m[is.na(woodland_extracted_m)] = 0 
+            
+            csv_df_out = cbind(csv_df, woodland_extracted_m)
+            colnames(csv_df_out)[6:12] = woodland_names
+            
+            write.csv(csv_df_out, file =paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_Woodland_", outname_tmp, ".csv"), quote = F, row.names = F)
+            
         }
-        
-        
-        # plot(CHESS_BNG_sp, add=T)
-        writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_", woodland_name, ".tif"), overwrite=T)
-        
-        extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
     }
-    
-    csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
-    
-    woodland_extracted_m[is.na(woodland_extracted_m)] = 0 
-    
-    csv_df_out = cbind(csv_df, woodland_extracted_m)
-    colnames(csv_df_out)[6:12] = woodland_names
-    
-    write.csv(csv_df_out, file =paste0(path_output, "/Capital/Woodland capital/CRAFTY_UK_Woodland_Baseline.csv"), quote = F, row.names = F)
 }
 
- 
- 
+
+
 doUrban = FALSE 
 
 if (doUrban) { 
@@ -741,7 +857,7 @@ if (doUrban) {
     
     ### Urbanisation scenarios
     
-     
+    
     
     print("do Urban")
     
@@ -794,7 +910,7 @@ if (doUrban) {
         }
     }
     stopCluster(cl)
-     
+    
 }
 
 

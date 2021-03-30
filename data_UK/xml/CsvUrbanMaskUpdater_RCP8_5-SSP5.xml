@@ -1,0 +1,11 @@
+<updater class="org.volante.abm.update.CSVLandUseUpdater" X_COL="X" Y_COL="Y" yearInFilename="true" reapplyPreviousFile="true" restrictionColumn ="FR_IMMUTABLE" updateColumn = "FR_IMMUTABLE" updateFR="Urban" maskChar="1" updateChar="1">
+	<csvFile year="2020">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2020.csv</csvFile> 
+	<csvFile year="2030">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2030.csv</csvFile> 
+	<csvFile year="2040">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2040.csv</csvFile> 
+	<csvFile year="2050">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2050.csv</csvFile> 
+	<csvFile year="2060">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2060.csv</csvFile> 
+	<csvFile year="2070">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2070.csv</csvFile> 
+	<csvFile year="2080">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2080.csv</csvFile> 
+	<csvFile year="2090">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2090.csv</csvFile> 
+	<csvFile year="2100">worlds/%r/LandUseControl/UrbanMask/SSP5/UrbanMask_SSP5_2100.csv</csvFile> 
+</updater>
