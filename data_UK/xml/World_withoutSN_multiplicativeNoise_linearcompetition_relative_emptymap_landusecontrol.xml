@@ -10,8 +10,6 @@
    
    <cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
 
-
-
 	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
 	
 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
