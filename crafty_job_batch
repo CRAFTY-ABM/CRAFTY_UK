@@ -1,0 +1,41 @@
+#!/bin/bash -x
+#SBATCH --partition=rome  # If not set, test is used
+#SBATCH --nodes=1             # number of nodes to use
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1   # MPI tasks per node
+#SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
+							  # applies to ivy/haswell/fat/test only
+#SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
+#SBATCH --cpus-per-task=64    # CPU per task (1 for MPI-only)
+#SBATCH --output=UK-out.%j
+#SBATCH --error=UK-err.%j
+#SBATCH --job-name=CRAFTY_UK
+#SBATCH --mail-user=bumsuk.seo@kit.edu
+#SBATCH --mail-type=ALL
+ulimit -s unlimited                    # if needed, otherwise 102400
+
+#module load app/gnuR/3.2.4-gnu-4.8.5-mpich-3.1.4 # load modules 
+#module load tools/gdal/2.0.2-gnu-4.8.5-mpich-3.1.4 # GDAL and GEOS
+module load app/jdk/15.0.2
+
+#export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+#export OMP_STACKSIZE=128M                          # adjust to your requirements
+# export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
+cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
+
+
+# mpirun -np 8 -output-filename output/V-Baseline-4/0-1/CRAFTY_V-Baseline-4_0-1 java -classpath ./config/log/ -Xmx7g -Dlog4j.configuration=./config/log/log4j_cluster.properties -jar CRAFTY-VolanteEurope.jar -f "xml/V4/Scenario.xml" -d "./data/" -s 2010 -e 2030 -n 1 -sr 0 -r 1 -o 1
+
+
+#srun --verbose R --vanilla --file=getworkingdirectory.R     # Run R in „vanilla“ mode (no .Rdata file read at startup, 
+															# none produced when program ends), 
+															# use code in getworkingdirectory.R
+srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline.sh &
+srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP1.sh &
+srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP5.sh &
+wait
+
+ERROR_CODE=$? 										# 0 if successful
+exit
+
+
