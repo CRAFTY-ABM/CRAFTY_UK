@@ -1,6 +1,3 @@
-
-
-
 path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Nextcloud/CRAFTY/Output/"
@@ -84,7 +81,8 @@ n_scenario = nrow(scenario_names_df)
 # timeslices
 scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10))
 
-
+# linearly interpolate annual capital files
+interpolate = TRUE
 
 scene_idx = 3
 
@@ -92,9 +90,7 @@ for (scene_idx in 1:n_scenario) {
     
     
     scen_name_tmp = scenario_names_df[scene_idx,] 
-    
     scene_years_tmp = scene_years_l[[scene_idx]]
-    
     
     
     for (year_idx in seq_along(scene_years_tmp)) { 
