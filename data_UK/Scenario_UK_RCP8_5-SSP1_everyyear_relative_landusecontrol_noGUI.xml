@@ -1,5 +1,5 @@
 <scenario startTick="2020" endTick="2080" world="UK"
- version="Thresholds" 
+ version="BehaviouralBaseline" 
  regionalisation="UK"
   scenario="RCP8_5-SSP1">
   <capitals class="org.volante.abm.serialization.CSVCapitalLoader" file="csv/Capitals.csv" indexed="true"/>
