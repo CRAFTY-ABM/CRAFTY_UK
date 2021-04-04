@@ -4,7 +4,7 @@
   scenario="Baseline">
   <capitals class="org.volante.abm.serialization.CSVCapitalLoader" file="csv/Capitals.csv" indexed="true"/>
   <services class="org.volante.abm.serialization.CSVServiceLoader" file="csv/Services.csv" indexed="true"/>
-   <outputs outputDirectory="output/%v/%s" filePattern="%s-%i-%r-%o" tickPattern="%s-%i-%r-%o-%y">
+   <outputs outputDirectory="output_DecFoodDemand/%v/%s" filePattern="%s-%i-%r-%o" tickPattern="%s-%i-%r-%o-%y">
     <output class="org.volante.abm.output.CellTable" perRegion="true" addRegion="false" addCellRegion="false" addServices="true" addCapitals="true" addCompetitiveness="false" addLandUseIndex="true" addLandUse="false" addAgent="true" addPreAllocCompetitiveness="false" addPreAllocLandUse="false" addGiThreshold="false" addPreAllocGuThreshold="false" doubleFormat="0.000" startYear="2020" everyNYears="1"/>
     <output class="org.volante.abm.output.AggregateAFTCompositionCSVOutputter" outputSums="true" perRegion="true" startYear="2020" everyNYears="1"/>
     <output class="org.volante.abm.output.AggregateAFTCompetitivenessCSVOutputter" perRegion="true" startYear="2020" everyNYears="1"/>
