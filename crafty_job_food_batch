@@ -30,8 +30,8 @@ cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writin
 #srun --verbose R --vanilla --file=getworkingdirectory.R     # Run R in „vanilla“ mode (no .Rdata file read at startup, 
 															# none produced when program ends), 
 															# use code in getworkingdirectory.R
-srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_IncFoodDemand.sh &
-#srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_DecFoodDemand.sh &
+srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_IncFoodDemand.sh &
+srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
 wait
 
 ERROR_CODE=$? 										# 0 if successful
