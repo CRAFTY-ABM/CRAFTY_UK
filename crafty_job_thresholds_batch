@@ -1,12 +1,12 @@
 #!/bin/bash -x
 #SBATCH --partition=rogp  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
-#SBATCH --ntasks=1
-#SBATCH --ntasks-per-node=1   # MPI tasks per node
+#SBATCH --ntasks=3
+#SBATCH --ntasks-per-node=3   # MPI tasks per node
 #SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
-#SBATCH --cpus-per-task=64    # CPU per task (1 for MPI-only)
+#SBATCH --cpus-per-task=21    # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
 #SBATCH --job-name=CRAFTY_UK
@@ -30,7 +30,7 @@ cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writin
 #srun --verbose R --vanilla --file=getworkingdirectory.R     # Run R in „vanilla“ mode (no .Rdata file read at startup, 
 															# none produced when program ends), 
 															# use code in getworkingdirectory.R
-srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds.sh &
+srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_Normal.sh &
 srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP1_Thresholds.sh &
 srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
 wait
