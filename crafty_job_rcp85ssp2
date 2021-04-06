@@ -1,13 +1,14 @@
 #!/bin/bash -x
 #SBATCH --partition=rome  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
+#SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1   # MPI tasks per node
-#SBATCH --ntasks-per-core=2   # 1 for hyperthreading (HT), 1 otherwise  
+#SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
-#SBATCH --cpus-per-task=64    # OpenMP tasks per MPI task (1 for MPI-only)
-#SBATCH --output=CRAFTY_UK-out.%j
-#SBATCH --error=CRAFTY_UK-err.%j
+#SBATCH --cpus-per-task=32    # CPU per task (1 for MPI-only)
+#SBATCH --output=UK-out.%j
+#SBATCH --error=UK-err.%j
 #SBATCH --job-name=CRAFTY_UK
 #SBATCH --mail-user=bumsuk.seo@kit.edu
 #SBATCH --mail-type=ALL
@@ -19,12 +20,12 @@ module load app/jdk/15.0.2
 
 #export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 #export OMP_STACKSIZE=128M                          # adjust to your requirements
-# export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
+#export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
 cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
 
-															# none produced when program ends), 
-															# use code in getworkingdirectory.R
-srun --verbose KEAL_CMD/CRAFTY_keal_cmd.sh
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds.sh &
+wait
 
 ERROR_CODE=$? 										# 0 if successful
 exit

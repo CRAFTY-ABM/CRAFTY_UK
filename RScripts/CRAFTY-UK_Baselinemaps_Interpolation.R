@@ -17,58 +17,58 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 demand_years = seq(2020, 2090, 10)
 
 climate_scenario_names = c("RCP8_5")
-ssp_names = c("SSP1", "SSP5")
+ssp_names = c("SSP2", "SSP5")
 
 
 
-
-# basealc_cb_old = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/AFT/Basline allocation 2_from Calum 6 Jan 2021_all properly processed.csv")
-basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
-
-
-
-
-table(basealc_cb$Agent) %>% print %>% sum
-table(aftnames[ match(basealc_cb$Agent, aftnames$AFT_cb), "AFT"] ) %>% print %>% sum
-
-basealc_cb$AFT15 = aftnames[ match(basealc_cb$Agent, aftnames$AFT_cb), "AFT"]
-table(basealc_cb$AFT15) %>% print %>% sum
-
-basealc_csv_df = data.frame( X = cellids$X_col, Y = cellids$Y_row)
-
-stopifnot(table(basealc_cb$FID==basealc_csv_df$FID)==nrow(basealc_csv_df))
-
-
-
-
-# ,X,Latitude,Longitude,Crop.productivity,Forest.productivity,Grassland.productivity,Financial.capital,Human.capital,Social.capital,Manufactured.capital,Urban.capital,FR,BT,Region
-
-
-str(basealc_csv_df)
-
-# baseline HC 
-
-# hc_base = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Capital/HumanCapital/CRAFTY_UK_HumanCapital_H_2020_SSP1.csv")
-# hc_base = read.csv("Output/HumanCapital/CRAFTY_UK_HumanCapital_H_2020_SSP1.csv")
-
-# basealc_csv_df$Human = hc_base$HumanCapital
 # 
-# sqrt(mean((hc_base$HumanCapital - basealc_cb$Human)^2, na.rm=T))
-# plot(basealc_cb$Human, hc_base$HumanCapital)
-
-# capital_csv = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Capital/All_capitals_16Dec2020_CB.csv")
-# capital_csv
-
-# str(capital_csv)
-# colnames(capital_csv)[5:18] 
-colnames(basealc_cb)[7:20]
-
-colnames(basealc_cb)[12] = "NConifer.suit"
-colnames(basealc_cb)[15] = "Bioenergy.suit"
-
-
-match( colnames(basealc_cb)[7:20], capital_names)
-
+# # basealc_cb_old = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/AFT/Basline allocation 2_from Calum 6 Jan 2021_all properly processed.csv")
+# basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
+# 
+# 
+# 
+# 
+# table(basealc_cb$Agent) %>% print %>% sum
+# table(aftnames[ match(basealc_cb$Agent, aftnames$AFT_cb), "AFT"] ) %>% print %>% sum
+# 
+# basealc_cb$AFT15 = aftnames[ match(basealc_cb$Agent, aftnames$AFT_cb), "AFT"]
+# table(basealc_cb$AFT15) %>% print %>% sum
+# 
+# basealc_csv_df = data.frame( X = cellids$X_col, Y = cellids$Y_row)
+# 
+# stopifnot(table(basealc_cb$FID==basealc_csv_df$FID)==nrow(basealc_csv_df))
+# 
+# 
+# 
+# 
+# # ,X,Latitude,Longitude,Crop.productivity,Forest.productivity,Grassland.productivity,Financial.capital,Human.capital,Social.capital,Manufactured.capital,Urban.capital,FR,BT,Region
+# 
+# 
+# str(basealc_csv_df)
+# 
+# # baseline HC 
+# 
+# # hc_base = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Capital/HumanCapital/CRAFTY_UK_HumanCapital_H_2020_SSP1.csv")
+# # hc_base = read.csv("Output/HumanCapital/CRAFTY_UK_HumanCapital_H_2020_SSP1.csv")
+# 
+# # basealc_csv_df$Human = hc_base$HumanCapital
+# # 
+# # sqrt(mean((hc_base$HumanCapital - basealc_cb$Human)^2, na.rm=T))
+# # plot(basealc_cb$Human, hc_base$HumanCapital)
+# 
+# # capital_csv = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Capital/All_capitals_16Dec2020_CB.csv")
+# # capital_csv
+# 
+# # str(capital_csv)
+# # colnames(capital_csv)[5:18] 
+# colnames(basealc_cb)[7:20]
+# 
+# colnames(basealc_cb)[12] = "NConifer.suit"
+# colnames(basealc_cb)[15] = "Bioenergy.suit"
+# 
+# 
+# match( colnames(basealc_cb)[7:20], capital_names)
+# 
 
 library(data.table)
 

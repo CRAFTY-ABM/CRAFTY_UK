@@ -1,10 +1,12 @@
+## demand file 
 
-
+demand_years = seq(2020, 2100, 1)
+ 
 
 ### Demand file 
-demand_df = data.frame(matrix(data = 0, nrow = length(years), ncol = nrow(service_names) + 1))
+demand_df = data.frame(matrix(data = 0, nrow = length(demand_years), ncol = nrow(service_names) + 1))
 colnames(demand_df) = c("Year", as.character(unlist(service_names)))
-demand_df$Year = years
+demand_df$Year = demand_years
 
 # initial supply 
 # (Dec 2020) Food.crops:35530.64245838188 Fodder.crops:35530.64245838188 GF.redMeat:19767.429285510883 Fuel:83893.15156101855 Softwood:38935.077142864604 Hardwood:30781.33200836578 Biodiversity:138489.38363181156 Carbon:176808.51146998556 Recreation:130596.0225824626 Flood.reg:117899.7173348387 Employment:206914.30307151988 Ldiversity:228043.30457211105 GF.milk:24268.733895594087
@@ -63,6 +65,36 @@ demand_df$GF.milk = demand_df_org$GF.milk * 0.5
 
 
 write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_decreasedFood_UK.csv"), quote = F, row.names = F)
+
+
+### SSP2 
+
+demand_multiplier_ssp2  = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/SSP2/SSP2 demands.csv")
+str(demand_multiplier_ssp2)
+
+demand_cols = colnames(demand_multiplier_ssp2)[-c(1:2)]
+
+demand_multiplier_ssp2
+
+SSP_names = paste0("SSP", 1:5)
+ssp_idx = 2 
+# for (ssp_idx in 2) { 
+    
+    demand_ssp = demand_df_org
+    demand_ssp[, demand_cols] = demand_df_org[,demand_cols] * demand_multiplier_ssp2[1:81, demand_cols] # 2020-2100
+    write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
+    
+# }
+stop("ends here")
+
+
+
+
+
+
+
+
+
 
 
 
