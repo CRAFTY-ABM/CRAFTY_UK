@@ -23,10 +23,10 @@ allcaps<-allcaps[,-5]
 allcaps<-allcaps[,-8]
 
 # Cap names should be: Human	Social	Manufactured	Financial	Arable.suit	Igrass.suit	SNGrass.suit
-# Bioeneergy.suit	AgroForestry.suit	NNConifer.suit	Nconifer.suit	NNBroadleaf.suit	Nbroadleaf.suit	Tree.suit
+# Bioenergy.suit	AgroForestry.suit	NNConifer.suit	NConifer.suit	NNBroadleaf.suit	NBroadleaf.suit	Tree.suit
 
-colnames(allcaps)<-c("FID","long","lat","Arable.suit","Igrass.suit","SNGrass.suit","NNBroadleaf.suit","Nbroadleaf.suit",
-                     "Nconifer.suit","NNConifer.suit","AgroForestry.suit","Bioeneergy.suit","Tree.suit","Financial",
+colnames(allcaps)<-c("FID","long","lat","Arable.suit","Igrass.suit","SNGrass.suit","NNBroadleaf.suit","NBroadleaf.suit",
+                     "NConifer.suit","NNConifer.suit","AgroForestry.suit","Bioenergy.suit","Tree.suit","Financial",
                      "Human","Manufactured","Social")
 
 write.csv(allcaps,file="C:/Users/brown-c/Documents/Work/CRAFTY-UK/Capitals/All_capitals.csv")
@@ -37,11 +37,11 @@ caps$Arable.suit<-caps$Arable.suit/max(caps$Arable.suit)
 caps$Igrass.suit<-caps$Igrass.suit/max(caps$Igrass.suit)
 caps$SNGrass.suit<-caps$SNGrass.suit/max(caps$SNGrass.suit)
 caps$NNBroadleaf.suit<-caps$NNBroadleaf.suit/max(caps$NNBroadleaf.suit)
-caps$Nbroadleaf.suit<-caps$Nbroadleaf.suit/max(caps$Nbroadleaf.suit)
-caps$Nconifer.suit<-caps$Nconifer.suit/max(caps$Nconifer.suit)
+caps$NBroadleaf.suit<-caps$Nbroadleaf.suit/max(caps$Nbroadleaf.suit)
+caps$NConifer.suit<-caps$Nconifer.suit/max(caps$Nconifer.suit)
 caps$NNConifer.suit<-caps$NNConifer.suit/max(caps$NNConifer.suit)
 caps$AgroForestry.suit<-caps$AgroForestry.suit/max(caps$AgroForestry.suit)
-caps$Bioeneergy.suit<-caps$Bioeneergy.suit/max(caps$Bioeneergy.suit)
+caps$Bioenergy.suit<-caps$Bioeneergy.suit/max(caps$Bioeneergy.suit)
 caps$Tree.suit<-caps$Tree.suit/max(caps$Tree.suit)
 caps$Financial<-caps$Financial/max(caps$Financial)
 caps$Human<-caps$Human/max(caps$Human)

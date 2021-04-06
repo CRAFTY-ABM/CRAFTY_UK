@@ -22,17 +22,17 @@ module load app/jdk/15.0.2
 #export OMP_STACKSIZE=128M                          # adjust to your requirements
 # export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
 cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
-
-
-# mpirun -np 8 -output-filename output/V-Baseline-4/0-1/CRAFTY_V-Baseline-4_0-1 java -classpath ./config/log/ -Xmx7g -Dlog4j.configuration=./config/log/log4j_cluster.properties -jar CRAFTY-VolanteEurope.jar -f "xml/V4/Scenario.xml" -d "./data/" -s 2010 -e 2030 -n 1 -sr 0 -r 1 -o 1
-
-
-#srun --verbose R --vanilla --file=getworkingdirectory.R     # Run R in „vanilla“ mode (no .Rdata file read at startup, 
 															# none produced when program ends), 
 															# use code in getworkingdirectory.R
+<<<<<<< HEAD
 srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_IncFoodDemand.sh  # &
 #srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
 #wait
+=======
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_IncFoodDemand.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
+wait
+>>>>>>> 3fcab40b6a8c711af26591fa55cb6eab52749df6
 
 ERROR_CODE=$? 										# 0 if successful
 exit

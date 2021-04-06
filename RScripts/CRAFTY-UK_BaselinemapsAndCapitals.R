@@ -1,3 +1,5 @@
+library(data.table)
+
 path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Nextcloud/CRAFTY/Output/"
@@ -7,12 +9,9 @@ setwd(path_wd)
 source("RScripts/CRAFTY-UK_grid_common.R")
 
 
-## demand file 
-
-demand_years = seq(2020, 2090, 10)
 
 climate_scenario_names = c("RCP8_5")
-ssp_names = c("SSP1", "SSP5")
+ssp_names = c("SSP2", "SSP5")
 
 
 
@@ -60,12 +59,12 @@ colnames(basealc_cb)[7:20]
 
 colnames(basealc_cb)[12] = "NConifer.suit"
 colnames(basealc_cb)[15] = "Bioenergy.suit"
+colnames(basealc_cb)[5] = "NBroadleaf.suit"
 
 
 match( colnames(basealc_cb)[7:20], capital_names)
 
 
-library(data.table)
 
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
@@ -81,17 +80,28 @@ n_scenario = nrow(scenario_names_df)
 # timeslices
 scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10))
 
-# linearly interpolate annual capital files
-interpolate = TRUE
+ 
+# adjust capitals by SSP (now only for SSP2)
+capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
 
-scene_idx = 3
+capital_multiplier_SSP2
+
+adjust_multiplier_l = list(NULL, capital_multiplier_SSP2, NULL) # RCP8_5-SSP2
+
+# multiply to SSP2 at each decade 
+
+
+scene_idx = 2
+year_idx = 1 
 
 for (scene_idx in 1:n_scenario) { 
-    
-    
+     
     scen_name_tmp = scenario_names_df[scene_idx,] 
     scene_years_tmp = scene_years_l[[scene_idx]]
     
+    
+    adjust_multiplier_df = adjust_multiplier_l[[scene_idx]]
+    adjust_cols_tmp = colnames(adjust_multiplier_df)[-1]
     
     for (year_idx in seq_along(scene_years_tmp)) { 
         
@@ -195,6 +205,21 @@ for (scene_idx in 1:n_scenario) {
         capital_reord_df[is.na(capital_reord_df)] = 0 
         
         capital_csv_df = cbind(basealc_csv_df[, c("X", "Y")], capital_reord_df[,])
+        
+        
+        
+        ## Adjust capitals (6 Apr 2021)
+        if (!is.null(adjust_multiplier_df)) { 
+            print("adjust capitals")
+            
+            
+            adjust_multiplier_tmp = adjust_multiplier_df[adjust_multiplier_df$Yr == scnene_year_tmp, ]
+            print(adjust_multiplier_tmp)
+            capital_csv_df[,adjust_cols_tmp] =  sapply(adjust_cols_tmp, FUN = function(x) capital_csv_df[, x] * adjust_multiplier_tmp[,x])
+            
+        }
+        
+         
         
         ## baseline capital with x and y (rnk)
         write.csv(capital_csv_df, file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"), quote = F, row.names = F)

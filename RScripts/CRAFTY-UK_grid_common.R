@@ -267,7 +267,7 @@ if (preprocessing) {
                                            "NNConifer.suit", 
                                            "NConifer.suit", 
                                            "NNBroadleaf.suit", 
-                                           "Nbroadleaf.suit", 
+                                           "NBroadleaf.suit", 
                                            "Tree.suit"
     ))
     
@@ -329,7 +329,7 @@ if (preprocessing) {
 
 
 woodland_names = c("NNBroadleaf.suit", # Beech (BE)
-                   "Nbroadleaf.suit",  # Sessile oak (SOK)
+                   "NBroadleaf.suit",  # Sessile oak (SOK)
                    "NConifer.suit",    # Scots pine (SP)
                    "NNConifer.suit",   # Sitka spruce (SS)
                    "AgroForestry.suit", # Sycamore (SY)
