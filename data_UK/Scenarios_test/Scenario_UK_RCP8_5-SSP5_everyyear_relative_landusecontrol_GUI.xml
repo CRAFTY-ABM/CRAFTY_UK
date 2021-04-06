@@ -1,4 +1,4 @@
-<scenario startTick="2020" endTick="2080" world="UK"
+<scenario startTick="2020" endTick="2100" world="UK"
  version="BehaviouralBaseline" 
  regionalisation="UK"
   scenario="RCP8_5-SSP5">
@@ -14,15 +14,14 @@
     <output class="org.volante.abm.output.ActionCSVOutputter" agentpattern=".*Inst" filePerTick="false" perRegion="true" startYear="2020" everyNYears="1"/>
    </outputs>
  
-   <displays class="org.volante.abm.visualisation.NoModelDisplays"/>
-
-   <!-- <displays class="org.volante.abm.visualisation.DefaultModelDisplays">
+   
+   <displays class="org.volante.abm.visualisation.DefaultModelDisplays">
     <display class="org.volante.abm.visualisation.CapitalDisplay" initial="Arable.suit" title="Capitals"/>
     <display class="org.volante.abm.visualisation.ProductionDisplay" initial="Food.crops" title="Production"/>
     <display class="org.volante.abm.comi.visualisation.UKAgents" title="AgentTypes"/>
     <display class="org.volante.abm.visualisation.CompetitivenessDisplay" initial="IAfood" title="Competitiveness"/>
     <display class="org.volante.abm.visualisation.SubmodelDisplays" title="Submodels"/>
-</displays> -->
+</displays>
 
 <!--  <globalBtReposFile>./institutions/global/GlobalInstitutionsBtRepos.xml</globalBtReposFile>-->
 <!--  <globalInstitutionFile>./institutions/global/GlobalInstitutionsMonitoring.xml</globalInstitutionFile>-->

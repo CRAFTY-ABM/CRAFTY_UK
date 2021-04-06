@@ -54,7 +54,7 @@ demand_df$GF.milk = demand_df_org$GF.milk * 1.5
 
 
 
-write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_increasedFood_UK.csv"), quote = F, row.names = F)
+write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_IncFoodDemand_UK.csv"), quote = F, row.names = F)
 
 
 # 50% decreased food demand
@@ -64,7 +64,7 @@ demand_df$GF.redMeat= demand_df_org$GF.redMeat * 0.5
 demand_df$GF.milk = demand_df_org$GF.milk * 0.5 
 
 
-write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_decreasedFood_UK.csv"), quote = F, row.names = F)
+write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_DecFoodDemand_UK.csv"), quote = F, row.names = F)
 
 
 ### SSP2 
