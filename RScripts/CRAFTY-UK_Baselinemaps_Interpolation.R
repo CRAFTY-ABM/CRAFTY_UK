@@ -14,10 +14,10 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 ## demand file 
 
-demand_years = seq(2020, 2090, 10)
+demand_years = seq(2020, 2100, 10)
 
-climate_scenario_names = c("RCP8_5")
-ssp_names = c("SSP2", "SSP5")
+climate_scenario_names = c("RCP4_5", "RCP8_5")
+ssp_names = c("SSP2","SSP4", "SSP5")
 
 
 
@@ -82,12 +82,13 @@ scenario_names_df = rbind(
 )
 colnames(scenario_names_df) = c("Climate", "SSP")
 
+# currently five scenarios including baseline
+scenario_names_df = scenario_names_df[c(1,2,3,4,7)-1,]
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = list( seq(2020, 2070, 10), seq(2020, 2070, 10))
-
-
+scene_years_l = list(seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
+ 
 
 year_intv = 10 
 

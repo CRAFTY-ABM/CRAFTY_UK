@@ -406,10 +406,13 @@ if (doSuitability) {
     
     # ignore forest suiltability as we use woodland capital files
     # ignore arable as we have adjusted arable below
+    # uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp26_bias_corrected_01_1_arable_20yr-mean-annual_203012-205011.tif
+    Suitability_RCP45_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp45_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
     
-    Suitability_RCP85_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Baseline scenario files RCP85 Feb 2021/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
     
-    names(Suitability_RCP85_rs_l) = suitability_years
+    Suitability_RCP85_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp85_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
+    
+    names(Suitability_RCP45_rs_l) = names(Suitability_RCP85_rs_l) = suitability_years
     
     # Scenarios adjusted by dIAP (riam), # arable 
     Suitability_Arable_rs_l = lapply(c(45, 85), FUN = function(rcp) lapply(suitability_years[-c(1:2)], FUN = function(year) {
@@ -474,23 +477,34 @@ if (doSuitability) {
     # baseline (the first snapshot of RCP85)
     Suitability_Baseline_rs = Suitability_RCP85_rs_l[["2000"]] # 2000 is our baseline
     
+    # RCP45 
+    Suitability_RCP45_rs_l_final = Suitability_RCP45_rs_l[-c(2:3)]
+    names(Suitability_RCP45_rs_l_final)[1] = "2020" # 2000 is our new 2020 
+    
+    Suitability_RCP45_rs_l_final[["2030"]][[1]] = Suitability_Arable_rs_l[["RCP4_5"]][["X2030"]]
+    Suitability_RCP45_rs_l_final[["2040"]][[1]] = Suitability_Arable_rs_l[["RCP4_5"]][["X2040"]]
+    Suitability_RCP45_rs_l_final[["2050"]][[1]] = Suitability_Arable_rs_l[["RCP4_5"]][["X2050"]]
+    Suitability_RCP45_rs_l_final[["2060"]][[1]] = Suitability_Arable_rs_l[["RCP4_5"]][["X2060"]]
+    Suitability_RCP45_rs_l_final[["2070"]][[1]] = Suitability_Arable_rs_l[["RCP4_5"]][["X2070"]]
+    
+    
     # RCP85
     Suitability_RCP85_rs_l_final = Suitability_RCP85_rs_l[-c(2:3)]
     names(Suitability_RCP85_rs_l_final)[1] = "2020" # 2000 is our new 2020 
     
-    Suitability_RCP85_rs_l_final[["2030"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2030"]]
-    Suitability_RCP85_rs_l_final[["2040"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2040"]]
-    Suitability_RCP85_rs_l_final[["2050"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2050"]]
-    Suitability_RCP85_rs_l_final[["2060"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2060"]]
-    Suitability_RCP85_rs_l_final[["2070"]][[1]] = Suitability_Arable_rs_l[["RCP85"]][["X2070"]]
+    Suitability_RCP85_rs_l_final[["2030"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2030"]]
+    Suitability_RCP85_rs_l_final[["2040"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2040"]]
+    Suitability_RCP85_rs_l_final[["2050"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2050"]]
+    Suitability_RCP85_rs_l_final[["2060"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2060"]]
+    Suitability_RCP85_rs_l_final[["2070"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2070"]]
 
     
     suitability_names = paste0(c("Arable", "Wetland", "ImprovedGrassland", "SemiNaturalGrassland"), "_Suitability")
     
     
     
-    suitability_scenario_names = c("Baseline", "RCP8_5")
-    suitability_scenario_rs_l = list(list(Suitability_Baseline_rs), Suitability_RCP85_rs_l_final)
+    suitability_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
+    suitability_scenario_rs_l = list(list(Suitability_Baseline_rs), Suitability_RCP45_rs_l_final, Suitability_RCP85_rs_l_final)
     
     scen_idx = 1 
     year_idx = 1 

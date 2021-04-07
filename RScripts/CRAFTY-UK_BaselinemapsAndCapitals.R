@@ -75,13 +75,13 @@ scenario_names_df = rbind(
 )
 colnames(scenario_names_df) = c("Climate", "SSP")
 
-n_scenario = nrow(scenario_names_df)
 
 # currently five scenarios including baseline
 scenario_names_df = scenario_names_df[c(1,2,3,4,7),]
+n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10))
+scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
 
  
 # adjust capitals by SSP (now only for SSP2)
