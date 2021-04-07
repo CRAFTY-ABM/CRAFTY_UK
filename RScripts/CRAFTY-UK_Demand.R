@@ -1,7 +1,7 @@
 ## demand file 
 
 demand_years = seq(2020, 2100, 1)
- 
+
 
 ### Demand file 
 demand_df = data.frame(matrix(data = 0, nrow = length(demand_years), ncol = nrow(service_names) + 1))
@@ -69,22 +69,27 @@ write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_DecFoo
 
 ### SSP2 
 
-demand_multiplier_ssp2  = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/SSP2/SSP2 demands.csv")
-str(demand_multiplier_ssp2)
 
-demand_cols = colnames(demand_multiplier_ssp2)[-c(1:2)]
-
-demand_multiplier_ssp2
 
 SSP_names = paste0("SSP", 1:5)
 ssp_idx = 2 
-# for (ssp_idx in 2) { 
+
+for (ssp_idx in c(2,4,5)) {
     
+    
+    
+    
+    demand_multiplier  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/SSP", ssp_idx, "/SSP", ssp_idx, " demands.csv"))
+    str(demand_multiplier)
+    
+    demand_cols = colnames(demand_multiplier)[-c(1:2)]
+    
+      
     demand_ssp = demand_df_org
-    demand_ssp[, demand_cols] = demand_df_org[,demand_cols] * demand_multiplier_ssp2[1:81, demand_cols] # 2020-2100
+    demand_ssp[, demand_cols] = demand_df_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
     write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
     
-# }
+}
 stop("ends here")
 
 

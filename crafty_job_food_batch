@@ -24,15 +24,11 @@ module load app/jdk/15.0.2
 cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
 															# none produced when program ends), 
 															# use code in getworkingdirectory.R
-<<<<<<< HEAD
 srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_IncFoodDemand.sh  # &
-#srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
-#wait
-=======
+srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_IncFoodDemand.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_DecFoodDemand.sh &
 wait
->>>>>>> 3fcab40b6a8c711af26591fa55cb6eab52749df6
 
 ERROR_CODE=$? 										# 0 if successful
 exit
