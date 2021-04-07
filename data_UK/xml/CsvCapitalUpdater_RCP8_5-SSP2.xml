@@ -19,7 +19,7 @@
  		<csvFile year="2037">worlds/%r/capitals/%s/%r_capitals-%s_2037.csv</csvFile>
  		<csvFile year="2038">worlds/%r/capitals/%s/%r_capitals-%s_2038.csv</csvFile>
  		<csvFile year="2039">worlds/%r/capitals/%s/%r_capitals-%s_2039.csv</csvFile>
-     		<csvFile year="2040">worlds/%r/capitals/%s/%r_capitals-%s_2040.csv</csvFile>
+     	<csvFile year="2040">worlds/%r/capitals/%s/%r_capitals-%s_2040.csv</csvFile>
 		<csvFile year="2041">worlds/%r/capitals/%s/%r_capitals-%s_2041.csv</csvFile>
 		<csvFile year="2042">worlds/%r/capitals/%s/%r_capitals-%s_2042.csv</csvFile>
 		<csvFile year="2043">worlds/%r/capitals/%s/%r_capitals-%s_2043.csv</csvFile>
@@ -59,25 +59,4 @@
  		<csvFile year="2077">worlds/%r/capitals/%s/%r_capitals-%s_2077.csv</csvFile>
  		<csvFile year="2078">worlds/%r/capitals/%s/%r_capitals-%s_2078.csv</csvFile>
  		<csvFile year="2079">worlds/%r/capitals/%s/%r_capitals-%s_2079.csv</csvFile>
-		<csvFile year="2080">worlds/%r/capitals/%s/%r_capitals-%s_2080.csv</csvFile>
-		<csvFile year="2081">worlds/%r/capitals/%s/%r_capitals-%s_2081.csv</csvFile>
- 		<csvFile year="2082">worlds/%r/capitals/%s/%r_capitals-%s_2082.csv</csvFile>
- 		<csvFile year="2083">worlds/%r/capitals/%s/%r_capitals-%s_2083.csv</csvFile>
- 		<csvFile year="2084">worlds/%r/capitals/%s/%r_capitals-%s_2084.csv</csvFile>
- 		<csvFile year="2085">worlds/%r/capitals/%s/%r_capitals-%s_2085.csv</csvFile>
- 		<csvFile year="2086">worlds/%r/capitals/%s/%r_capitals-%s_2086.csv</csvFile>
- 		<csvFile year="2087">worlds/%r/capitals/%s/%r_capitals-%s_2087.csv</csvFile>
- 		<csvFile year="2088">worlds/%r/capitals/%s/%r_capitals-%s_2088.csv</csvFile>
- 		<csvFile year="2089">worlds/%r/capitals/%s/%r_capitals-%s_2089.csv</csvFile>
-		<csvFile year="2090">worlds/%r/capitals/%s/%r_capitals-%s_2090.csv</csvFile>
-		<csvFile year="2091">worlds/%r/capitals/%s/%r_capitals-%s_2091.csv</csvFile>
- 		<csvFile year="2092">worlds/%r/capitals/%s/%r_capitals-%s_2092.csv</csvFile>
- 		<csvFile year="2093">worlds/%r/capitals/%s/%r_capitals-%s_2093.csv</csvFile>
- 		<csvFile year="2094">worlds/%r/capitals/%s/%r_capitals-%s_2094.csv</csvFile>
- 		<csvFile year="2095">worlds/%r/capitals/%s/%r_capitals-%s_2095.csv</csvFile>
- 		<csvFile year="2096">worlds/%r/capitals/%s/%r_capitals-%s_2096.csv</csvFile>
- 		<csvFile year="2097">worlds/%r/capitals/%s/%r_capitals-%s_2097.csv</csvFile>
- 		<csvFile year="2098">worlds/%r/capitals/%s/%r_capitals-%s_2098.csv</csvFile>
- 		<csvFile year="2099">worlds/%r/capitals/%s/%r_capitals-%s_2099.csv</csvFile>
-		<csvFile year="2100">worlds/%r/capitals/%s/%r_capitals-%s_2100.csv</csvFile>
 </updater>
