@@ -1,9 +1,9 @@
 #!/bin/bash -x
-#SBATCH --partition=rogp  # If not set, test is used
+#SBATCH --partition=rome  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1   # MPI tasks per node
-#SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
+#SBATCH --ntasks-per-core=2   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
 #SBATCH --cpus-per-task=64    # CPU per task (1 for MPI-only)
@@ -30,15 +30,9 @@ cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writin
 #srun --verbose R --vanilla --file=getworkingdirectory.R     # Run R in „vanilla“ mode (no .Rdata file read at startup, 
 															# none produced when program ends), 
 															# use code in getworkingdirectory.R
-<<<<<<< HEAD
-srun --verbose --nodes 1 CRAFTY_keal_cmd_Baseline_Normal.sh 
-#srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP1.sh &
-#srun --verbose --nodes 1 CRAFTY_keal_cmd_RCP8_5-SSP5.sh &
-=======
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Normal.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Normal.sh 
 #srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP1.sh &
 #srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5.sh &
->>>>>>> 3fcab40b6a8c711af26591fa55cb6eab52749df6
 #wait
 
 ERROR_CODE=$? 										# 0 if successful
