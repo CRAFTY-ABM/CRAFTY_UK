@@ -10,8 +10,8 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 
 
-climate_scenario_names = c("RCP8_5")
-ssp_names = c("SSP2", "SSP5")
+climate_scenario_names = c("RCP4_5", "RCP8_5")
+ssp_names = c("SSP2", "SSP4", "SSP5")
 
 
 
@@ -77,16 +77,21 @@ colnames(scenario_names_df) = c("Climate", "SSP")
 
 n_scenario = nrow(scenario_names_df)
 
+# currently five scenarios including baseline
+scenario_names_df = scenario_names_df[c(1,2,3,4,7),]
+
 # timeslices
 scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10))
 
  
 # adjust capitals by SSP (now only for SSP2)
 capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
+capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
+capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv"))
 
-capital_multiplier_SSP2
+# capital_multiplier_SSP2
 
-adjust_multiplier_l = list(NULL, capital_multiplier_SSP2, NULL) # RCP8_5-SSP2
+adjust_multiplier_l = list(NULL, capital_multiplier_SSP2, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP5) 
 
 # multiply to SSP2 at each decade 
 

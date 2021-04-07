@@ -1,8 +1,8 @@
 ,Human,Social,Manufactured,Financial,Arable.suit,Igrass.suit,SNGrass.suit,Bioeneergy.suit,AgroForestry.suit,NNConifer.suit,Nconifer.suit,NNBroadleaf.suit,Nbroadleaf.suit,Tree.suit,Production
-Food.crops ,0.4,0.2,0.5,0.5,0.048,0,0,0,1,0,0,0,0,0,0.05
-Fodder.crops ,0.4,0.2,0.5,0.5,0.048,0,0,0,1,0,0,0,0,0,0.05
-GF.redMeat,0.4,0.2,0.5,0.5,0,0.29,0.3,0,1,0,0,0,0,0,0.1
-Fuel ,0.4,0.2,0.5,0.5,0,0,0,0.38,1,0,0,0,0,0,0.1
+Food.crops ,0.4,0.2,0.5,0.5,0.6,0,0,0,1,0,0,0,0,0,0.05
+Fodder.crops ,0.4,0.2,0.5,0.5,0.6,0,0,0,1,0,0,0,0,0,0.05
+GF.redMeat,0.4,0.2,0.5,0.5,0,0.4,0.4,0,1,0,0,0,0,0,0.1
+Fuel ,0.4,0.2,0.5,0.5,0,0,0,0.5,1,0,0,0,0,0,0.1
 Softwood,0.4,0.2,0.5,0.5,0,0,0,0,1,0,0,0,0,0,0.1
 Hardwood,0.4,0.2,0.5,0.5,0,0,0,0,1,0,0,0,0,0,0.1
 Biodiversity,0.4,0.2,0.5,0.5,0,0,0,0,1,0,0,0,0,0,0.5
