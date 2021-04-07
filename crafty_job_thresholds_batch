@@ -25,9 +25,10 @@ cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writin
 
  													# none produced when program ends), 
 															# use code in getworkingdirectory.R
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Normal.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_Normal.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP1_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
+#srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP1_Thresholds.sh &
+#srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
 wait
 
 ERROR_CODE=$? 										# 0 if successful

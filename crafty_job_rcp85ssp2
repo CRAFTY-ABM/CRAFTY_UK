@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
-#SBATCH --cpus-per-task=32    # CPU per task (1 for MPI-only)
+#SBATCH --cpus-per-task=64    # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
 #SBATCH --job-name=CRAFTY_UK
