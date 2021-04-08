@@ -1,12 +1,12 @@
 #!/bin/bash -x
-#SBATCH --partition=rogp  # If not set, test is used
+#SBATCH --partition=rome  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=8
 #SBATCH --ntasks-per-node=8  # MPI tasks per node
 #SBATCH --ntasks-per-core=2   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
-#SBATCH --cpus-per-task=5 # CPU per task (1 for MPI-only)
+#SBATCH --cpus-per-task=8 # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
 #SBATCH --job-name=CRAFTY_UK
