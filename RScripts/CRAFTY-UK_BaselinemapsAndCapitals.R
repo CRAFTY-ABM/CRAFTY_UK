@@ -66,6 +66,32 @@ match( colnames(basealc_cb)[7:20], capital_names)
 
 
 
+
+
+
+doProtectedArea = FALSE 
+
+if (doProtectedArea) { 
+    ProtectedAreas_csv_df = read.csv(paste0(path_output, "/CRAFTY_UK_ProtectedAreas_PA.csv")  )
+    
+    
+    ProtectedAreaL1_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L1 = ProtectedAreas_csv_df$Protected_L1)
+    ProtectedAreaL2_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L2 = ProtectedAreas_csv_df$Protected_L2)
+    
+    write.csv(ProtectedAreaL1_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L1.csv"), quote = F, row.names = F)
+    write.csv(ProtectedAreaL2_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L2.csv"), quote = F, row.names = F)
+}
+
+
+# Mask_final = Urban2015_csv_df$Urban + ProtectedAreaL1_df$Protected.MaskL1 + ProtectedAreaL2_df$Protected.MaskL2
+# Mask_final[Mask_final>1] = 1 
+# 
+# FinalMask_csv_df = cbind(basealc_csv_df[, c("X", "Y")], Mask = Mask_final )
+# 
+# 
+# write.csv(FinalMask_csv_df, file = paste0(path_output, "/CRAFTY_GB_MaskAggregated.csv"), quote = F, row.names = F)
+
+
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
 
@@ -83,7 +109,7 @@ n_scenario = nrow(scenario_names_df)
 # timeslices
 scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
 
- 
+
 # adjust capitals by SSP (now only for SSP2)
 capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
 capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
@@ -100,7 +126,7 @@ scene_idx = 2
 year_idx = 1 
 
 for (scene_idx in 1:n_scenario) { 
-     
+    
     scen_name_tmp = scenario_names_df[scene_idx,] 
     scene_years_tmp = scene_years_l[[scene_idx]]
     
@@ -224,7 +250,7 @@ for (scene_idx in 1:n_scenario) {
             
         }
         
-         
+        
         
         ## baseline capital with x and y (rnk)
         write.csv(capital_csv_df, file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"), quote = F, row.names = F)

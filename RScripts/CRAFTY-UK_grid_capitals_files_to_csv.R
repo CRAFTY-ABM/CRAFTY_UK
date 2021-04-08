@@ -1455,13 +1455,17 @@ if (doNationalParks) {
 doProtectedAreas = FALSE
 if (doProtectedAreas) { 
     ### Two-level system
+    # old and wrong? 
+    # ProtectedAreas_L1_r = (NGO_r + AONB_r + HC_r + NationalParks_r) > 0 
+    # ProtectedAreas_L2_r = (NNR_r + LNR_r + SAC_r + SSSI_r + BR_r + SPA2019_r + RAMSAR_r ) > 0 
     
-    ProtectedAreas_L1_r = (NGO_r + AONB_r + HC_r + NationalParks_r) > 0 
-    ProtectedAreas_L2_r = (NNR_r + LNR_r + SAC_r + SSSI_r + BR_r + SPA2019_r + RAMSAR_r ) > 0 
+    ProtectedAreas_L1_r = (NNR_r + LNR_r + SAC_r + SSSI_r + BR_r + SPA2019_r + RAMSAR_r + AONB_r + HC_r + NationalParks_r) > 0 
+    ProtectedAreas_L2_r = NGO_r  > 0 
+    
     
     par(mfrow=c(1,2))
-    plot(ProtectedAreas_L1_r)
-    plot(ProtectedAreas_L2_r)
+    plot(ProtectedAreas_L1_r, main = "PA_L1")
+    plot(ProtectedAreas_L2_r, main= "PA_L2 (NGOs only)")
     
     writeRaster(ProtectedAreas_L1_r, filename = paste0(path_output, "/ProtectedAreas_L1_UK_PA.tif"), overwrite=T)
     writeRaster(ProtectedAreas_L2_r, filename = paste0(path_output, "/ProtectedAreas_L2_UK_PA.tif"), overwrite=T)
@@ -1475,8 +1479,8 @@ if (doProtectedAreas) {
     ProtectedAreas_csv_df$Protected_L2 = ProtectedAreas_L2_extracted
     
     write.csv(ProtectedAreas_csv_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_PA.csv"), quote = F, row.names = F)
-    write.csv(ProtectedAreas_csv_df[,-7], file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L1.csv"), quote = F, row.names = F)
-    write.csv(ProtectedAreas_csv_df[,-6], file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L2.csv"), quote = F, row.names = F)
+    # write.csv(ProtectedAreas_csv_df[,-7], file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L1.csv"), quote = F, row.names = F)
+    # write.csv(ProtectedAreas_csv_df[,-6], file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L2.csv"), quote = F, row.names = F)
 }
 
 
@@ -1598,34 +1602,11 @@ if (doNFI) {
 
 
 
-doProtectedArea = FALSE 
+doFRrole = FALSE 
 
-if (doProtectedArea) { 
+if (doFRrole) { 
     
-    
-    
-    
-    
-    
-    
-    
-    ProtectedAreaL1_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L1 = ProtectedAreas_csv_df$Protected_L1)
-    ProtectedAreaL2_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L2 = ProtectedAreas_csv_df$Protected_L2)
-    
-    write.csv(ProtectedAreaL1_df, file = paste0(path_output, "/CRAFTY_GB_ProtectedAreas_L1.csv"), quote = F, row.names = F)
-    write.csv(ProtectedAreaL2_df, file = paste0(path_output, "/CRAFTY_GB_ProtectedAreas_L2.csv"), quote = F, row.names = F)
-    
-    
-    
-    # Mask_final = Urban2015_csv_df$Urban + ProtectedAreaL1_df$Protected.MaskL1 + ProtectedAreaL2_df$Protected.MaskL2
-    # Mask_final[Mask_final>1] = 1 
-    # 
-    # FinalMask_csv_df = cbind(basealc_csv_df[, c("X", "Y")], Mask = Mask_final )
-    # 
-    # 
-    # write.csv(FinalMask_csv_df, file = paste0(path_output, "/CRAFTY_GB_MaskAggregated.csv"), quote = F, row.names = F)
-    
-    
+     
     ### FR role 
     frrole = data.frame(matrix(data = 0, nrow = nrow(aftnames)-1, ncol = nrow(aftnames)-1))
     rownames(frrole) = colnames(frrole) = aftnames$AFT[-16]
