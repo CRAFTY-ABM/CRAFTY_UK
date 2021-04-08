@@ -3,7 +3,7 @@
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=6
 #SBATCH --ntasks-per-node=6  # MPI tasks per node
-#SBATCH --ntasks-per-core=2   # 2 for hyperthreading (HT), 1 otherwise  
+#SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
 #SBATCH --cpus-per-task=10 # CPU per task (1 for MPI-only)
