@@ -78,12 +78,13 @@ if (doProtectedArea) {
     ProtectedAreaL1_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L1 = ProtectedAreas_csv_df$Protected_L1)
     ProtectedAreaL2_df = cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L2 = ProtectedAreas_csv_df$Protected_L2)
     
-    ProtectedAreaL1_Removed_df =  cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L2 = 0)
+    ProtectedAreaL1_Removed_df =  cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L1 = 0)
     ProtectedAreaL2_Removed_df =  cbind(basealc_csv_df[, c("X", "Y")], PROTECTED_L2 = 0)
     
     write.csv(ProtectedAreaL1_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L1.csv"), quote = F, row.names = F)
     write.csv(ProtectedAreaL2_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L2.csv"), quote = F, row.names = F)
-    write.csv(ProtectedAreaL2_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_Removed.csv"), quote = F, row.names = F)
+    write.csv(ProtectedAreaL1_Removed_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L1_Removed.csv"), quote = F, row.names = F)
+    write.csv(ProtectedAreaL2_Removed_df, file = paste0(path_output, "/CRAFTY_UK_ProtectedAreas_L2_Removed.csv"), quote = F, row.names = F)
     
     
     }
