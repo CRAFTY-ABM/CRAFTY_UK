@@ -1,3 +1,4 @@
 <updater class="org.volante.abm.update.CSVLandUseUpdater" X_COL="X" Y_COL="Y" yearInFilename="true" reapplyPreviousFile="true" restrictionColumn="PROTECTED_L1" maskChar="1">
 	<csvFile year="2020">worlds/%r/LandUseControl/ProtectedAreaMask/CRAFTY_UK_ProtectedAreas_L1.csv</csvFile> 
+	<csvFile year="2050">worlds/%r/LandUseControl/ProtectedAreaMask/CRAFTY_UK_ProtectedAreas_L1_Removed.csv</csvFile> 
 </updater>
