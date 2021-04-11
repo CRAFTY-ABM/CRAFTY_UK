@@ -395,8 +395,13 @@ doSuitability = FALSE
 
 if (doSuitability) {
     
-    ### Suitability maps
-    # Suitability_rs = stack(paste0("CRAFTY UK Capital files/Suitability/ModelledBaseline/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
+    # ### Old suitability maps
+    # Suitability_rs = stack(paste0(path_data, "Capital/Suitability/ModelledBaseline Dec 2020/uk_1km_suitability_maskout_interact_20yr-mean-annual_199012-201011_class", c("1_Arable", "2_Wetland", "3_Improved_grassland", "5_Semi_natural_grassland"), ".tif")) # Dec 2020
+    # Suitability_rs2 = stack(paste0(path_data, "Capital/Suitability/Baseline scenario files RCP85 Feb 2021/uk_1km_suitability_binom_maskout_interact_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_199012-201011.tif")) # Dec 2020
+    # 
+    # plot(Suitability_rs)
+    # plot(Suitability_rs2)
+    # 
     
     # 
     suitability_years = c(2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070)

@@ -18,8 +18,8 @@
    <displays class="org.volante.abm.visualisation.DefaultModelDisplays">
     <display class="org.volante.abm.visualisation.CapitalDisplay" initial="Arable.suit" title="Capitals"/>
     <display class="org.volante.abm.visualisation.ProductionDisplay" initial="Food.crops" title="Production"/>
-    <display class="org.volante.abm.comi.visualisation.UKAgents" title="AgentTypes"/>
-    <display class="org.volante.abm.visualisation.CompetitivenessDisplay" initial="IAfood" title="Competitiveness"/>
+    <!-- <display class="org.volante.abm.comi.visualisation.UKAgents" title="AgentTypes"/> -->
+    <display class="org.volante.abm.comi.visualisation.CSVAgentDisplayLoader" file="csv/AgentColors.csv" indexed="true" title="AgentTypes"/>    <display class="org.volante.abm.visualisation.CompetitivenessDisplay" initial="IAfood" title="Competitiveness"/>
     <display class="org.volante.abm.visualisation.SubmodelDisplays" title="Submodels"/>
 </displays>
 
