@@ -13,8 +13,7 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 ## demand file 
 
-demand_years = seq(2020, 2100, 10)
-
+ 
 climate_scenario_names = c("RCP4_5", "RCP8_5")
 ssp_names = c("SSP2","SSP4", "SSP5")
 
@@ -31,8 +30,6 @@ n_scenario = nrow(scenario_names_df)
 
 
 
-scene_idx = 1
-year_idx = 1
 
 # Changes to make to the scenarios:
 # SSP2 Benefit functions for all services are set as 1x + 0, except the food services, which are 2x + 0
