@@ -230,25 +230,26 @@ if (preprocessing) {
     
     
     
-    aftnames = data.frame(rbind(c("AF", "Agroforestry", "Agroforestry"),
-                                c("Bioenergy", "Bioenergy", "Bioenergy"),
-                                c("EA", "EA", "Extensive Agriculture"),
-                                c("EP", "Ext_Pastoral", "Extensive Pastoral"),
-                                c("IAfodder", "IAfodder", "Intensive Agriculture Fodder"),
-                                c("IAfood", "IAfood", "Intensive Agriculture Food"),
-                                c("IP", "Int_Pastoral", "Intensive Pastoral"),
-                                c("MW", "Mixed woodland", "Mixed woodland"),
-                                c("NWCons", "NWCons", "Natural woodland Conservation"),
-                                c("PNB", "PNB", "Productive N Broadleaf"),
-                                c("PNC", "PNC", "Productive N Conifer"),
-                                c("PNNB", "PNNB", "Productive NN Broadleaf"),
-                                c("PNNC", "PNNC", "Productive NN Conifer"),
-                                c("SusAr", "SusAr", "Sustainable Agriculture"),
-                                c("VEP", "V_Ext_Pastoral", "Very Extensive Pastoral"),
-                                c("NOT_ASSIGNED", "Unmanaged", "Unmanaged")
+    aftnames = data.frame(rbind(c("AF", "Agroforestry", "Extensive", "Agroforestry"),
+                                c("Bioenergy", "Bioenergy", "Intensive", "Bioenergy"),
+                                c("EA", "EA", "Extensive", "Extensive Agriculture"),
+                                c("EP", "Ext_Pastoral", "Extensive", "Extensive Pastoral"),
+                                c("IAfodder", "IAfodder", "Intensive", "Intensive Agriculture Fodder"),
+                                c("IAfood", "IAfood", "Intensive", "Intensive Agriculture Food"),
+                                c("IP", "Int_Pastoral", "Intensive", "Intensive Pastoral"),
+                                c("MW", "Mixed woodland", "Extensive", "Mixed woodland"),
+                                c("NWCons", "NWCons", "Extensive", "Natural woodland Conservation"),
+                                c("PNB", "PNB", "Extensive",  "Productive N Broadleaf"),
+                                c("PNC", "PNC", "Extensive", "Productive N Conifer"),
+                                c("PNNB", "PNNB", "Extensive", "Productive NN Broadleaf"),
+                                c("PNNC", "PNNC", "Extensive", "Productive NN Conifer"),
+                                c("SusAr", "SusAr", "Extensive", "Sustainable Agriculture"),
+                                c("VEP", "V_Ext_Pastoral", "Extensive", "Very Extensive Pastoral"),
+                                c("Urban", "Urban", "Urban", "Urban"),
+                                c("NOT_ASSIGNED", "Unmanaged","Extensive", "Unmanaged")
     ))
     
-    colnames(aftnames) = c("AFT", "AFT_cb", "Description")
+    colnames(aftnames) = c("AFT", "AFT_cb", "Type", "Description")
     
     
     write.csv(aftnames, file = paste0(path_output, "/AFT/AFT_Names_UK.csv"))

@@ -83,7 +83,8 @@ scenario_names_df = rbind(
 colnames(scenario_names_df) = c("Climate", "SSP")
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,3,4,7)-1,]
+scenario_names_df = scenario_names_df[c(1,2,3,6),]
+
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
