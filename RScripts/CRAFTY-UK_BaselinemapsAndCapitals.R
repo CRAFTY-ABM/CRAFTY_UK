@@ -129,12 +129,30 @@ adjust_multiplier_l = list(NULL, capital_multiplier_SSP2, capital_multiplier_SSP
 # multiply to SSP2 at each decade 
 
 
+# has to be there in prior..
+woodland_baseline_df = read.csv(paste0(path_output, "Capital/Woodland capital/CRAFTY_UK_Woodland_Baseline.csv"), sep = ",")
+# Suitabilities 
+suitability_baseline_df = read.csv(paste0(path_output, "Capital/Suitability/CRAFTY_UK_Suitability_Baseline.csv"), sep = ",")
+# Capitals
+sc_baseline_df = read.csv(paste0(path_output, "Capital/Capitals/SocialCapital/CRAFTY_UK_SocialCapital_S_2020_SSP1.csv"), sep=",")
+fc_baseline_df = read.csv(paste0(path_output, "Capital/Capitals/FinancialCapital/CRAFTY_UK_FinancialCapital_F_2020_SSP1.csv"), sep=",")
+mc_baseline_df = read.csv(paste0(path_output, "Capital/Capitals/ManufacturedCapital/CRAFTY_UK_ManufacturedCapital_M_2020_SSP1.csv"), sep=",")
+hc_baseline_df = read.csv(paste0(path_output, "Capital/Capitals/HumanCapital/CRAFTY_UK_HumanCapital_H_2020_SSP1.csv"), sep=",")
+
+ 
+
+
+colnames(suitability_baseline_df)
+summary(suitability_baseline_df)
+summary(woodland_baseline_df)
+
+
 scene_idx = 2
 year_idx = 1 
 
 for (scene_idx in 1:n_scenario) { 
     
-    scen_name_tmp = scenario_names_df[scene_idx,] 
+    scene_name_tmp = scenario_names_df[scene_idx,] 
     scene_years_tmp = scene_years_l[[scene_idx]]
     
     
@@ -145,10 +163,10 @@ for (scene_idx in 1:n_scenario) {
         
         scnene_year_tmp = scene_years_tmp[year_idx]
         
-        clim_suffix_tmp = paste0(scen_name_tmp$Climate,   ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
-        ssp_suffix_tmp = ifelse(scnene_year_tmp=="", yes = "_2020_SSP1", no = paste0("_", scnene_year_tmp, "_", scen_name_tmp$SSP)) # 2020 SSP1 for baseline
+        clim_suffix_tmp = paste0(scene_name_tmp$Climate,   ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
+        ssp_suffix_tmp = ifelse(scnene_year_tmp=="", yes = "_2020_SSP1", no = paste0("_", scnene_year_tmp, "_", scene_name_tmp$SSP)) # 2020 SSP1 for baseline
         
-        both_suffix_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
+        both_suffix_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
         
         
         ### dummy 
@@ -161,46 +179,22 @@ for (scene_idx in 1:n_scenario) {
         # Suitabilities 
         suitability_df = read.csv(paste0(path_output, "Capital/Suitability/CRAFTY_UK_Suitability_", clim_suffix_tmp, ".csv"), sep = ",")
         colnames(suitability_df)
-        
+
         # normalise them
-        capital_csv[, "Arable.suit"] = suitability_df$Arable_Suitability / max(suitability_df$Arable_Suitability, na.rm=T)
-        capital_csv[, "Igrass.suit"] = suitability_df$ImprovedGrassland_Suitability / max( suitability_df$ImprovedGrassland_Suitability , na.rm=T)
-        capital_csv[, "SNGrass.suit"] = suitability_df$SemiNaturalGrassland_Suitability / max( suitability_df$SemiNaturalGrassland_Suitability, na.rm=T)
+        # Normalised relative to the baseline, so the value of '1' is the maximum in the baseline and all the scenarios change around that.
+        capital_csv[, "Arable.suit"] = suitability_df$Arable_Suitability / max(suitability_baseline_df$Arable_Suitability, na.rm=T)
+        capital_csv[, "Igrass.suit"] = suitability_df$ImprovedGrassland_Suitability / max( suitability_baseline_df$ImprovedGrassland_Suitability , na.rm=T)
+        capital_csv[, "SNGrass.suit"] = suitability_df$SemiNaturalGrassland_Suitability / max( suitability_baseline_df$SemiNaturalGrassland_Suitability, na.rm=T)
         
         
         # summary(capital_csv)
         
         # Woodland capitals
-        
-        # woodland_df = read.csv2("CRAFTY UK Capital files/Woodland capital/data-processed/woodland_capitals.csv", sep=",")
-        # 
-        # plot(basealc_cb$NNBroadleaf.suit, woodland_df$non.native.broadleaf_YC)
-        # plot(basealc_cb$Bioenergy.suit, woodland_df$bioenergy_YC)
-        # 
-        # capital_csv$NNBroadleaf.suit = woodland_df$non.native.broadleaf_YC
-        # unused native woodland (SBI)
-        # capital_csv$Nbroadleaf.suit = woodland_df$native.broadleaf_YC
-        # capital_csv$NConifer.suit = woodland_df$native.conifer_YC
-        # capital_csv$NNConifer.suit = woodland_df$non.native.conifer_YC
-        # capital_csv$AgroForestry.suit = woodland_df$agroforestry_YC
-        # capital_csv$Bioenergy.suit = woodland_df$bioenergy_YC
-        # capital_csv$Tree.suit = woodland_df$Mixed
-        
-        
-        # library(tidyverse)
+ 
         woodland_df = read.csv(paste0(path_output, "Capital/Woodland capital/CRAFTY_UK_Woodland_", clim_suffix_tmp, ".csv"), sep=",")
         colnames(woodland_df) # [6:12] = capital_names[c(8,9,10,11,)]
         
-        # capital_csv$NNBroadleaf.suit = woodland_df$non.native.broadleaf_YC
-        # unused native woodland (SBI)
-        # capital_csv$Nbroadleaf.suit = woodland_df$native.broadleaf_YC
-        # capital_csv$NConifer.suit = woodland_df$native.conifer_YC
-        # capital_csv$NNConifer.suit = woodland_df$non.native.conifer_YC
-        # capital_csv$AgroForestry.suit = woodland_df$agroforestry_YC
-        # capital_csv$Bioenergy.suit = woodland_df$bioenergy_YC
-        # capital_csv$Tree.suit = woodland_df$Mixed
-        # woodland_df$mixed.YC / max(woodland_df$mixed.YC, na.rm=T)
-        
+         
         (woodland_names %in% as.character(capital_names[8:14]))
         
         woodland_df_tmp = data.frame(sapply(woodland_df[,woodland_names], FUN = function(x) x / max(x, na.rm=T)))
@@ -211,7 +205,15 @@ for (scene_idx in 1:n_scenario) {
         
         str(woodland_df_tmp)
         
-        capital_csv[, woodland_names] = woodland_df_tmp
+        
+        # normalise them
+        woodland_max = sapply(woodland_baseline_df[, woodland_names], max, na.rm=T)
+        
+        woodland_df_norm = sapply(1:length(woodland_max), FUN = function(x) woodland_df_tmp[, woodland_names[x]] / woodland_max[x]) 
+        
+        summary(woodland_df_norm)
+        
+        capital_csv[, woodland_names] = woodland_df_norm
         
         
         
@@ -230,10 +232,10 @@ for (scene_idx in 1:n_scenario) {
         capital_csv[, "Social"] = sc_df$SocialCapital %>% as.character %>% as.numeric
         
         
-        capital_csv[, "Financial"] = capital_csv[, "Financial"]/ max(capital_csv[, "Financial"], na.rm=T)
-        capital_csv[, "Human"] = capital_csv[, "Human"]/ max(capital_csv[, "Human"], na.rm=T)
-        capital_csv[, "Manufactured"] = capital_csv[, "Manufactured"]/ max(capital_csv[, "Manufactured"], na.rm=T)
-        capital_csv[, "Social"] = capital_csv[, "Social"]/ max(capital_csv[, "Social"], na.rm=T)
+        capital_csv[, "Financial"] = capital_csv[, "Financial"]/ max(fc_baseline_df$FinancialCapital, na.rm=T)
+        capital_csv[, "Human"] = capital_csv[, "Human"]/ max(hc_baseline_df$HumanCapital, na.rm=T)
+        capital_csv[, "Manufactured"] = capital_csv[, "Manufactured"]/ max(mc_baseline_df$ManufacturedCapital, na.rm=T)
+        capital_csv[, "Social"] = capital_csv[, "Social"]/ max(sc_baseline_df$SocialCapital, na.rm=T)
         
         
         # capital_reord_df = capital_csv[, match( colnames(capital_csv)[5:20], capital_names_16)]
@@ -249,8 +251,7 @@ for (scene_idx in 1:n_scenario) {
         ## Adjust capitals (6 Apr 2021)
         if (!is.null(adjust_multiplier_df)) { 
             print("adjust capitals")
-            
-            
+             
             adjust_multiplier_tmp = adjust_multiplier_df[adjust_multiplier_df$Yr == scnene_year_tmp, ]
             print(adjust_multiplier_tmp)
             capital_csv_df[,adjust_cols_tmp] =  sapply(adjust_cols_tmp, FUN = function(x) capital_csv_df[, x] * adjust_multiplier_tmp[,x])
@@ -279,7 +280,7 @@ for (scene_idx in 1:n_scenario) {
         
         
         # write basic allocation file if baseline 
-        if (scen_name_tmp$Climate == "Baseline") { 
+        if (scene_name_tmp$Climate == "Baseline") { 
             
             basealc_csv_df = cbind(basealc_csv_df, capital_reord_df)
             
