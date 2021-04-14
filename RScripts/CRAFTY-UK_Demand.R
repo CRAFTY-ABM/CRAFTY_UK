@@ -1,3 +1,22 @@
+library(data.table)
+
+path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
+path_output =  "~/Nextcloud/CRAFTY/Output/"
+
+setwd(path_wd)
+
+source("RScripts/CRAFTY-UK_grid_common.R")
+
+
+
+climate_scenario_names = c("RCP4_5", "RCP8_5")
+ssp_names = c("SSP2", "SSP4", "SSP5")
+
+
+
+
+# basealc_cb_old = read.csv("~/Nextcloud/workspac
 ## demand file 
 
 demand_years = seq(2020, 2100, 1)
@@ -27,19 +46,27 @@ demand_df$Year = demand_years
 # Mar 2021 v6 (corrected capital files + woodland birch used)
 # Food.crops:8186.423703690629 Fodder.crops:5195.649612371075 GF.redMeat:14264.19945262999 Fuel:294.1256370164427 Softwood:1276.0841605779758 Hardwood:1258.1920655673368 Biodiversity:28367.838824467522 Carbon:28748.378631788495 Recreation:27051.50444290339 Flood.reg:24740.48409909865 Employment:22819.729784500967 Ldiversity:26418.315484676514 GF.milk:8079.994507255595 }
 
-demand_df$Food.crops = 8186.423703690629 
-demand_df$Fodder.crops = 5195.649612371075
-demand_df$GF.redMeat= 14264.19945262999
-demand_df$Fuel = 294.1256370164427
-demand_df$Softwood = 1276.0841605779758
-demand_df$Hardwood = 1258.1920655673368
-demand_df$Biodiversity = 28367.838824467522
-demand_df$Carbon = 28748.378631788495
-demand_df$Recreation = 27051.50444290339
-demand_df$Flood.reg = 24740.48409909865
-demand_df$Employment = 22819.729784500967
-demand_df$Ldiversity = 26418.315484676514
-demand_df$GF.milk = 8079.994507255595
+# Apr 2021 v7 (corrected normalisation)
+# ServiceSupply:Food.crops,ServiceSupply:Fodder.crops,ServiceSupply:GF.redMeat,ServiceSupply:Fuel,ServiceSupply:Softwood,ServiceSupply:Hardwood,ServiceSupply:Biodiversity,ServiceSupply:Carbon,ServiceSupply:Recreation,ServiceSupply:Flood.reg,ServiceSupply:Employment,ServiceSupply:Ldiversity,ServiceSupply:GF.milk,
+# 8186.339,5195.565,14264.137,36.742,63.775,88.792,23508.652,23373.745,23270.144,20783.337,18863.105,23023.381,8079.723,
+
+# Demand:Food.crops,Demand:Fodder.crops,Demand:GF.redMeat,Demand:Fuel,Demand:Softwood,Demand:Hardwood,Demand:Biodiversity,Demand:Carbon,Demand:Recreation,Demand:Flood.reg,Demand:Employment,Demand:Ldiversity,Demand:GF.milk,Region,Tick
+# 8186.424,5195.650,14264.199,294.126,1276.084,1258.192,28367.839,28748.379,27051.504,24740.484,22819.730,26418.315,8079.995,UK,2020
+
+
+demand_df$Food.crops = 8186.339 
+demand_df$Fodder.crops = 5195.565
+demand_df$GF.redMeat= 14264.137
+demand_df$Fuel = 36.742
+demand_df$Softwood = 63.775
+demand_df$Hardwood = 88.792
+demand_df$Biodiversity = 23508.652
+demand_df$Carbon = 23373.745
+demand_df$Recreation = 23270.144
+demand_df$Flood.reg = 20783.337
+demand_df$Employment = 18863.105
+demand_df$Ldiversity = 23023.381
+demand_df$GF.milk = 8079.723
 
 demand_df_org = demand_df
 
