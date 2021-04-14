@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=64 # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
-#SBATCH --job-name=CRAFTY_UK
+#SBATCH --job-name=C_UK_Baseline
 #SBATCH --mail-user=bumsuk.seo@kit.edu
 #SBATCH --mail-type=ALL
 ulimit -s unlimited                    # if needed, otherwise 102400

@@ -1,5 +1,5 @@
 #!/bin/bash -x
-#SBATCH --partition=rogp  # If not set, test is used
+#SBATCH --partition=rome  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1  # MPI tasks per node
@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=64 # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
-#SBATCH --job-name=CRAFTY_UK
+#SBATCH --job-name=C_UK_Scen
 #SBATCH --mail-user=bumsuk.seo@kit.edu
 #SBATCH --mail-type=ALL
 ulimit -s unlimited                    # if needed, otherwise 102400
