@@ -89,7 +89,7 @@ n_scenario = nrow(scenario_names_df)
 
 # timeslices
 scene_years_l = list(seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
- 
+
 
 year_intv = 10 
 
@@ -97,63 +97,126 @@ year_intv = 10
 scene_idx = 1
 year_idx = 1
 
+registerDoMC(16)
+
+writeFiles = FALSE
+if (writeFiles) { 
+    for (scene_idx in 1:n_scenario) { 
+        
+        
+        scen_name_tmp = scenario_names_df[scene_idx,] 
+        
+        scene_years_tmp = scene_years_l[[scene_idx]]
+        
+        
+        for (year_idx in seq_along(scene_years_tmp)) { 
+            
+            scnene_year_tmp = scene_years_tmp[year_idx]
+            
+            
+            both_suffix_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
+            both_suffix_next_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + 10) 
+            
+            
+            ## baseline capital with x and y (rnk)
+            capital_decadal = read.csv( file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"))
+            
+            capital_next_name = paste0(path_output, "Capital/UK_capitals-", both_suffix_next_tmp, ".csv")
+            if (file.exists(capital_next_name)) { 
+                capital_next_decadal = read.csv( capital_next_name)
+            } else { 
+                capital_next_decadal = capital_decadal
+            }
+            
+            # col_idx = 7
+            res_col_l = foreach (col_idx = 3:16) %dopar% { 
+                d1 = capital_decadal[,col_idx]
+                d2 = capital_next_decadal[, col_idx]
+                
+                summary(d1)
+                summary(d2)
+                
+                
+                d_intp = d1 + sapply(1:(year_intv-1), FUN = function(x) x * (d2 - d1) / year_intv ) # linear interpolation 
+                return(d_intp)
+            }
+            str(res_col_l)
+            
+            res_col_arr = aperm(abind(res_col_l, along=0.5), perm = c(3,2,1))
+            str(res_col_arr)
+            
+            # year_annual_idx = 1 
+            
+            
+            foreach(year_annual_idx = 1:9) %dopar% { 
+                ann_df_tmp  = cbind(capital_decadal[,1:2], res_col_arr[year_annual_idx,,])
+                colnames(ann_df_tmp) = colnames(capital_decadal)
+                ann_name_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/UK_capitals-", paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
+                write.csv(ann_df_tmp, file =ann_name_tmp, quote = F, row.names = F)
+            }
+            
+            write.csv(capital_decadal, file =paste0(path_output, "Capital/Annual_Interpolated/UK_capitals-", paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
+            
+            
+        }
+        
+    }
+}
+
+
+path_inputdata = "~/Nextcloud/CRAFTY/CRAFTY_UK/data_UK/"
+
+### summary capitals
+
+registerDoMC()
 
 for (scene_idx in 1:n_scenario) { 
     
     
     scen_name_tmp = scenario_names_df[scene_idx,] 
     
-    scene_years_tmp = scene_years_l[[scene_idx]]
+    scene_years_tmp = 2020:2079
     
+    both_suffix_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP) 
     
-    for (year_idx in seq_along(scene_years_tmp)) { 
+    res_scene = foreach (year_annual_idx = seq_along(scene_years_tmp), .combine = rbind) %dopar% { 
         
-        scnene_year_tmp = scene_years_tmp[year_idx]
+        scnene_year_tmp = scene_years_tmp[year_annual_idx]
+        print(scnene_year_tmp)
         
-        
-        both_suffix_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
-        both_suffix_next_tmp = paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + 10) 
-        
-        
-        ## baseline capital with x and y (rnk)
-        capital_decadal = read.csv( file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"))
-        
-        capital_next_name = paste0(path_output, "Capital/UK_capitals-", both_suffix_next_tmp, ".csv")
-        if (file.exists(capital_next_name)) { 
-            capital_next_decadal = read.csv( capital_next_name)
-        } else { 
-            capital_next_decadal = capital_decadal
-        }
-        
-        # col_idx = 7
-        res_col_l = foreach (col_idx = 3:16) %do% { 
-            d1 = capital_decadal[,col_idx]
-            d2 = capital_next_decadal[, col_idx]
-            
-            summary(d1)
-            summary(d2)
-            
-            
-            d_intp = d1 + sapply(1:(year_intv-1), FUN = function(x) x * (d2 - d1) / year_intv ) # linear interpolation 
-            return(d_intp)
-        }
-        str(res_col_l)
-        
-        res_col_arr = aperm(abind(res_col_l, along=0.5), perm = c(3,2,1))
-        str(res_col_arr)
-        
-        # year_annual_idx = 1 
  
+        ann_name_tmp =  file = paste0(path_inputdata, "worlds/UK/capitals/", scen_name_tmp$Climate, "-", scen_name_tmp$SSP, "/UK_capitals-", paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp), ".csv")
         
-        foreach(year_annual_idx = 1:9) %do% { 
-            ann_df_tmp  = cbind(capital_decadal[,1:2], res_col_arr[year_annual_idx,,])
-            colnames(ann_df_tmp) = colnames(capital_decadal)
-            ann_name_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/UK_capitals-", paste0(scen_name_tmp$Climate, ifelse(scen_name_tmp$SSP=="", yes = "", no = "-"), scen_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
-            write.csv(ann_df_tmp, file =ann_name_tmp, quote = F, row.names = F)
-        }
-        
-        
-        
+         ann_dt = read.csv(ann_name_tmp)
+        return(sapply(ann_dt[, as.character(capital_names)], mean, na.rm=T))
+          
     }
     
+    res_scene = cbind(Tick= scene_years_tmp, res_scene)
+     
+    write.csv(res_scene, file =paste0(path_output, "Capital/Summary/", both_suffix_tmp, "-0-00-UK-AggregateCapital.csv"), quote = F, row.names = F)
+    
 }
+
+
+baseline_name_tmp =  file = paste0(path_inputdata, "worlds/UK/capitals/Baseline/UK_capitals-Baseline.csv")
+
+baseline_dt = read.csv(baseline_name_tmp)
+baseline_summary = sapply(baseline_dt[, as.character(capital_names)], mean, na.rm=T)
+write.csv(baseline_summary, file =paste0(path_output, "Capital/Summary/Baseline-0-00-UK-AggregateCapital.csv"), quote = F, row.names = F)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -751,6 +751,12 @@ if (doWoodlandCapitals) {
     
 
     
+    
+    sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
+    sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
+    sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
+    sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
+    
     scen_idx = 1 
     year_idx = 1 
     

@@ -148,7 +148,7 @@ summary(woodland_baseline_df)
 
 
 scene_idx = 2
-year_idx = 1 
+year_idx = 20
 
 for (scene_idx in 1:n_scenario) { 
     
@@ -180,6 +180,8 @@ for (scene_idx in 1:n_scenario) {
         suitability_df = read.csv(paste0(path_output, "Capital/Suitability/CRAFTY_UK_Suitability_", clim_suffix_tmp, ".csv"), sep = ",")
         colnames(suitability_df)
 
+        summary(suitability_df)
+        
         # normalise them
         # Normalised relative to the baseline, so the value of '1' is the maximum in the baseline and all the scenarios change around that.
         capital_csv[, "Arable.suit"] = suitability_df$Arable_Suitability / max(suitability_baseline_df$Arable_Suitability, na.rm=T)
@@ -187,29 +189,26 @@ for (scene_idx in 1:n_scenario) {
         capital_csv[, "SNGrass.suit"] = suitability_df$SemiNaturalGrassland_Suitability / max( suitability_baseline_df$SemiNaturalGrassland_Suitability, na.rm=T)
         
         
-        # summary(capital_csv)
+        summary(capital_csv)
         
         # Woodland capitals
  
         woodland_df = read.csv(paste0(path_output, "Capital/Woodland capital/CRAFTY_UK_Woodland_", clim_suffix_tmp, ".csv"), sep=",")
         colnames(woodland_df) # [6:12] = capital_names[c(8,9,10,11,)]
         
-         
+ 
         (woodland_names %in% as.character(capital_names[8:14]))
         
-        woodland_df_tmp = data.frame(sapply(woodland_df[,woodland_names], FUN = function(x) x / max(x, na.rm=T)))
-        colnames(woodland_df_tmp) = woodland_names
-        
+         
         # plot(woodland_df_tmp$NNBroadleaf.suit, woodland_df$NNBroadleaf.suit)
         # plot(woodland_df_tmp$Nbroadleaf.suit, woodland_df$Nbroadleaf.suit)
         
-        str(woodland_df_tmp)
-        
+         
         
         # normalise them
         woodland_max = sapply(woodland_baseline_df[, woodland_names], max, na.rm=T)
         
-        woodland_df_norm = sapply(1:length(woodland_max), FUN = function(x) woodland_df_tmp[, woodland_names[x]] / woodland_max[x]) 
+        woodland_df_norm = sapply(1:length(woodland_max), FUN = function(x) woodland_df[, woodland_names[x]] / woodland_max[x]) 
         
         summary(woodland_df_norm)
         
