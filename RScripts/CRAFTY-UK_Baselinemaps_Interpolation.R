@@ -203,6 +203,10 @@ baseline_name_tmp =  file = paste0(path_inputdata, "worlds/UK/capitals/Baseline/
 
 baseline_dt = read.csv(baseline_name_tmp)
 baseline_summary = sapply(baseline_dt[, as.character(capital_names)], mean, na.rm=T)
+baseline_max_summary = sapply(baseline_dt[, as.character(capital_names)], max, na.rm=T)
+
+stopifnot(all(baseline_max_summary==1)) # must be 1 
+
 write.csv(baseline_summary, file =paste0(path_output, "Capital/Summary/Baseline-0-00-UK-AggregateCapital.csv"), quote = F, row.names = F)
 
 

@@ -12,6 +12,9 @@
     <output class="org.volante.abm.output.TakeoverCellOutputter" perRegion="true" filePerTick="false" addRegion="false" startYear="2020" everyNYears="1"/>
     <output class="org.volante.abm.output.GivingInStatisticsOutputter" perRegion="true"  filePerTick="false" addRegion="false" startYear="2020" everyNYears="1"/>
     <output class="org.volante.abm.output.ActionCSVOutputter" agentpattern=".*Inst" filePerTick="false" perRegion="true" startYear="2020" everyNYears="1"/>
+    <output class="org.volante.abm.output.SupplyRasterOutput" service="GF.milk" perRegion="true" outputName="GF.milk"/>
+   <output class="org.volante.abm.output.CapitalRasterOutput" capital="Tree.suit" startYear="2020"/>
+ 
    </outputs>
  
    
