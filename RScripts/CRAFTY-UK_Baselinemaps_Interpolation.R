@@ -3,7 +3,7 @@
 
 library(abind)
 
-path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Nextcloud/CRAFTY/Output/"
 
@@ -94,7 +94,7 @@ scene_years_l = list(seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 1
 year_intv = 10 
 
 
-scene_idx = 1
+scene_idx = 4
 year_idx = 1
 
 registerDoMC(16)

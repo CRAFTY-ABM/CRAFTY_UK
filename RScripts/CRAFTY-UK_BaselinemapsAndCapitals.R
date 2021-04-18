@@ -1,6 +1,6 @@
 library(data.table)
 
-path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Nextcloud/CRAFTY/Output/"
 
@@ -117,10 +117,12 @@ n_scenario = nrow(scenario_names_df)
 scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
 
 
-# adjust capitals by SSP (now only for SSP2)
+# adjust capitals by SSP  
 capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
 capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
-capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv"))
+# capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv")) # old
+capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP5/Suitability_multipliers2.csv")) # 18 Apr
+
 
 # capital_multiplier_SSP2
 
