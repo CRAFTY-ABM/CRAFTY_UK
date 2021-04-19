@@ -164,7 +164,7 @@ if (writeFiles) {
 }
 
 
-path_inputdata = "~/Nextcloud/CRAFTY/CRAFTY_UK/data_UK/"
+path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 
 ### summary capitals
 
@@ -194,7 +194,7 @@ for (scene_idx in 1:n_scenario) {
     
     res_scene = cbind(Tick= scene_years_tmp, res_scene)
      
-    write.csv(res_scene, file =paste0(path_output, "Capital/Summary/", both_suffix_tmp, "-0-00-UK-AggregateCapital.csv"), quote = F, row.names = F)
+    write.csv(res_scene, file =paste0(path_output, "Capital/Summary/", both_suffix_tmp, "-0-99-UK-AggregateCapital.csv"), quote = F, row.names = F)
     
 }
 
@@ -207,7 +207,9 @@ baseline_max_summary = sapply(baseline_dt[, as.character(capital_names)], max, n
 
 stopifnot(all(baseline_max_summary==1)) # must be 1 
 
-write.csv(baseline_summary, file =paste0(path_output, "Capital/Summary/Baseline-0-00-UK-AggregateCapital.csv"), quote = F, row.names = F)
+
+base_out = cbind(Tick=2020, t(data.frame(baseline_summary)))
+write.csv(base_out, file =paste0(path_output, "Capital/Summary/Baseline-0-99-UK-AggregateCapital.csv"), quote = F, row.names = F)
 
 
 
