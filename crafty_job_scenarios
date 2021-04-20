@@ -1,5 +1,5 @@
 #!/bin/bash -x
-#SBATCH --partition=rome  # If not set, test is used
+#SBATCH --partition=cclake  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1  # MPI tasks per node
