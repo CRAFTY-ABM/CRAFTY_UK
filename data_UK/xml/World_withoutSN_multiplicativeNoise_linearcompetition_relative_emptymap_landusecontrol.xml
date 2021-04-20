@@ -6,7 +6,7 @@
 <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
 	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
 
-   <competitionFile>xml/Competition_linear_UK.xml</competitionFile>
+   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
    <btFile>agents/BehaviouralTypes.xml</btFile>
    <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
    

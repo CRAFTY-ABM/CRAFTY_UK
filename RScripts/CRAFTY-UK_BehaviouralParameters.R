@@ -15,20 +15,20 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
  
 climate_scenario_names = c("RCP4_5", "RCP8_5")
-ssp_names = c("SSP2","SSP4", "SSP5")
+ssp_names = c("SSP2", "SSP3", "SSP4", "SSP5")
 
 
-scenario_names_df = rbind(
-  c("Baseline", ""),
-  expand.grid(climate_scenario_names, ssp_names, stringsAsFactors = F)
-)
-colnames(scenario_names_df) = c("Climate", "SSP")
-
-# currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,3,6)+1,]
-n_scenario = nrow(scenario_names_df)
-
-
+# scenario_names_df = rbind(
+#   c("Baseline", ""),
+#   expand.grid(climate_scenario_names, ssp_names, stringsAsFactors = F)
+# )
+# colnames(scenario_names_df) = c("Climate", "SSP")
+# 
+# # currently five scenarios including baseline
+# scenario_names_df = scenario_names_df[c(1,2,3,6)+1,]
+# n_scenario = nrow(scenario_names_df)
+# 
+# 
 
 
 # Changes to make to the scenarios:
@@ -85,7 +85,7 @@ SSP_names = paste0("SSP", 1:5)
 ssp_idx = 1 
 aft_idx = 1 
 
-for (ssp_idx in c(1,2,4,5)) {
+for (ssp_idx in c(1,2,3,4,5)) {
   
   SSP_name_tmp = SSP_names[ssp_idx]
   intensive_param_adjuster_tmp = ssp_intensive_param_adjuster[[ssp_idx]]

@@ -98,7 +98,7 @@ if (doProtectedArea) {
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
 climate_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
-ssp_names = c("SSP1", "SSP2", "SSP4", "SSP5")
+ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
 
@@ -110,16 +110,20 @@ colnames(scenario_names_df) = c("Climate", "SSP")
 
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,5,8,11,6,9,7,13),]
+scenario_names_df = scenario_names_df[c(1,2,5,8,11,14, 6,12, 7,16),]
+ 
+
+
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=8, F))
+scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F))
 
 
 # adjust capitals by SSP  
 capital_multiplier_SSP1 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP1/Suitability_multipliers.csv")) # 18 Apr
 capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
+capital_multiplier_SSP3 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP3/Suitability_multipliers.csv")) # 18 Apr
 capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
 # capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv")) # old 
 capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP5/Suitability_multipliers2.csv")) # 18 Apr
@@ -127,7 +131,7 @@ capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Updates 180421/S
 
 # capital_multiplier_SSP2
 
-adjust_multiplier_l = list(NULL, capital_multiplier_SSP1, capital_multiplier_SSP2,capital_multiplier_SSP4,capital_multiplier_SSP5, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP2, capital_multiplier_SSP5) 
+adjust_multiplier_l = list(NULL, capital_multiplier_SSP1, capital_multiplier_SSP2,capital_multiplier_SSP3, capital_multiplier_SSP4,capital_multiplier_SSP5, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP2, capital_multiplier_SSP5) 
 
 # multiply to SSP2 at each decade 
 
@@ -150,7 +154,7 @@ summary(suitability_baseline_df)
 summary(woodland_baseline_df)
 
 
-scene_idx = 2
+scene_idx = 4
 year_idx = 5
 
 

@@ -69,7 +69,7 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
 climate_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
-ssp_names = c("SSP1", "SSP2", "SSP4", "SSP5")
+ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
 
@@ -81,19 +81,20 @@ colnames(scenario_names_df) = c("Climate", "SSP")
 
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(2,5,8,11,6,9,7,13),]
+scenario_names_df = scenario_names_df[c(1,2,5,8,11,14, 6,12, 7,16),]
+
+
+
 n_scenario = nrow(scenario_names_df)
 
-
 # timeslices
-scene_years_l = replicate( seq(2020, 2070, 10), n=8, F)
-
+scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F))
 
 
 year_intv = 10 
 
 
-scene_idx =1
+scene_idx =4
 year_idx = 1
 
 registerDoMC(16)
@@ -171,7 +172,7 @@ path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 
 registerDoMC()
 
-for (scene_idx in 1:n_scenario) { 
+for (scene_idx in 2:n_scenario) { 
     
     
     scene_name_tmp = scenario_names_df[scene_idx,] 

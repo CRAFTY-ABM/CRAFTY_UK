@@ -11,7 +11,7 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 
 climate_scenario_names = c("RCP4_5", "RCP8_5")
-ssp_names = c("SSP2", "SSP4", "SSP5")
+ssp_names = c("SSP2", "SSP3", "SSP4", "SSP5")
 
 
 
