@@ -1,0 +1,14 @@
+,Human,Social,Manufactured,Financial,Arable.suit,Igrass.suit,SNGrass.suit,Bioenergy.suit,AgroForestry.suit,NNConifer.suit,NConifer.suit,NNBroadleaf.suit,NBroadleaf.suit,Tree.suit,Production
+Food.crops ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Fodder.crops ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+GF.redMeat,0.5,0.1,1,1,0,1,0,0,0,0,0,0,0,0,1
+Fuel ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Softwood,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hardwood,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Biodiversity,0.5,0.1,1,1,1,0,0,0,0,0,0,0,0,0,0
+Carbon,0.5,0.1,1,1,1,0,0,0,0,0,0,0,0,0,0.05
+Recreation,0.5,0.1,1,1,1,0,0,0,0,0,0,0,0,0,0.05
+Flood.reg,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Employment,0.5,0.1,1,1,1,0,0,0,0,0,0,0,0,0,1
+Ldiversity,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+GF.milk,0.5,0.1,1,1,0,1,0,0,0,0,0,0,0,0,1

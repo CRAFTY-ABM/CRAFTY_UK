@@ -68,11 +68,11 @@ Threshold_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(pat
 # applied to intensive types (Gu, Gi, Prob)
 ssp_intensive_param_adjuster = list(SSP1 = c(0.05, 0.05, 0.07),
                                     SSP2 = c(0.05, 0.05, 0.07),
-                                    SSP3 = c(0.05, 0.05, 0.07), 
+                                    SSP3 = c(0.05, 0.05, 0.07),  # individual level random noise (service level?) still to be implemented
                                     SSP4 = c(0.04, 0.06, 0.07), 
                                     SSP5 = c(0.06, 0.04, 0.07))
 # extensive types
-ssp_extensive_param_adjuster = list(SSP1 = c(0.05, 0.05, 0.07), 
+ssp_extensive_param_adjuster = list(SSP1 = c(0.04, 0.06, 0.07), 
                                     SSP2 = c(0.05, 0.05, 0.07), 
                                     SSP3 = c(0.05, 0.05, 0.07), 
                                     SSP4 = c(0.06, 0.04, 0.07), 
@@ -82,10 +82,10 @@ ssp_extensive_param_adjuster = list(SSP1 = c(0.05, 0.05, 0.07),
 var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb")
 
 SSP_names = paste0("SSP", 1:5)
-ssp_idx = 2 
+ssp_idx = 1 
 aft_idx = 1 
 
-for (ssp_idx in c(2,4,5)) {
+for (ssp_idx in c(1,2,4,5)) {
   
   SSP_name_tmp = SSP_names[ssp_idx]
   intensive_param_adjuster_tmp = ssp_intensive_param_adjuster[[ssp_idx]]

@@ -10,10 +10,6 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 
 
-climate_scenario_names = c("RCP4_5", "RCP8_5")
-ssp_names = c("SSP2", "SSP4", "SSP5")
-
-
 
 
 # basealc_cb_old = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/AFT/Basline allocation 2_from Calum 6 Jan 2021_all properly processed.csv")
@@ -101,32 +97,37 @@ if (doProtectedArea) {
 
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
+climate_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
+ssp_names = c("SSP1", "SSP2", "SSP4", "SSP5")
+
+
 
 scenario_names_df = rbind(
-    c("Baseline", "")
+    c("Baseline", "Baseline")
     , expand.grid(climate_scenario_names, ssp_names, stringsAsFactors = F)
 )
 colnames(scenario_names_df) = c("Climate", "SSP")
 
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,3,4,7),]
+scenario_names_df = scenario_names_df[c(1,2,5,8,11,6,9,7,13),]
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = list("", seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10), seq(2020, 2070, 10))
+scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=8, F))
 
 
 # adjust capitals by SSP  
+capital_multiplier_SSP1 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP1/Suitability_multipliers.csv")) # 18 Apr
 capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
 capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
-# capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv")) # old
+# capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv")) # old 
 capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP5/Suitability_multipliers2.csv")) # 18 Apr
 
 
 # capital_multiplier_SSP2
 
-adjust_multiplier_l = list(NULL, capital_multiplier_SSP2, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP5) 
+adjust_multiplier_l = list(NULL, capital_multiplier_SSP1, capital_multiplier_SSP2,capital_multiplier_SSP4,capital_multiplier_SSP5, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP2, capital_multiplier_SSP5) 
 
 # multiply to SSP2 at each decade 
 
@@ -150,7 +151,9 @@ summary(woodland_baseline_df)
 
 
 scene_idx = 2
-year_idx = 20
+year_idx = 5
+
+
 
 for (scene_idx in 1:n_scenario) { 
     
@@ -165,10 +168,11 @@ for (scene_idx in 1:n_scenario) {
         
         scnene_year_tmp = scene_years_tmp[year_idx]
         
-        clim_suffix_tmp = paste0(scene_name_tmp$Climate,   ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
+        clim_suffix_tmp = paste0(scene_name_tmp$Climate,   ifelse(scene_name_tmp$Climate=="Baseline", yes = "", no = paste0("_", scnene_year_tmp)) )  
+         
         ssp_suffix_tmp = ifelse(scnene_year_tmp=="", yes = "_2020_SSP1", no = paste0("_", scnene_year_tmp, "_", scene_name_tmp$SSP)) # 2020 SSP1 for baseline
         
-        both_suffix_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
+        both_suffix_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="Baseline", yes = "", no = paste0("-",scene_name_tmp$SSP)),  ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp) 
         
         
         ### dummy 
@@ -265,23 +269,10 @@ for (scene_idx in 1:n_scenario) {
         write.csv(capital_csv_df, file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"), quote = F, row.names = F)
         
         
-        # strange strip 
-        # which((capital_csv_df$X == 234) & (capital_csv_df$Y == 930)) # 8975 
-        # which((capital_csv_df$X == 226) & (capital_csv_df$Y == 940)) # 8975
-        
-        # fc_df[8975,]
-        # capital_csv_df[7321, "Financial"]
-        
-        
-        # writeRaster(r2, filename = "borough.tif", overwrite=T)
-        
-        
-        # capital_names
-        # table(names(capital_reord_df) == capital_names)
-        
+ 
         
         # write basic allocation file if baseline 
-        if (scene_name_tmp$Climate == "Baseline") { 
+        if (scene_name_tmp$SSP == "Baseline") { 
             
             basealc_csv_df = cbind(basealc_csv_df, capital_reord_df)
             
