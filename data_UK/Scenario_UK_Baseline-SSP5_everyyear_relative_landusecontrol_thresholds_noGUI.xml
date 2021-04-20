@@ -1,7 +1,7 @@
 <scenario startTick="2020" endTick="2100" world="UK"
  version="Thresholds" 
  regionalisation="UK"
-  scenario="RCP8_5-SSP5">
+  scenario="Baseline-SSP5">
   <capitals class="org.volante.abm.serialization.CSVCapitalLoader" file="csv/Capitals.csv" indexed="true"/>
   <services class="org.volante.abm.serialization.CSVServiceLoader" file="csv/Services.csv" indexed="true"/>
    <outputs outputDirectory="output/%v/%s" filePattern="%s-%i-%r-%o" tickPattern="%s-%i-%r-%o-%y">
