@@ -18,7 +18,8 @@
 
 	<initialiserFile>xml/Initialiser.xml</initialiserFile>
 	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
-
+	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+ 
  
    <!-- Land use control institution (spatially explicit) -->
    <institution
@@ -51,6 +52,7 @@
 
 	<initialiserFile>xml/Initialiser.xml</initialiserFile>
 	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
 
    <!-- Land use control institution (spatially explicit) -->
    <institution
@@ -84,6 +86,7 @@
 	<initialiserFile>xml/Initialiser.xml</initialiserFile>
 	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
 
+	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
  
    <!-- Land use control institution (spatially explicit) -->
    <institution
