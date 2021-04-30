@@ -4,5 +4,5 @@
 	<xColumn>X</xColumn>
 	<yColumn>Y</yColumn>
 	<unmanagedIdentifier>NOT_ASSIGNED</unmanagedIdentifier>
-	<csvFile>./worlds/%r/Baseline_map_UK.csv</csvFile>
+	<csvFile>./worlds/%r/Baseline_map_%r.csv</csvFile>
 </cellInitialiser>

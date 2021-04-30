@@ -1,8 +1,8 @@
 library(data.table)
 
-path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
+path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
 setwd(path_wd)
 
@@ -99,21 +99,95 @@ SSP_names = paste0("SSP", 1:5)
 ssp_idx = 2 
 
 for (ssp_idx in c(2,4,5)) {
-    
-    
-    
-    
+     
     demand_multiplier  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/SSP", ssp_idx, "/SSP", ssp_idx, " demands.csv"))
     str(demand_multiplier)
     
     demand_cols = colnames(demand_multiplier)[-c(1:2)]
-    
-      
+       
     demand_ssp = demand_df_org
     demand_ssp[, demand_cols] = demand_df_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
     write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_UK.csv"), quote = F, row.names = F)
     
 }
+
+
+ssp_idx = 3 
+
+
+# England 
+# ServiceSupply:Food.crops,
+# ServiceSupply:Fodder.crops,
+# ServiceSupply:GF.redMeat,
+# ServiceSupply:Fuel,
+# ServiceSupply:Softwood,
+# ServiceSupply:Hardwood,
+# ServiceSupply:Biodiversity,
+# ServiceSupply:Carbon,
+# ServiceSupply:Recreation,
+# ServiceSupply:Flood.reg,
+# ServiceSupply:Employment,
+# ServiceSupply:Ldiversity,
+# ServiceSupply:GF.milk,
+# Demand:Food.crops,Demand:Fodder.crops,Demand:GF.redMeat,Demand:Fuel,Demand:Softwood,Demand:Hardwood,Demand:Biodiversity,Demand:Carbon,Demand:Recreation,Demand:Flood.reg,Demand:Employment,Demand:Ldiversity,Demand:GF.milk,Region,Tick
+# 7610.754,4893.897,7233.887,284.135,424.737,1074.832,7596.932,7724.278,6888.520,4776.289,15994.747,5802.092,6281.543,8186.424,5195.650,14264.198,294.126,1276.084,1258.192,28367.804,28748.343,27051.469,24740.449,22819.725,26418.280,8079.997,England,2020
+
+# Scotland 
+# ServiceSupply:Food.crops,ServiceSupply:Fodder.crops,ServiceSupply:GF.redMeat,ServiceSupply:Fuel,ServiceSupply:Softwood,ServiceSupply:Hardwood,ServiceSupply:Biodiversity,ServiceSupply:Carbon,ServiceSupply:Recreation,ServiceSupply:Flood.reg,ServiceSupply:Employment,ServiceSupply:Ldiversity,ServiceSupply:GF.milk,Demand:Food.crops,Demand:Fodder.crops,Demand:GF.redMeat,Demand:Fuel,Demand:Softwood,Demand:Hardwood,Demand:Biodiversity,Demand:Carbon,Demand:Recreation,Demand:Flood.reg,Demand:Employment,Demand:Ldiversity,Demand:GF.milk,Region,Tick
+# 491.706,279.207,4968.312,9.522,689.487,114.545,19353.990,19541.037,18846.684,18741.427,5617.570,19311.690,507.847,8186.424,5195.650,14264.198,294.126,1276.084,1258.192,28367.804,28748.343,27051.469,24740.449,22819.725,26418.280,8079.997,Scotland,2020
+
+
+# Wales
+# ServiceSupply:Food.crops,ServiceSupply:Fodder.crops,ServiceSupply:GF.redMeat,ServiceSupply:Fuel,ServiceSupply:Softwood,ServiceSupply:Hardwood,ServiceSupply:Biodiversity,ServiceSupply:Carbon,ServiceSupply:Recreation,ServiceSupply:Flood.reg,ServiceSupply:Employment,ServiceSupply:Ldiversity,ServiceSupply:GF.milk,Demand:Food.crops,Demand:Fodder.crops,Demand:GF.redMeat,Demand:Fuel,Demand:Softwood,Demand:Hardwood,Demand:Biodiversity,Demand:Carbon,Demand:Recreation,Demand:Flood.reg,Demand:Employment,Demand:Ldiversity,Demand:GF.milk,Region,Tick
+# 82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909,8186.424,5195.650,14264.198,294.126,1276.084,1258.192,28367.804,28748.343,27051.469,24740.449,22819.725,26418.280,8079.997,Wales,2020
+
+
+demand_df_england_org = demand_df_scotland_org = demand_df_wales_org = demand_df[,]
+
+demand_df_england_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(7610.754,4893.897,7233.887,284.135,424.737,1074.832,7596.932,7724.278,6888.520,4776.289,15994.747,5802.092,6281.543)))
+                                    
+demand_df_scotland_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(491.706,279.207,4968.312,9.522,689.487,114.545,19353.990,19541.037,18846.684,18741.427,5617.570,19311.690,507.847)))
+
+demand_df_wales_org[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909)))
+                            
+
+write.csv(demand_df_england_org, file = paste0(path_output, "Demand/Baseline_demands_", "Baseline", "_England.csv"), quote = F, row.names = F)
+write.csv(demand_df_scotland_org, file = paste0(path_output, "Demand/Baseline_demands_", "Baseline", "_Scotland.csv"), quote = F, row.names = F)
+write.csv(demand_df_wales_org, file = paste0(path_output, "Demand/Baseline_demands_", "Baseline", "_Wales.csv"), quote = F, row.names = F)
+
+
+
+
+for (ssp_idx in c(3)) {
+    
+    demand_multiplier  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Updates 180421/SSP", ssp_idx, "/SSP", ssp_idx, " demands.csv"))
+    str(demand_multiplier)
+    
+    demand_cols = colnames(demand_multiplier)[-c(1:2)]
+    
+    # England 
+    demand_england_ssp = demand_df_england_org
+    demand_england_ssp[, demand_cols] = demand_df_england_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
+    write.csv(demand_england_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_England.csv"), quote = F, row.names = F)
+    
+    
+    # Scotland 
+    demand_scotland_ssp = demand_df_scotland_org
+    demand_scotland_ssp[, demand_cols] = demand_df_scotland_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
+    write.csv(demand_scotland_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_Scotland.csv"), quote = F, row.names = F)
+    
+    # Wales 
+    demand_wales_ssp = demand_df_wales_org
+    demand_wales_ssp[, demand_cols] = demand_df_wales_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
+    write.csv(demand_wales_ssp, file = paste0(path_output, "Demand/Baseline_demands_", SSP_names[ssp_idx], "_Wales.csv"), quote = F, row.names = F)
+    
+    
+}
+
+
+
+
+
 stop("ends here")
 
 

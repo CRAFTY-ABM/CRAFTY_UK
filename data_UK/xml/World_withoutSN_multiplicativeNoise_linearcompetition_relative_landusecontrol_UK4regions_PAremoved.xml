@@ -1,0 +1,98 @@
+<world>
+<region id="England">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+   
+    <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
+	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
+
+   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
+   <btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+ 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+ 
+   <!-- Land use control institution (spatially explicit) -->
+   <institution
+   class="org.volante.abm.institutions.LanduseControllingInstitution">
+	</institution>  
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+	</institution>
+ 
+</region>
+
+<region id="Scotland">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+   
+    <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
+	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
+
+   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
+   <btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+ 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+   <!-- Land use control institution (spatially explicit) -->
+   <institution
+   class="org.volante.abm.institutions.LanduseControllingInstitution">
+	</institution>  
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+	</institution>
+ 
+</region>
+
+<region id="Wales">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+   
+    <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
+	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
+
+   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
+   <btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+ 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+ 
+   <!-- Land use control institution (spatially explicit) -->
+   <institution
+   class="org.volante.abm.institutions.LanduseControllingInstitution">
+	</institution>  
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+	</institution>
+</region>
+</world>

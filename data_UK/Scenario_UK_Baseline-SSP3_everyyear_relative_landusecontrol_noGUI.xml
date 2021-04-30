@@ -27,5 +27,5 @@
 <!--  <globalBtReposFile>./institutions/global/GlobalInstitutionsBtRepos.xml</globalBtReposFile>-->
 <!--  <globalInstitutionFile>./institutions/global/GlobalInstitutionsMonitoring.xml</globalInstitutionFile>-->
   
-   <worldLoaderFile>xml/World_withoutSN_multiplicativeNoise_linearcompetition_relative_landusecontrol_PAremoved.xml</worldLoaderFile>
+   <worldLoaderFile>xml/World_withoutSN_multiplicativeNoise_linearcompetition_relative_landusecontrol_UK4regions_PAremoved.xml</worldLoaderFile>
   </scenario>
