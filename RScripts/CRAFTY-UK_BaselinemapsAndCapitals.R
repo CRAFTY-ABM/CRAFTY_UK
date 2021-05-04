@@ -2,7 +2,7 @@ library(data.table)
 
 path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
+path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
 setwd(path_wd)
 
@@ -122,11 +122,10 @@ scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F)
 
 # adjust capitals by SSP  
 capital_multiplier_SSP1 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP1/Suitability_multipliers.csv")) # 18 Apr
-capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2/Suitability_multipliers.csv"))
+capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2New/Suitability_multipliers.csv")) # 4 May
 capital_multiplier_SSP3 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP3/Suitability_multipliers.csv")) # 18 Apr
-capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4/Suitability_multipliers.csv"))
-# capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5/Suitability_multipliers.csv")) # old 
-capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP5/Suitability_multipliers2.csv")) # 18 Apr
+capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4New/Suitability_multipliers.csv")) # 4 May 
+capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5New/Suitability_multipliers2.csv")) # 4 May
 
 
 # capital_multiplier_SSP2
@@ -154,13 +153,15 @@ summary(suitability_baseline_df)
 summary(woodland_baseline_df)
 
 
-scene_idx = 4
+scene_idx = 3
 year_idx = 5
 
 
+scene_idxs = c(3, 5:10) # ssp 2,4, and 5
 
-for (scene_idx in 1:n_scenario) { 
-    
+
+for (scene_idx in scene_idxs) { 
+
     scene_name_tmp = scenario_names_df[scene_idx,] 
     scene_years_tmp = scene_years_l[[scene_idx]]
     

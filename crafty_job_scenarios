@@ -26,9 +26,9 @@ cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writin
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2_Thresholds.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds.sh &
+#srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4_Thresholds.sh &
+#srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2.sh &
+#srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5.sh &
 srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
 wait

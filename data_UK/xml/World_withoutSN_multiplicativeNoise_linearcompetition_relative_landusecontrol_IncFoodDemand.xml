@@ -5,22 +5,23 @@
    
 	<!--<demandFile>xml/RegionalDemand_IncFoodDemand.xml</demandFile>-->
 <demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_IncFoodDemand_%r.csv"/>
-<competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
+
+<competitionFile>xml/Competition/Competition_linear_UK_%s.xml</competitionFile>
 <btFile>agents/BehaviouralTypes.xml</btFile>
-   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
-   
-   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 
-	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
-	
-	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
 
-	<initialiserFile>xml/Initialiser.xml</initialiserFile>
-	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
+ <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+ 
+ <regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
 
-	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
-	<updaterFile>xml/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
-	<updaterFile>xml/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
+ <initialiserFile>xml/Initialiser.xml</initialiserFile>
+ <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+ <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+ <updaterFile>xml/PAupdater/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
+ <updaterFile>xml/PAupdater/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
 
    <!-- Regional institutions -->
 

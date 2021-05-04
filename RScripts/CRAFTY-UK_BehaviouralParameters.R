@@ -4,7 +4,7 @@ library(abind)
 
 path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
+path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
 setwd(path_wd)
 
@@ -15,7 +15,7 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
  
 climate_scenario_names = c("RCP4_5", "RCP8_5")
-ssp_names = c("SSP2", "SSP3", "SSP4", "SSP5")
+ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
 # scenario_names_df = rbind(
@@ -53,8 +53,7 @@ ssp_names = c("SSP2", "SSP3", "SSP4", "SSP5")
 
 ### Agent CSV file 
 
-# read.csv("
-
+ 
 
 # threshold parameters
 b_idx = 2 
@@ -65,27 +64,34 @@ intensive_names = as.character(aftnames$AFT[aftnames$Type=="Intensive"])
 Baseline_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(path_data, "Behavioural parameters/Default/BaselineBehaviour/AftParams_", x, ".csv"), stringsAsFactors = F ))
 Threshold_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(path_data, "Behavioural parameters/Default/Thresholds/AftParams_", x, ".csv"), stringsAsFactors = F ))
 
+
+
+dummy_param = Baseline_aft_params_l[[1]]
+    
+    
 # applied to intensive types (Gu, Gi, Prob)
-ssp_intensive_param_adjuster = list(SSP1 = c(0.05, 0.05, 0.07),
-                                    SSP2 = c(0.05, 0.05, 0.07),
-                                    SSP3 = c(0.05, 0.05, 0.07),  # individual level random noise (service level?) still to be implemented
-                                    SSP4 = c(0.04, 0.06, 0.07), 
-                                    SSP5 = c(0.06, 0.04, 0.07))
+ssp_intensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.07, 1),
+                                    SSP1 = c(0.05, 0.02, 0.07, 1),
+                                    SSP2 = c(0.05, 0.02, 0.07, 1),
+                                    SSP3 = c(0.05, 0.02, 0.07, 1.005),  # individual level random noise (service level?) still to be implemented
+                                    SSP4 = c(0.04, 0.03, 0.07, 1), 
+                                    SSP5 = c(0.06, 0.01, 0.07, 1))
 # extensive types
-ssp_extensive_param_adjuster = list(SSP1 = c(0.04, 0.06, 0.07), 
-                                    SSP2 = c(0.05, 0.05, 0.07), 
-                                    SSP3 = c(0.05, 0.05, 0.07), 
-                                    SSP4 = c(0.06, 0.04, 0.07), 
-                                    SSP5 = c(0.06, 0.04, 0.07))
+ssp_extensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.07, 1),
+                                    SSP1 = c(0.04, 0.03, 0.07, 1), 
+                                    SSP2 = c(0.05, 0.02, 0.07, 1), 
+                                    SSP3 = c(0.05, 0.02, 0.07, 1.005), 
+                                    SSP4 = c(0.06, 0.01, 0.07, 1), 
+                                    SSP5 = c(0.06, 0.01, 0.07, 1))
 
 
-var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb")
+var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb", "serviceLevelNoiseMax")
 
-SSP_names = paste0("SSP", 1:5)
+SSP_names = c("Baseline", paste0("SSP", 1:5))
 ssp_idx = 1 
 aft_idx = 1 
 
-for (ssp_idx in c(1,2,3,4,5)) {
+for (ssp_idx in c(1,2,3,4,5,6)) {
   
   SSP_name_tmp = SSP_names[ssp_idx]
   intensive_param_adjuster_tmp = ssp_intensive_param_adjuster[[ssp_idx]]
@@ -93,15 +99,15 @@ for (ssp_idx in c(1,2,3,4,5)) {
    
   for (aft_idx in 1:length(aft_names)) { 
     aft_name_tmp = aft_names[aft_idx]
-    threshold_param_tmp = Baseline_aft_params_l[[aft_idx]]
+    threshold_param_tmp = dummy_param
      
     scene_param_tmp = threshold_param_tmp
     
     if(aft_name_tmp %in% intensive_names) { 
-      scene_param_tmp[var_names] = threshold_param_tmp[var_names] + intensive_param_adjuster_tmp
+      scene_param_tmp[var_names] =  intensive_param_adjuster_tmp
       
     } else { 
-      scene_param_tmp[var_names] = threshold_param_tmp[var_names] + extensive_param_adjuster_tmp
+      scene_param_tmp[var_names] =  extensive_param_adjuster_tmp
  
       # do nothing
     }

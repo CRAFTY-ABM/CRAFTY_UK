@@ -6,7 +6,7 @@ library(abind)
 
 path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
+path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
 setwd(path_wd)
 
@@ -101,7 +101,12 @@ registerDoMC(16)
 
 writeFiles = FALSE
 if (writeFiles) { 
-    for (scene_idx in 1:n_scenario) { 
+    
+    scene_idxs = c(3, 5:10) # ssp 2,4, and 5
+    
+    
+    for (scene_idx in scene_idxs) { 
+        
          
         scene_name_tmp = scenario_names_df[scene_idx,] 
         

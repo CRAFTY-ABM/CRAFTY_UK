@@ -1,8 +1,8 @@
 
 
-path_wd = "~/Nextcloud/CRAFTY/CRAFTY_UK/"
+path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
-path_output =  "~/Nextcloud/CRAFTY/Output/"
+path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
 setwd(path_wd)
 
@@ -89,6 +89,8 @@ colnames(cellids)
 
 # Pass the fill.na function to raster::focal and check results. The pad argument creates virtual rows/columns of NA values to keep the vector length constant along the edges of the raster. This is why we can always expect the fifth value of the vector to be the focal value in a 3x3 window thus, the index i=5 in the fill.na function.
 
+# @todo might just use nearest neighbourhood join (nnjoin in QGIS, e.g.)?
+
 fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol = 1) { 
     
     
@@ -129,7 +131,6 @@ fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol
 # plot(BNG_r_tmp)
 # plot(Shetland_NUTS_BNG_r, add=T, col="red")
 # plot(Orkney_NUTS_BNG_r, add=T, col="blue")
-
 
 fillShetland <- function(r_in) { 
     

@@ -6,19 +6,22 @@
     <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
 	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
 
-   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
-   <btFile>agents/BehaviouralTypes.xml</btFile>
-   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
-   
-   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
 
-	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	<competitionFile>xml/Competition/Competition_linear_UK_%s.xml</competitionFile>
+	<btFile>agents/BehaviouralTypes.xml</btFile>
+	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
- 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
-
-	<initialiserFile>xml/Initialiser.xml</initialiserFile>
-	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
-	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+ 
+	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	 
+	 <regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+ 
+	 <initialiserFile>xml/Initialiser.xml</initialiserFile>
+	 <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
+ 
+	 <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+ 
  
  
    <!-- Land use control institution (spatially explicit) -->
@@ -40,19 +43,21 @@
     <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
 	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
 
-   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
-   <btFile>agents/BehaviouralTypes.xml</btFile>
-   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
-   
-   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
-
-	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	<competitionFile>xml/Competition/Competition_linear_UK_%s.xml</competitionFile>
+	<btFile>agents/BehaviouralTypes.xml</btFile>
+	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
- 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
+	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+ 
+	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	 
+	 <regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+ 
+	 <initialiserFile>xml/Initialiser.xml</initialiserFile>
+	 <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
+ 
+	 <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
 
-	<initialiserFile>xml/Initialiser.xml</initialiserFile>
-	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
-	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
 
    <!-- Land use control institution (spatially explicit) -->
    <institution
@@ -73,20 +78,22 @@
     <!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
 	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
 
-   <competitionFile>xml/Competition_linear_UK_%s.xml</competitionFile>
-   <btFile>agents/BehaviouralTypes.xml</btFile>
-   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
-   
-   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
 
-	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	<competitionFile>xml/Competition/Competition_linear_UK_%s.xml</competitionFile>
+	<btFile>agents/BehaviouralTypes.xml</btFile>
+	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
- 	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile> 
-
-	<initialiserFile>xml/Initialiser.xml</initialiserFile>
-	<updaterFile>xml/CsvCapitalUpdater_%s.xml</updaterFile>    
-
-	<updaterFile>xml/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+ 
+	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	 
+	 <regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+ 
+	 <initialiserFile>xml/Initialiser.xml</initialiserFile>
+	 <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
+ 
+	 <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+ 
  
    <!-- Land use control institution (spatially explicit) -->
    <institution
