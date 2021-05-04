@@ -21,7 +21,9 @@
 	 <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
  
 	 <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
- 
+ 	<updaterFile>xml/PAupdater/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
+	<updaterFile>xml/PAupdater/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
+
  
  
    <!-- Land use control institution (spatially explicit) -->
