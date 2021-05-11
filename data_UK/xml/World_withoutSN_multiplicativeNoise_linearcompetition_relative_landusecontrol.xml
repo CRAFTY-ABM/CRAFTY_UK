@@ -9,7 +9,7 @@
 	<btFile>agents/BehaviouralTypes.xml</btFile>
 	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
-	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+	<cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>
  
 	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
 	 

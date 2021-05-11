@@ -11,7 +11,7 @@
 	<btFile>agents/BehaviouralTypes.xml</btFile>
 	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
-	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+	<cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>
  
 	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
 	 
@@ -21,9 +21,6 @@
 	 <updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
  
 	 <updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
- 	<updaterFile>xml/PAupdater/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
-	<updaterFile>xml/PAupdater/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
-
  
  
    <!-- Land use control institution (spatially explicit) -->
@@ -49,7 +46,7 @@
 	<btFile>agents/BehaviouralTypes.xml</btFile>
 	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
-	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+	<cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>
  
 	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
 	 
@@ -85,7 +82,7 @@
 	<btFile>agents/BehaviouralTypes.xml</btFile>
 	<frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
 	
-	<cellInitialiserFile>xml/CSVCells_empty.xml</cellInitialiserFile>
+	<cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>
  
 	 <!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
 	 

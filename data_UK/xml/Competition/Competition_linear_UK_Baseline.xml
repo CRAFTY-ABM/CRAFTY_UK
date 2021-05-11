@@ -1,12 +1,12 @@
 <competition class="org.volante.abm.example.NormalisedCurveCompetitivenessModel" removeNegative="true">  <!-- normaliseCellResidual="false" normaliseCellSupply="false" -->
 	<curve service="Food.crops">
-		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
 	</curve>
 	<curve service="Fodder.crops">
-		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
 	</curve>
 	<curve service="GF.redMeat">
-		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
 	</curve>
 	<curve service="Fuel">
 		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
@@ -36,7 +36,7 @@
 		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
 	</curve>
 	<curve service="GF.milk">
-		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
 	</curve>
 </competition>
  
