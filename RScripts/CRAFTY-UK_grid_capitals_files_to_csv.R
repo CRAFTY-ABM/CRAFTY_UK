@@ -601,7 +601,9 @@ if (do4Capitals) {
     (colnames(fc_csv))
     
     ### Manufactured capital (LAD)
-    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/M Projections.csv"))
+    # mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/M Projections.csv")) # by 11 May 
+    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Addtional correction_6May2021/CRAFTY_Capitals_Manufactured_M Projections.csv"))
+    
     (colnames(mc_csv))
     
     ### Human capital (LAD)
@@ -655,7 +657,8 @@ if (do4Capitals) {
     
     four_capital_names = paste0(c("Social", "Financial", "Human", "Manufactured"), "Capital")
     shp_names = c("SC_shp", "FC_shp", "HC_shp", "MC_shp")
-    c_idx = layer_idx = 1
+    c_idx = 4
+    layer_idx = 1
     
     for (c_idx in 1:length(four_capital_names)) { 
         

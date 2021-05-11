@@ -179,96 +179,99 @@ year_idx = 1
 
 registerDoMC(16)
 
-for (scene_idx in 4) { # baseline SSP3
-  
-  scene_name_tmp = scenario_names_df[scene_idx,] 
-  
-  scene_years_tmp = scene_years_l[[scene_idx]]
-  
-  
-  for (year_idx in seq_along(scene_years_tmp)) { 
-    
-    scnene_year_tmp = scene_years_tmp[year_idx]
-    
-    
-    both_suffix_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="Baseline", yes = "", no = paste0("-",scene_name_tmp$SSP)), ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp)
-    both_suffix_next_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="Baseline", yes = "", no = paste0("-",scene_name_tmp$SSP)), ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + 10)
-    
-    print(both_suffix_tmp)
-    
-    
-    ## baseline capital with x and y (rnk)
-    capital_decadal = read.csv( file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"))
-    
-    capital_next_name = paste0(path_output, "Capital/UK_capitals-", both_suffix_next_tmp, ".csv")
-    
-    
-    if (file.exists(capital_next_name)) { 
-      capital_next_decadal = read.csv( capital_next_name)
-    } else { 
-      capital_next_decadal = capital_decadal
-    }
-    
-    
-    
-    # col_idx = 7
-    res_col_l = foreach (col_idx = 3:16) %dopar% { 
-      d1 = capital_decadal[,col_idx]
-      d2 = capital_next_decadal[, col_idx]
-      
-      summary(d1)
-      summary(d2)
-      
-      
-      d_intp = d1 + sapply(1:(year_intv-1), FUN = function(x) x * (d2 - d1) / year_intv ) # linear interpolation 
-      return(d_intp)
-    }
-    str(res_col_l)
-    
-    res_col_arr = aperm(abind(res_col_l, along=0.5), perm = c(3,2,1))
-    str(res_col_arr)
-    
-    # year_annual_idx = 1 
-    
-    
-    foreach(year_annual_idx = 1:9) %dopar% { 
-      ann_df_tmp  = cbind(capital_decadal[,1:2], res_col_arr[year_annual_idx,,])
-      colnames(ann_df_tmp) = colnames(capital_decadal)
-      
-      
-      # regionalisation 
-      ann_england = ann_df_tmp[CHESS_regions=="England",]
-      ann_scotland = ann_df_tmp[CHESS_regions=="Scotland",]
-      ann_wales = ann_df_tmp[CHESS_regions=="Wales",]
-      
-      
-      ann_name_england_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/England_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
-      
-      ann_name_scotland_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/Scotland_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
-      
-      ann_name_wales_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/Wales_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
-      
-      write.csv(ann_england, file =ann_name_england_tmp, quote = F, row.names = F)
-      write.csv(ann_scotland, file =ann_name_scotland_tmp, quote = F, row.names = F)
-      write.csv(ann_wales, file =ann_name_wales_tmp, quote = F, row.names = F)
-      
-    }
-    
-    
-    # regionalisation 
-    capital_england = capital_decadal[CHESS_regions=="England",]
-    capital_scotland = capital_decadal[CHESS_regions=="Scotland",]
-    capital_wales = capital_decadal[CHESS_regions=="Wales",]
-    
-    
-    write.csv(capital_england, file =paste0(path_output, "Capital/Regionalisation/England_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
-    write.csv(capital_scotland, file =paste0(path_output, "Capital/Regionalisation/Scotland_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
-    write.csv(capital_wales, file =paste0(path_output, "Capital/Regionalisation/Wales_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
-    
-    
-  }
-  
-}
+
+# just use UK capitals 
+
+# for (scene_idx in 4) { # baseline SSP3
+#   
+#   scene_name_tmp = scenario_names_df[scene_idx,] 
+#   
+#   scene_years_tmp = scene_years_l[[scene_idx]]
+#   
+#   
+#   for (year_idx in seq_along(scene_years_tmp)) { 
+#     
+#     scnene_year_tmp = scene_years_tmp[year_idx]
+#     
+#     
+#     both_suffix_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="Baseline", yes = "", no = paste0("-",scene_name_tmp$SSP)), ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp)
+#     both_suffix_next_tmp = paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="Baseline", yes = "", no = paste0("-",scene_name_tmp$SSP)), ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + 10)
+#     
+#     print(both_suffix_tmp)
+#     
+#     
+#     ## baseline capital with x and y (rnk)
+#     capital_decadal = read.csv( file = paste0(path_output, "Capital/UK_capitals-", both_suffix_tmp, ".csv"))
+#     
+#     capital_next_name = paste0(path_output, "Capital/UK_capitals-", both_suffix_next_tmp, ".csv")
+#     
+#     
+#     if (file.exists(capital_next_name)) { 
+#       capital_next_decadal = read.csv( capital_next_name)
+#     } else { 
+#       capital_next_decadal = capital_decadal
+#     }
+#     
+#     
+#     
+#     # col_idx = 7
+#     res_col_l = foreach (col_idx = 3:16) %dopar% { 
+#       d1 = capital_decadal[,col_idx]
+#       d2 = capital_next_decadal[, col_idx]
+#       
+#       summary(d1)
+#       summary(d2)
+#       
+#       
+#       d_intp = d1 + sapply(1:(year_intv-1), FUN = function(x) x * (d2 - d1) / year_intv ) # linear interpolation 
+#       return(d_intp)
+#     }
+#     str(res_col_l)
+#     
+#     res_col_arr = aperm(abind(res_col_l, along=0.5), perm = c(3,2,1))
+#     str(res_col_arr)
+#     
+#     # year_annual_idx = 1 
+#     
+#     
+#     foreach(year_annual_idx = 1:9) %dopar% { 
+#       ann_df_tmp  = cbind(capital_decadal[,1:2], res_col_arr[year_annual_idx,,])
+#       colnames(ann_df_tmp) = colnames(capital_decadal)
+#       
+#       
+#       # regionalisation 
+#       ann_england = ann_df_tmp[CHESS_regions=="England",]
+#       ann_scotland = ann_df_tmp[CHESS_regions=="Scotland",]
+#       ann_wales = ann_df_tmp[CHESS_regions=="Wales",]
+#       
+#       
+#       ann_name_england_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/England_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
+#       
+#       ann_name_scotland_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/Scotland_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
+#       
+#       ann_name_wales_tmp =  file = paste0(path_output, "Capital/Annual_Interpolated/Wales_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp + year_annual_idx), ".csv")
+#       
+#       write.csv(ann_england, file =ann_name_england_tmp, quote = F, row.names = F)
+#       write.csv(ann_scotland, file =ann_name_scotland_tmp, quote = F, row.names = F)
+#       write.csv(ann_wales, file =ann_name_wales_tmp, quote = F, row.names = F)
+#       
+#     }
+#     
+#     
+#     # regionalisation 
+#     capital_england = capital_decadal[CHESS_regions=="England",]
+#     capital_scotland = capital_decadal[CHESS_regions=="Scotland",]
+#     capital_wales = capital_decadal[CHESS_regions=="Wales",]
+#     
+#     
+#     write.csv(capital_england, file =paste0(path_output, "Capital/Regionalisation/England_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
+#     write.csv(capital_scotland, file =paste0(path_output, "Capital/Regionalisation/Scotland_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
+#     write.csv(capital_wales, file =paste0(path_output, "Capital/Regionalisation/Wales_capitals-", paste0(scene_name_tmp$Climate, ifelse(scene_name_tmp$SSP=="", yes = "", no = "-"), scene_name_tmp$SSP, ifelse(scnene_year_tmp=="", yes = "", no = "_"), scnene_year_tmp ), ".csv"), quote = F, row.names = F)
+#     
+#     
+#   }
+#   
+# }
 
 
 ### baseline maps
@@ -276,14 +279,14 @@ for (scene_idx in 4) { # baseline SSP3
 path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 
 
-baseline_name_tmp =  file = paste0(path_output, "Basegrid/Baseline_map_UK.csv")
+baseline_name_tmp =  file = paste0(path_output, "Basegrid/Baseline_map_UK_5May.csv")
 
 baseline_map   = read.csv(baseline_name_tmp)
 
 
 # regionalisation 
 baseline_england = baseline_map[CHESS_regions=="England",]
-nrow(capital_scotland)
+# nrow(capital_scotland)
 baseline_scotland = baseline_map[CHESS_regions=="Scotland",]
 baseline_wales = baseline_map[CHESS_regions=="Wales",]
 

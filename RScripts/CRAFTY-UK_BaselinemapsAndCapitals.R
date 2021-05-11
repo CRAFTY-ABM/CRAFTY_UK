@@ -13,8 +13,9 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
 
 # basealc_cb_old = read.csv("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/AFT/Basline allocation 2_from Calum 6 Jan 2021_all properly processed.csv")
-basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
-
+# basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 3_from Calum 5 Feb 2021_food fodder fixed_ready for mask files.csv"))
+# basealc_cb = read.csv(paste0(path_data, "/AFT/Baseline allocation 4_from Calum 5 May 2021_bioenergy fixed.csv"))
+basealc_cb = read.csv(paste0(path_data, "/AFT/Basline allocation 4_from Calum 6 May2021_finetuning.csv"))
 
 
 
@@ -50,12 +51,13 @@ str(basealc_csv_df)
 # capital_csv
 
 # str(capital_csv)
-# colnames(capital_csv)[5:18] 
-colnames(basealc_cb)[7:20]
+# colnames(capital_csv)[5:18]
+colnames(basealc_cb)
+match( colnames(basealc_cb)[7:20], capital_names)
 
+colnames(basealc_cb)[11] = "NBroadleaf.suit"
 colnames(basealc_cb)[12] = "NConifer.suit"
 colnames(basealc_cb)[15] = "Bioenergy.suit"
-colnames(basealc_cb)[5] = "NBroadleaf.suit"
 
 
 match( colnames(basealc_cb)[7:20], capital_names)
@@ -108,9 +110,10 @@ scenario_names_df = rbind(
 )
 colnames(scenario_names_df) = c("Climate", "SSP")
 
+rownames(scenario_names_df) = NULL
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,5,8,11,14, 6,12, 7,16),]
+scenario_names_df = scenario_names_df[c(1,2,5,8,10, 11,14, 6,12, 7,16),]
  
 
 
@@ -121,11 +124,11 @@ scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F)
 
 
 # adjust capitals by SSP  
-capital_multiplier_SSP1 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP1/Suitability_multipliers.csv")) # 18 Apr
-capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/SSP2New/Suitability_multipliers.csv")) # 4 May
-capital_multiplier_SSP3 = read.csv(paste0(path_data, "Scenarios/Updates 180421/SSP3/Suitability_multipliers.csv")) # 18 Apr
-capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/SSP4New/Suitability_multipliers.csv")) # 4 May 
-capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/SSP5New/Suitability_multipliers2.csv")) # 4 May
+capital_multiplier_SSP1 = read.csv(paste0(path_data, "Scenarios/Latest/SSP1/Suitability_multipliers.csv")) # 18 Apr
+capital_multiplier_SSP2 = read.csv(paste0(path_data, "Scenarios/Latest/SSP2/Suitability_multipliers.csv")) # 4 May
+capital_multiplier_SSP3 = read.csv(paste0(path_data, "Scenarios/Latest/SSP3/Suitability_multipliers.csv")) # 18 Apr
+capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/Latest/SSP4/Suitability_multipliers.csv")) # 4 May 
+capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Latest/SSP5/Suitability_multipliers.csv")) # 4 May
 
 
 # capital_multiplier_SSP2
@@ -156,8 +159,8 @@ summary(woodland_baseline_df)
 scene_idx = 3
 year_idx = 5
 
-
-scene_idxs = c(3, 5:10) # ssp 2,4, and 5
+rownames(scenario_names_df) = NULL
+scene_idxs = c(2) # RCP8_5 SSP3
 
 
 for (scene_idx in scene_idxs) { 

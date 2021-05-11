@@ -69,23 +69,23 @@ Threshold_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(pat
 dummy_param = Baseline_aft_params_l[[1]]
     
     
-# applied to intensive types (Gu, Gi, Prob)
-ssp_intensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.07, 1),
-                                    SSP1 = c(0.05, 0.02, 0.07, 1),
-                                    SSP2 = c(0.05, 0.02, 0.07, 1),
-                                    SSP3 = c(0.05, 0.02, 0.07, 1.005),  # individual level random noise (service level?) still to be implemented
-                                    SSP4 = c(0.04, 0.03, 0.07, 1), 
-                                    SSP5 = c(0.06, 0.01, 0.07, 1))
+# applied to intensive types (Gu, Gi, Prob, Sevice min, Service max)
+ssp_intensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.2, 1, 1),
+                                    SSP1 =    c(0.05, 0.02, 0.2, 1, 1),
+                                    SSP2 =    c(0.07, 0.01, 0.2, 1, 1),
+                                    SSP3 =    c(0.05, 0.02, 0.05, 0.975, 1.025),  
+                                    SSP4 =    c(0.04, 0.03, 0.2, 1, 1), 
+                                    SSP5 =    c(0.06, 0.01, 0.2, 1, 1))
 # extensive types
-ssp_extensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.07, 1),
-                                    SSP1 = c(0.04, 0.03, 0.07, 1), 
-                                    SSP2 = c(0.05, 0.02, 0.07, 1), 
-                                    SSP3 = c(0.05, 0.02, 0.07, 1.005), 
-                                    SSP4 = c(0.06, 0.01, 0.07, 1), 
-                                    SSP5 = c(0.06, 0.01, 0.07, 1))
+ssp_extensive_param_adjuster = list(Baseline =c(0.001, 0.02, 0.05, 1, 1),
+                                    SSP1 =    c(0.0 , 0.03,  0.05, 1, 1), 
+                                    SSP2 =    c(0.002, 0.01, 0.05, 1, 1), 
+                                    SSP3 =    c(0.001, 0.02, 0.01, 0.975, 1.025), 
+                                    SSP4 =    c(0.002, 0.01, 0.05, 1, 1), 
+                                    SSP5 =    c(0.002, 0.01, 0.05, 1, 1))
 
 
-var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb", "serviceLevelNoiseMax")
+var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb", "serviceLevelNoiseMin", "serviceLevelNoiseMax")
 
 SSP_names = c("Baseline", paste0("SSP", 1:5))
 ssp_idx = 1 
@@ -112,7 +112,7 @@ for (ssp_idx in c(1,2,3,4,5,6)) {
       # do nothing
     }
     
-    path_tmp = paste0(path_output, "Behavioural parameters/Thresholds/", SSP_name_tmp)
+    path_tmp = paste0(path_output, "Behavioural parameters/Thresholds/Baseline-", SSP_name_tmp)
     if (!dir.exists(path_tmp)) { 
       dir.create(path_tmp, recursive = T)
     }
