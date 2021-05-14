@@ -737,29 +737,46 @@ if (doWoodlandCapitals) {
     Woodland_baseline_rs = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "baseline_1991-2011", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_baseline_mdAdj.tif")) # Dec 2020
     proj4string(Woodland_baseline_rs) = proj4.BNG
     
+    # RCP26
+    Woodland_RCP26_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
+        x = stack(paste0(path_data, "Capital/Woodland capital/3rd version RCP26 and RCP60/", "RCP26", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj_rcp26.tif"));
+        proj4string(x) = proj4.BNG; 
+        return(x)}) # May 2021
+    
+    
+    
     # RCP45 
     Woodland_RCP45_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
         x = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "RCP45", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj.tif"));
         proj4string(x) = proj4.BNG; 
         return(x)}) # Dec 2020
     
+    # RCP60
+    Woodland_RCP60_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
+        x = stack(paste0(path_data, "Capital/Woodland capital/3rd version RCP26 and RCP60/", "RCP60", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj_rcp60.tif"));
+        proj4string(x) = proj4.BNG; 
+        return(x)}) # May 2021
+    
+    
+    
+    # RCP85
     Woodland_RCP85_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
         x = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "RCP85", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj.tif"));
                   proj4string(x) = proj4.BNG; 
                   return(x)}) # Dec 2020
     
        
-    woodland_rs_l = list(list(Woodland_baseline_rs), Woodland_RCP45_rs_l, Woodland_RCP85_rs_l)
+    woodland_rs_l = list(list(Woodland_baseline_rs),Woodland_RCP26_rs_l,  Woodland_RCP45_rs_l, Woodland_RCP60_rs_l, Woodland_RCP85_rs_l)
      
-    woodland_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
+    woodland_scenario_names = c("Baseline", "RCP2_6", "RCP4_5","RCP6_0", "RCP8_5")
     
 
     
     
-    sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
-    sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
-    sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
-    sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
+    # sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
+    # sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
+    # sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
+    # sapply(Woodland_RCP45_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) mean(x2, na.rm=T)))
     
     scen_idx = 1 
     year_idx = 1 

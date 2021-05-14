@@ -99,7 +99,7 @@ if (doProtectedArea) {
 
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
-climate_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
+climate_scenario_names = c("Baseline", "RCP4_5", "RCP6_0", "RCP8_5")
 ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
@@ -113,8 +113,8 @@ colnames(scenario_names_df) = c("Climate", "SSP")
 rownames(scenario_names_df) = NULL
 
 # currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,5,8,10, 11,14, 6,12, 7,16),]
- 
+scenario_names_df = scenario_names_df[c(1,2,3, 7,9,12, 13, 15, 21), ]
+ rownames(scenario_names_df) = NULL
 
 
 n_scenario = nrow(scenario_names_df)
@@ -160,8 +160,8 @@ scene_idx = 3
 year_idx = 5
 
 rownames(scenario_names_df) = NULL
-scene_idxs = c(2) # RCP8_5 SSP3
-
+scene_idxs = c(3, 6,  7) # RCP8_5 SSP3
+secne_idxs = 6 # RCP6
 
 for (scene_idx in scene_idxs) { 
 

@@ -51,7 +51,7 @@ path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 registerDoMC()
 
 scene_idxs = 2:n_scenario
-scene_idxs = 5 
+scene_idxs = 2 
 
 for (scene_idx in scene_idxs) { 
     

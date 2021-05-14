@@ -67,25 +67,31 @@ Threshold_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(pat
 
 
 dummy_param = Baseline_aft_params_l[[1]]
+dummy_param$productionCsvFile = ""
     
-    
-# applied to intensive types (Gu, Gi, Prob, Sevice min, Service max)
-ssp_intensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.2, 1, 1),
-                                    SSP1 =    c(0.05, 0.02, 0.2, 1, 1),
-                                    SSP2 =    c(0.07, 0.01, 0.2, 1, 1),
-                                    SSP3 =    c(0.05, 0.02, 0.05, 0.975, 1.025),  
-                                    SSP4 =    c(0.04, 0.03, 0.2, 1, 1), 
-                                    SSP5 =    c(0.06, 0.01, 0.2, 1, 1))
-# extensive types
-ssp_extensive_param_adjuster = list(Baseline =c(0.001, 0.02, 0.05, 1, 1),
-                                    SSP1 =    c(0.0 , 0.03,  0.05, 1, 1), 
-                                    SSP2 =    c(0.002, 0.01, 0.05, 1, 1), 
-                                    SSP3 =    c(0.001, 0.02, 0.01, 0.975, 1.025), 
-                                    SSP4 =    c(0.002, 0.01, 0.05, 1, 1), 
-                                    SSP5 =    c(0.002, 0.01, 0.05, 1, 1))
-
-
+# # applied to intensive types (Gu, Gi, Prob, Sevice min, Service max)
+# ssp_intensive_param_adjuster = list(Baseline =c(0.05, 0.02, 0.2, 1, 1),
+#                                     SSP1 =    c(0.05, 0.02, 0.2, 1, 1),
+#                                     SSP2 =    c(0.07, 0.01, 0.2, 1, 1),
+#                                     SSP3 =    c(0.05, 0.02, 0.05, 0.975, 1.025),  
+#                                     SSP4 =    c(0.04, 0.03, 0.2, 1, 1), 
+#                                     SSP5 =    c(0.06, 0.01, 0.2, 1, 1))
+# # extensive types
+# ssp_extensive_param_adjuster = list(Baseline =c(0.001, 0.02, 0.05, 1, 1),
+#                                     SSP1 =    c(0.0 , 0.03,  0.05, 1, 1), 
+#                                     SSP2 =    c(0.002, 0.01, 0.05, 1, 1), 
+#                                     SSP3 =    c(0.001, 0.02, 0.01, 0.975, 1.025), 
+#                                     SSP4 =    c(0.002, 0.01, 0.05, 1, 1), 
+#                                     SSP5 =    c(0.002, 0.01, 0.05, 1, 1))
+# 
+# 
 var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpProb", "serviceLevelNoiseMin", "serviceLevelNoiseMax")
+
+
+## read params from an excel table
+bparms_df = readxl::read_xlsx(paste0(path_data, "Scenarios/Latest/Behavioural parameters_12May2021.xlsx"), 1)
+ 
+colnames(bparms_df)[c(5, 3, 9,7,8)] = var_names
 
 SSP_names = c("Baseline", paste0("SSP", 1:5))
 ssp_idx = 1 
@@ -94,24 +100,18 @@ aft_idx = 1
 for (ssp_idx in c(1,2,3,4,5,6)) {
   
   SSP_name_tmp = SSP_names[ssp_idx]
-  intensive_param_adjuster_tmp = ssp_intensive_param_adjuster[[ssp_idx]]
-  extensive_param_adjuster_tmp = ssp_extensive_param_adjuster[[ssp_idx]]
+   
    
   for (aft_idx in 1:length(aft_names)) { 
-    aft_name_tmp = aft_names[aft_idx]
-    threshold_param_tmp = dummy_param
-     
-    scene_param_tmp = threshold_param_tmp
-    
-    if(aft_name_tmp %in% intensive_names) { 
-      scene_param_tmp[var_names] =  intensive_param_adjuster_tmp
       
-    } else { 
-      scene_param_tmp[var_names] =  extensive_param_adjuster_tmp
- 
-      # do nothing
-    }
+    aft_name_tmp = aft_names[aft_idx]
+    SSP_df_tmp = bparms_df[(bparms_df$Scenario == SSP_name_tmp) & (bparms_df$AFT == aft_name_tmp),] 
     
+    scene_param_tmp = dummy_param
+    scene_param_tmp$productionCsvFile = paste0(".//production/%s/", aft_name_tmp, ".csv")
+    
+    scene_param_tmp[var_names] = SSP_df_tmp[, var_names ]
+
     path_tmp = paste0(path_output, "Behavioural parameters/Thresholds/Baseline-", SSP_name_tmp)
     if (!dir.exists(path_tmp)) { 
       dir.create(path_tmp, recursive = T)
