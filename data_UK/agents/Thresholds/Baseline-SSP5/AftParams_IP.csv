@@ -1,2 +1,0 @@
-aftParamId,givingInDistributionMean,givingInDistributionSD,givingUpDistributionMean,givingUpDistributionSD,serviceLevelNoiseMin,serviceLevelNoiseMax,givingUpProb,productionCsvFile
-0,0.01,0,0.06,0,1,1,0.2,.//production/%s/AF.csv

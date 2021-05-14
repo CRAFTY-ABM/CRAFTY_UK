@@ -103,5 +103,7 @@
 	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
 	</institution>
+
+ 
 </region>
 </world>
