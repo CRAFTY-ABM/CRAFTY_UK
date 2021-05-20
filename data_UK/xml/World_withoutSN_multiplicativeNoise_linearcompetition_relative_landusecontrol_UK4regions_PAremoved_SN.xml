@@ -33,7 +33,8 @@
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
 	</institution>
 
-	<institutionFile>xml/Institution/Institution_%s.xml</institutionFile>
+	<!--SN -->
+	<institutionFile>xml/Institution/Institution_SN_%s.xml</institutionFile>
 
  
 </region>
@@ -70,7 +71,8 @@
 	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
 	</institution>
-	<institutionFile>xml/Institution/Institution_%s.xml</institutionFile>
+	<!--SN -->
+	<institutionFile>xml/Institution/Institution_SN_%s.xml</institutionFile>
 
 </region>
 
@@ -107,8 +109,8 @@
 	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
 	</institution>
-
-	<institutionFile>xml/Institution/Institution_%s.xml</institutionFile>
+	<!--SN -->
+	<institutionFile>xml/Institution/Institution_SN_%s.xml</institutionFile>
  
  </region>
 </world>

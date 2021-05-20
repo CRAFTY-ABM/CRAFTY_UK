@@ -45,8 +45,9 @@
     	<csvFileRestrictedAllocations>csv/PA_L2_Restrictions.csv</csvFileRestrictedAllocations>
 		<spatialLayer>PROTECTED_L2</spatialLayer>
 	</institution> -->
-
-	<institutionFile>xml/Institution/Institution_%s.xml</institutionFile>
+	
+	<!--SN -->
+	<institutionFile>xml/Institution/Institution_SN_%s.xml</institutionFile>
 
 </region>
 </world>

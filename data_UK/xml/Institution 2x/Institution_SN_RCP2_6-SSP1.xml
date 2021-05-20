@@ -1,0 +1,4 @@
+<institution class="org.volante.abm.institutions.NeighbourhoodNetworkInstitution">
+	<neighbourhoodRadius>20</neighbourhoodRadius> <!-- buffer size in pixel -->
+  <effectFactor>0.10</effectFactor> <!-- Effect of density on capitals (E.g. 0.1 for adding density * 0.1 to the existing capital ) -->
+</institution>

@@ -38,4 +38,7 @@
 	<curve service="GF.milk">
 		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="3.0" />
 	</curve>
+	<curve service="Sus.Prod">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
 </competition>

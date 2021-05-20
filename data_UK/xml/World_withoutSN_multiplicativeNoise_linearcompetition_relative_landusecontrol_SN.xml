@@ -34,7 +34,7 @@
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
 	</institution>
 
-	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution"> -->
+	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution">
     	<csvFileRestrictedAllocations>csv/PA_L1_Restrictions.csv</csvFileRestrictedAllocations>
 		<spatialLayer>PROTECTED_L1</spatialLayer>
 	</institution>
@@ -43,9 +43,8 @@
     	<csvFileRestrictedAllocations>csv/PA_L2_Restrictions.csv</csvFileRestrictedAllocations>
 		<spatialLayer>PROTECTED_L2</spatialLayer>
 	</institution>
-
-	<institutionFile>xml/Institution/Institution_%s.xml</institutionFile>
-
+	<!--SN -->
+	<institutionFile>xml/Institution/Institution_SN_%s.xml</institutionFile>
 
 </region>
 </world>

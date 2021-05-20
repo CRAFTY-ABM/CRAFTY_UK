@@ -51,48 +51,63 @@ demand_df$Year = demand_years
 # Food.crops:8186.423703690629 Fodder.crops:5195.649612371075 GF.redMeat:14264.197836760897 Fuel:294.1256370164427 Softwood:1276.0841605779758 Hardwood:1258.1920655673368 Biodiversity:28367.80359062123 Carbon:28748.343397942204 Recreation:27051.4692090571 Flood.reg:24740.448865911374 Employment:22819.7253144086 Ldiversity:26418.280292188985 GF.milk:8079.997422721622 }
 
 
-demand_april_df = demand_df
-
-demand_april_df$Food.crops = 8186.423703690629 
-demand_april_df$Fodder.crops = 5195.649612371075
-demand_april_df$GF.redMeat= 14264.197836760897
-demand_april_df$Fuel = 294.1256370164427
-demand_april_df$Softwood = 1276.0841605779758
-demand_april_df$Hardwood = 1258.1920655673368
-demand_april_df$Biodiversity = 28367.80359062123
-demand_april_df$Carbon = 28748.343397942204
-demand_april_df$Recreation = 27051.4692090571
-demand_april_df$Flood.reg = 24740.448865911374
-demand_april_df$Employment = 22819.7253144086
-demand_april_df$Ldiversity = 26418.280292188985
-demand_april_df$GF.milk = 8079.997422721622
+# demand_april_df = demand_df
+# 
+# demand_april_df$Food.crops = 8186.423703690629 
+# demand_april_df$Fodder.crops = 5195.649612371075
+# demand_april_df$GF.redMeat= 14264.197836760897
+# demand_april_df$Fuel = 294.1256370164427
+# demand_april_df$Softwood = 1276.0841605779758
+# demand_april_df$Hardwood = 1258.1920655673368
+# demand_april_df$Biodiversity = 28367.80359062123
+# demand_april_df$Carbon = 28748.343397942204
+# demand_april_df$Recreation = 27051.4692090571
+# demand_april_df$Flood.reg = 24740.448865911374
+# demand_april_df$Employment = 22819.7253144086
+# demand_april_df$Ldiversity = 26418.280292188985
+# demand_april_df$GF.milk = 8079.997422721622
 
 # UK 8 May (corrected bioenergy)
 # 8171.249216469596 Fodder.crops:5235.621103324947 GF.redMeat:14220.749577566034 Fuel:322.5037499359316 Softwood:1274.9893223601905 Hardwood:1251.9150568453626 Biodiversity:28355.115907279094 Carbon:28747.033521170248 Recreation:27042.102412451037 Flood.reg:24733.52527212331 Employment:22783.41159388893 Ldiversity:26434.392613948257 GF.milk:8036.563073919001 }
 
-demand_df$Food.crops = 8171.249216469596 
-demand_df$Fodder.crops = 5235.621103324947
-demand_df$GF.redMeat= 14220.749577566034
-demand_df$Fuel = 322.5037499359316
-demand_df$Softwood = 1274.9893223601905
-demand_df$Hardwood = 1251.9150568453626
-demand_df$Biodiversity = 28355.115907279094
-demand_df$Carbon = 28747.033521170248
-demand_df$Recreation = 27042.102412451037
-demand_df$Flood.reg = 24733.52527212331
-demand_df$Employment = 22783.41159388893
-demand_df$Ldiversity = 26434.392613948257
-demand_df$GF.milk = 8036.563073919001
-
-demand_df_org = demand_df
-
-write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
-
+# UK 15 May 
+# 21766.97290234391 Fodder.crops:14112.409852241073 GF.redMeat:40108.11886736392 Fuel:1016.8883724829846 Softwood:5689.9844400473485 Hardwood:2058.4974824261094 Biodiversity:44946.91422698692 Carbon:46121.93703216233 Recreation:42349.64906339934 Flood.reg:36148.20719302831 Employment:55500.99449591252 Ldiversity:34846.58579084016 GF.milk:25826.372107517484 }
  
+# demand_df$Food.crops = 21766.97290234391 
+# demand_df$Fodder.crops = 14112.409852241073
+# demand_df$GF.redMeat= 40108.11886736392
+# demand_df$Fuel = 1016.8883724829846
+# demand_df$Softwood = 5689.9844400473485
+# demand_df$Hardwood = 2058.4974824261094
+# demand_df$Biodiversity = 44946.91422698692
+# demand_df$Carbon = 46121.93703216233
+# demand_df$Recreation = 42349.64906339934
+# demand_df$Flood.reg = 36148.20719302831
+# demand_df$Employment = 55500.99449591252
+# demand_df$Ldiversity = 34846.58579084016
+# demand_df$GF.milk = 25826.372107517484
+# 
+# demand_df_org = demand_df
+# 
+# write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
+
+library(openxlsx)
+initial_supply_df = read.xlsx(paste0(path_data, "/Scenarios/Latest/InitialSupply_15May2021.xlsx"), 1)
+ 
+
+# demand_df_org = demand_df
+# 
+# write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
+
 ### SSP demands (scaled based on Apirl demand by Calum)
  
 
 SSP_names = paste0("SSP", 1:5)
+
+
+initial_supply_df_ssp = initial_supply_df[c(2, 6, 7, 9),]
+initial_supply_df_ssp$Scenario = SSP_names[-3]
+
 ssp_idx = 2 
 
 demand_names = as.character(unlist(service_names))
@@ -100,21 +115,25 @@ demand_names = as.character(unlist(service_names))
 
 for (ssp_idx in c(1,2,4,5)) {
      
-    demand_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Latest/SSP", ssp_idx, "/SSP", ssp_idx, " demands_scaled_popn.csv"))
+    ssp_name = SSP_names[ssp_idx]
+    
+    demand_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP", ssp_idx, " demands_scaled_popn.csv"))
     colnames(demand_cb)[3] = "Year"
-    str(demand_april_df)
-    str(demand_cb)
+     str(demand_cb)
     
     
-    demand_multiplier = sapply(demand_names, FUN = function(x) demand_cb[,x] / demand_april_df[,x] )
-     
-    str(demand_multiplier)
-    
-    # demand_cols = colnames(demand_multiplier)[-c(1:2)]
+     ## discount by the initial supply
+     init_sup = initial_supply_df_ssp[initial_supply_df_ssp$Scenario == ssp_name, paste0("ServiceSupply:", demand_names)] 
+     names(init_sup) = demand_names
+ 
     demand_cols = demand_names
     
     demand_ssp = demand_df_org
-    demand_ssp[, demand_cols] = demand_df_org[,demand_cols] * demand_multiplier[, demand_cols] # 2020-2100
+    demand_ssp[, demand_cols] = sapply(demand_cols, FUN = function(x) demand_cb[,x] * as.numeric( init_sup[x]/demand_cb[1,x])) # 2020-2100
+    
+     
+    
+    
     write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_UK.csv"), quote = F, row.names = F)
     
 }
@@ -154,11 +173,11 @@ ssp_idx = 3
 demand_df_england_org = demand_df_scotland_org = demand_df_wales_org = demand_df[,]
 demand_df_england_april = demand_df_scotland_april = demand_df_wales_april = demand_df[,]
 
-demand_df_england_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(7610.754,4893.897,7233.887,284.135,424.737,1074.832,7596.932,7724.278,6888.520,4776.289,15994.747,5802.092,6281.543)))
-                                    
-demand_df_scotland_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(491.706,279.207,4968.312,9.522,689.487,114.545,19353.990,19541.037,18846.684,18741.427,5617.570,19311.690,507.847)))
-
-demand_df_wales_april[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909)))
+# demand_df_england_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(7610.754,4893.897,7233.887,284.135,424.737,1074.832,7596.932,7724.278,6888.520,4776.289,15994.747,5802.092,6281.543)))
+#                                     
+# demand_df_scotland_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(491.706,279.207,4968.312,9.522,689.487,114.545,19353.990,19541.037,18846.684,18741.427,5617.570,19311.690,507.847)))
+# 
+# demand_df_wales_april[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909)))
        
 
 
@@ -166,12 +185,15 @@ demand_df_wales_april[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(82.
 # Supply of region Scotland: { Food.crops:474.0402530478728 Fodder.crops:286.8787177474124 GF.redMeat:4695.469973560545 Fuel:0.0327729648682961 Softwood:689.4692468873932 Hardwood:114.52764458973753 Biodiversity:9428.4309937715 Carbon:18395.07657320967 Recreation:17704.531121454776 Flood.reg:17665.72998956932 Employment:5472.4567141067255 Ldiversity:18259.340332445223 GF.milk:507.829222347463 }
 # Supply of region Wales: { Food.crops:74.43612854595882 Fodder.crops:20.719557602314577 GF.redMeat:2029.330174376222 Fuel:0.01833383737195789 Softwood:166.39727070460034 Hardwood:75.2767618765977 Biodiversity:762.3291419704672 Carbon:1419.151580986647 Recreation:1245.6901956526572 Flood.reg:1193.2488211796108 Employment:1219.4901834603138 Ldiversity:1272.097315039078 GF.milk:1301.902690061388 }
 
-demand_df_england_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(7551.71409403912,4928.24311531373,7107.23448725221,322.4028598281733,423.6144611443088,1068.526811570599,3050.638024789987,6236.890004581034,5518.025461491209,4248.571378281984,15911.459268054521,5471.92154695221,6238.081549551833)))
 
-demand_df_scotland_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(474.0402530478728,286.8787177474124,4695.469973560545,0.0327729648682961,689.4692468873932,114.52764458973753,9428.4309937715,18395.07657320967,17704.531121454776,17665.72998956932,5472.4567141067255,18259.340332445223,507.829222347463)))
+dem_tmp = initial_supply_df[3:5,] 
+colnames(dem_tmp)[-c(1:2)] = demand_names
 
-demand_df_wales_org[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(74.43612854595882,20.719557602314577,2029.330174376222,0.01833383737195789,166.39727070460034,75.2767618765977,762.3291419704672,1419.151580986647,1245.6901956526572,1193.2488211796108,1219.4901834603138,1272.097315039078, 1301.902690061388)))
-
+demand_df_england_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[1,-c(1:2)])))
+# 
+demand_df_scotland_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[2,-c(1:2)])))
+# 
+demand_df_wales_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[,-c(1:2)])))
 
 write.csv(demand_df_england_org, file = paste0(path_output, "Demand/Baseline_demands_England.csv"), quote = F, row.names = F)
 write.csv(demand_df_scotland_org, file = paste0(path_output, "Demand/Baseline_demands_Scotland.csv"), quote = F, row.names = F)
@@ -180,14 +202,14 @@ write.csv(demand_df_wales_org, file = paste0(path_output, "Demand/Baseline_deman
 
 
 
-for (ssp_idx in c(3)) {
+ssp_idx = 3 
     
     # demand_multiplier  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Updates 180421/SSP", ssp_idx, "/SSP", ssp_idx, " demands.csv"))
     # str(demand_multiplier)
     
-    demand_england_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Latest/SSP3/SSP3 demands_scaled_popn_England.csv"))
-    demand_scotland_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Latest/SSP3/SSP3 demands_scaled_popn_Scotland.csv"))
-    demand_wales_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Latest/SSP3/SSP3 demands_scaled_popn_Wales.csv"))
+    demand_england_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_England.csv"))
+    demand_scotland_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_Scotland.csv"))
+    demand_wales_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_Wales.csv"))
     
     
     
@@ -195,29 +217,23 @@ for (ssp_idx in c(3)) {
     
     # England 
     demand_england_ssp = demand_df_england_org 
-    demand_england_multiplier = sapply(demand_names, FUN = function(x) demand_england_cb[,x] / demand_df_england_april[,x] )
-    
-     demand_england_ssp[, demand_cols] = demand_df_england_org[,demand_cols] * demand_england_multiplier[, demand_cols] # 2020-2100
-    write.csv(demand_england_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_England.csv"), quote = F, row.names = F)
+    demand_england_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_england_cb[,x] * (demand_df_england_org[1,x]/demand_england_cb[1,x]))
+     
+     
+      write.csv(demand_england_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_England.csv"), quote = F, row.names = F)
     
     
     # Scotland 
     demand_scotland_ssp = demand_df_scotland_org
-    demand_scotland_multiplier = sapply(demand_names, FUN = function(x) demand_scotland_cb[,x] / demand_df_scotland_april[,x] )
+    demand_scotland_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_scotland_cb[,x] * (demand_df_scotland_org[1,x]/demand_scotland_cb[1,x]))
     
-    demand_scotland_ssp[, demand_cols] = demand_df_scotland_org[,demand_cols] * demand_scotland_multiplier[, demand_cols] # 2020-2100
     write.csv(demand_scotland_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_Scotland.csv"), quote = F, row.names = F)
     
     # Wales 
     demand_wales_ssp = demand_df_wales_org
-    demand_wales_multiplier = sapply(demand_names, FUN = function(x) demand_wales_cb[,x] / demand_df_wales_april[,x] )
-    
-    demand_wales_ssp[, demand_cols] = demand_df_wales_org[,demand_cols] * demand_wales_multiplier[, demand_cols] # 2020-2100
+    demand_wales_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_wales_cb[,x] * (demand_df_wales_org[1,x]/demand_wales_cb[1,x]))
     write.csv(demand_wales_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_Wales.csv"), quote = F, row.names = F)
-    
-    
-}
-
+     
 
 
 
