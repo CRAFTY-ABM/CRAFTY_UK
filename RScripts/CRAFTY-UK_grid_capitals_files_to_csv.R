@@ -413,12 +413,18 @@ if (doSuitability) {
     # ignore forest suiltability as we use woodland capital files
     # ignore arable as we have adjusted arable below
     # uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp26_bias_corrected_01_1_arable_20yr-mean-annual_203012-205011.tif
+    
+    Suitability_RCP26_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp26_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
+    
+    
     Suitability_RCP45_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp45_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
+    
+    Suitability_RCP60_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp60_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
     
     
     Suitability_RCP85_rs_l = lapply(suitability_years, FUN = function(year) stack(paste0(path_data, "Capital/Suitability/Final modelled scenario files 7Apr2021/uk_1km_suitability_binom_maskout_interact_ukcp18-speed_rcp85_bias_corrected_01_", c("1_arable", "2_wetland", "3_improved_grassland", "5_semi_natural_grassland"), "_20yr-mean-annual_", year - 10, "12-", year + 10, "11.tif")) ) # Dec 2020 RCP85 
     
-    names(Suitability_RCP45_rs_l) = names(Suitability_RCP85_rs_l) = suitability_years
+    names(Suitability_RCP26_rs_l) = names(Suitability_RCP60_rs_l) = names(Suitability_RCP45_rs_l) = names(Suitability_RCP85_rs_l) = suitability_years
     
     # Scenarios adjusted by dIAP (riam), # arable 
     Suitability_Arable_rs_l = lapply(c(45, 85), FUN = function(rcp) lapply(suitability_years[-c(1:2)], FUN = function(year) {
@@ -433,6 +439,7 @@ if (doSuitability) {
     # correct < 0 values
     Suitability_Arable_rs_l[[1]]= raster::clamp(Suitability_Arable_rs_l[[1]], lower=0, useCalue = T)
     Suitability_Arable_rs_l[[2]]= raster::clamp(Suitability_Arable_rs_l[[2]], lower=0, useCalue = T)
+     
     
     # Method
     # 1.       Standardise RiAM yield between 0 and 12 (max for Europe in both scenarios, UK max was 11.4)
@@ -480,9 +487,11 @@ if (doSuitability) {
     # take arable suitability from 2030 onward
     
     
+    
     # baseline (the first snapshot of RCP85)
     Suitability_Baseline_rs = Suitability_RCP85_rs_l[["2000"]] # 2000 is our baseline
     
+
     # RCP45 
     Suitability_RCP45_rs_l_final = Suitability_RCP45_rs_l[-c(2:3)]
     names(Suitability_RCP45_rs_l_final)[1] = "2020" # 2000 is our new 2020 
@@ -509,8 +518,12 @@ if (doSuitability) {
     
     
     
-    suitability_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
-    suitability_scenario_rs_l = list(list(Suitability_Baseline_rs), Suitability_RCP45_rs_l_final, Suitability_RCP85_rs_l_final)
+    suitability_scenario_names = c("Baseline", "RCP2_6", "RCP4_5", "RCP6_0", "RCP8_5")
+    
+    
+    # RCP26 takes RCP45 and 60 takes 85
+    # Baseline for 2.6 and 4.5 for 6
+    suitability_scenario_rs_l = list(list(Suitability_Baseline_rs),     replicate(Suitability_Baseline_rs, n = 6), Suitability_RCP45_rs_l_final, Suitability_RCP45_rs_l_final, Suitability_RCP85_rs_l_final)
     
     scen_idx = 1 
     year_idx = 1 

@@ -99,28 +99,30 @@ if (doProtectedArea) {
 
 # scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
 
-climate_scenario_names = c("Baseline", "RCP4_5", "RCP6_0", "RCP8_5")
+climate_scenario_names = c("Baseline", "RCP2_6", "RCP4_5", "RCP6_0", "RCP8_5")
 ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
+# currently seven scenarios including baseline
 
-scenario_names_df = rbind(
+scenario_names_df = data.frame(rbind(
     c("Baseline", "Baseline")
-    , expand.grid(climate_scenario_names, ssp_names, stringsAsFactors = F)
-)
+    , c(climate_scenario_names[2], ssp_names[1]) # R2S1
+    , c(climate_scenario_names[3], ssp_names[2]) # R4S2
+    , c(climate_scenario_names[3], ssp_names[4]) # R4S4
+    , c(climate_scenario_names[4], ssp_names[3]) # R6S3
+    , c(climate_scenario_names[5], ssp_names[2]) # R8S2
+    , c(climate_scenario_names[5], ssp_names[5]) # R8S5
+))
+ 
 colnames(scenario_names_df) = c("Climate", "SSP")
 
-rownames(scenario_names_df) = NULL
-
-# currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,3, 7,9,12, 13, 15, 21), ]
- rownames(scenario_names_df) = NULL
-
+ 
 
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F))
+scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=6, F))
 
 
 # adjust capitals by SSP  
@@ -131,12 +133,11 @@ capital_multiplier_SSP4 = read.csv(paste0(path_data, "Scenarios/Latest/SSP4/Suit
 capital_multiplier_SSP5 = read.csv(paste0(path_data, "Scenarios/Latest/SSP5/Suitability_multipliers.csv")) # 4 May
 
 
-# capital_multiplier_SSP2
+# capital_multiplier 
 
-adjust_multiplier_l = list(NULL, capital_multiplier_SSP1, capital_multiplier_SSP2,capital_multiplier_SSP3, capital_multiplier_SSP4,capital_multiplier_SSP5, capital_multiplier_SSP2, capital_multiplier_SSP4, capital_multiplier_SSP2, capital_multiplier_SSP5) 
+adjust_multiplier_l = list(Baseline=NULL, SSP1 = capital_multiplier_SSP1, SSP2= capital_multiplier_SSP2, SSP3 = capital_multiplier_SSP3, SSP4 = capital_multiplier_SSP4, SSP5 = capital_multiplier_SSP5)
 
-# multiply to SSP2 at each decade 
-
+ 
 
 # has to be there in prior..
 woodland_baseline_df = read.csv(paste0(path_output, "Capital/Woodland capital/CRAFTY_UK_Woodland_Baseline.csv"), sep = ",")
@@ -159,17 +160,15 @@ summary(woodland_baseline_df)
 scene_idx = 3
 year_idx = 5
 
-rownames(scenario_names_df) = NULL
-scene_idxs = c(3, 6,  7) # RCP8_5 SSP3
-secne_idxs = 6 # RCP6
-
+scene_idxs = c(2)
+ 
 for (scene_idx in scene_idxs) { 
 
     scene_name_tmp = scenario_names_df[scene_idx,] 
     scene_years_tmp = scene_years_l[[scene_idx]]
     
     
-    adjust_multiplier_df = adjust_multiplier_l[[scene_idx]]
+    adjust_multiplier_df = adjust_multiplier_l[[scene_name_tmp$SSP]]
     adjust_cols_tmp = colnames(adjust_multiplier_df)[-1]
     
     for (year_idx in seq_along(scene_years_tmp)) { 

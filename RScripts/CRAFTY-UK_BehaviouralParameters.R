@@ -61,12 +61,10 @@ aft_names = as.character(aftnames$AFT)
 aft_names = setdiff(aft_names, "NOT_ASSIGNED")
 intensive_names = as.character(aftnames$AFT[aftnames$Type=="Intensive"])
 
-Baseline_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(path_data, "Behavioural parameters/Default/BaselineBehaviour/AftParams_", x, ".csv"), stringsAsFactors = F ))
-Threshold_aft_params_l = lapply(aft_names, FUN = function(x) read.csv(paste0(path_data, "Behavioural parameters/Default/Thresholds/AftParams_", x, ".csv"), stringsAsFactors = F ))
+ 
 
+dummy_param = read.csv(paste0(path_output, "Behavioural parameters/Thresholds/Default/AftParams_Default.csv"), stringsAsFactors = F )
 
-
-dummy_param = Baseline_aft_params_l[[1]]
 dummy_param$productionCsvFile = ""
     
 # # applied to intensive types (Gu, Gi, Prob, Sevice min, Service max)
@@ -89,7 +87,7 @@ var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpP
 
 
 ## read params from an excel table
-bparms_df = readxl::read_xlsx(paste0(path_data, "Scenarios/Latest/Behavioural parameters_12May2021.xlsx"), 1)
+bparms_df = readxl::read_xlsx(paste0(path_data, "Scenarios/Latest/Behavioural parameters_complete_17May2021.xlsx"), 1)
  
 colnames(bparms_df)[c(5, 3, 9,7,8)] = var_names
 
@@ -112,7 +110,7 @@ for (ssp_idx in c(1,2,3,4,5,6)) {
     
     scene_param_tmp[var_names] = SSP_df_tmp[, var_names ]
 
-    path_tmp = paste0(path_output, "Behavioural parameters/Thresholds/Baseline-", SSP_name_tmp)
+    path_tmp = paste0(path_output, "Behavioural parameters/Thresholds/", SSP_name_tmp)
     if (!dir.exists(path_tmp)) { 
       dir.create(path_tmp, recursive = T)
     }
