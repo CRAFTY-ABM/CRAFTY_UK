@@ -13,27 +13,31 @@ source("RScripts/CRAFTY-UK_grid_common.R")
 
  
 
-climate_scenario_names = c("Baseline", "RCP4_5", "RCP8_5")
+
+# scenario_names_df = expand.grid(climate_scenario_names, ssp_names)
+climate_scenario_names = c("Baseline", "RCP2_6", "RCP4_5", "RCP6_0", "RCP8_5")
 ssp_names = c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
 
 
+# currently seven scenarios including baseline
 
-scenario_names_df = rbind(
+scenario_names_df = data.frame(rbind(
     c("Baseline", "Baseline")
-    , expand.grid(climate_scenario_names, ssp_names, stringsAsFactors = F)
-)
+    , c(climate_scenario_names[2], ssp_names[1]) # R2S1
+    , c(climate_scenario_names[3], ssp_names[2]) # R4S2
+    , c(climate_scenario_names[3], ssp_names[4]) # R4S4
+    , c(climate_scenario_names[4], ssp_names[3]) # R6S3
+    , c(climate_scenario_names[5], ssp_names[2]) # R8S2
+    , c(climate_scenario_names[5], ssp_names[5]) # R8S5
+))
+
 colnames(scenario_names_df) = c("Climate", "SSP")
-
-
-# currently five scenarios including baseline
-scenario_names_df = scenario_names_df[c(1,2,5,8,10, 11,14, 6,12, 7,16),]
-rownames(scenario_names_df) = NULL
 
 
 n_scenario = nrow(scenario_names_df)
 
 # timeslices
-scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=9, F))
+scene_years_l = c(replicate("", n=1, F), replicate( seq(2020, 2070, 10), n=6, F))
 
 
 year_intv = 10 
@@ -51,12 +55,13 @@ path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 registerDoMC()
 
 scene_idxs = 2:n_scenario
-scene_idxs = 2 
-
+ 
 for (scene_idx in scene_idxs) { 
     
     
     scene_name_tmp = scenario_names_df[scene_idx,] 
+    
+    print(scene_name_tmp)
     
     scene_years_tmp = 2020:2079
     

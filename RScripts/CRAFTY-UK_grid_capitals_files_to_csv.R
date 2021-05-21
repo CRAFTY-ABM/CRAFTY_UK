@@ -128,6 +128,7 @@ fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol
 }
 
 
+
 # plot(BNG_r_tmp)
 # plot(Shetland_NUTS_BNG_r, add=T, col="red")
 # plot(Orkney_NUTS_BNG_r, add=T, col="blue")
@@ -173,6 +174,33 @@ fillShetland <- function(r_in) {
     return(out_r_big)
 }
 
+
+## 
+
+# r_in = BNG_r_tmp2
+# boundary_r = CHESS_mask_r
+# width = 10 
+# maskchar = 0 
+
+smoothCapitals <- function(r_in, boundary_r, width=10, maskchar=NA) { 
+    
+    if (!is.na(maskchar)) { 
+        r_in[r_in==maskchar] = NA
+    }
+    
+    r_in = projectRaster(r_in, boundary_r)
+    
+    win <- focalWeight(r_in, d = 1E4, type = "circle")
+    
+    r_in <- focal(r_in, w = win, fun = mean, pad = TRUE, na.rm=T)
+     
+    r_in[r_in==maskchar] = NA
+    
+    # plot(r_in * boundary_r)
+     
+    return(r_in * boundary_r)
+    
+}
 
 
 
@@ -439,7 +467,7 @@ if (doSuitability) {
     # correct < 0 values
     Suitability_Arable_rs_l[[1]]= raster::clamp(Suitability_Arable_rs_l[[1]], lower=0, useCalue = T)
     Suitability_Arable_rs_l[[2]]= raster::clamp(Suitability_Arable_rs_l[[2]], lower=0, useCalue = T)
-     
+    
     
     # Method
     # 1.       Standardise RiAM yield between 0 and 12 (max for Europe in both scenarios, UK max was 11.4)
@@ -491,7 +519,7 @@ if (doSuitability) {
     # baseline (the first snapshot of RCP85)
     Suitability_Baseline_rs = Suitability_RCP85_rs_l[["2000"]] # 2000 is our baseline
     
-
+    
     # RCP45 
     Suitability_RCP45_rs_l_final = Suitability_RCP45_rs_l[-c(2:3)]
     names(Suitability_RCP45_rs_l_final)[1] = "2020" # 2000 is our new 2020 
@@ -512,7 +540,7 @@ if (doSuitability) {
     Suitability_RCP85_rs_l_final[["2050"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2050"]]
     Suitability_RCP85_rs_l_final[["2060"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2060"]]
     Suitability_RCP85_rs_l_final[["2070"]][[1]] = Suitability_Arable_rs_l[["RCP8_5"]][["X2070"]]
-
+    
     
     suitability_names = paste0(c("Arable", "Wetland", "ImprovedGrassland", "SemiNaturalGrassland"), "_Suitability")
     
@@ -525,7 +553,7 @@ if (doSuitability) {
     # Baseline for 2.6 and 4.5 for 6
     suitability_scenario_rs_l = list(list(Suitability_Baseline_rs),     replicate(Suitability_Baseline_rs, n = 6), Suitability_RCP45_rs_l_final, Suitability_RCP45_rs_l_final, Suitability_RCP85_rs_l_final)
     
-    scen_idx = 1 
+    scen_idx = 4 
     year_idx = 1 
     
     
@@ -699,15 +727,20 @@ if (do4Capitals) {
             BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
             # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
             
+            BNG_r_tmp2_5 = smoothCapitals(BNG_r_tmp2, boundary_r = CHESS_mask_r, maskchar=0, width = 10)
+            
+            
             if (!(capital_name %in% c("Manufactured", "Human"))) { 
                 
-                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
+                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2_5,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
             } else { 
-                BNG_r_tmp3 = BNG_r_tmp2
+                BNG_r_tmp3 = BNG_r_tmp2_5
             }
             
-            plot(BNG_r_tmp3)
+            
             plot(BNG_r_tmp3 - BNG_r_tmp2)
+            
+            plot(BNG_r_tmp3)
             # 
             # plot(UK_BNG_r, add=F)
             # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
@@ -775,15 +808,15 @@ if (doWoodlandCapitals) {
     # RCP85
     Woodland_RCP85_rs_l = lapply(woodland_scenario_years, FUN = function(year) {
         x = stack(paste0(path_data, "Capital/Woodland capital/2nd version Mar 2021/", "RCP85", "/", c("BE", "SBI", "SOK", "SP", "SS", "SY", "WWL"), "_soil_yc_", year, "_mdAdj.tif"));
-                  proj4string(x) = proj4.BNG; 
-                  return(x)}) # Dec 2020
+        proj4string(x) = proj4.BNG; 
+        return(x)}) # Dec 2020
     
-       
+    
     woodland_rs_l = list(list(Woodland_baseline_rs),Woodland_RCP26_rs_l,  Woodland_RCP45_rs_l, Woodland_RCP60_rs_l, Woodland_RCP85_rs_l)
-     
+    
     woodland_scenario_names = c("Baseline", "RCP2_6", "RCP4_5","RCP6_0", "RCP8_5")
     
-
+    
     
     
     # sapply(Woodland_RCP85_rs_l, FUN = function(x) apply(getValues(x), MARGIN = 2, FUN = function(x2) max(x2, na.rm=T)))
@@ -794,14 +827,14 @@ if (doWoodlandCapitals) {
     scen_idx = 1 
     year_idx = 1 
     
-
+    
     
     for (scen_idx in seq_along(woodland_scenario_names)) { 
-         
+        
         print(scen_idx)
         woodland_scenario_name_tmp = woodland_scenario_names[scen_idx]
         woodland_rs_l_tmp = woodland_rs_l[[scen_idx]]
-         
+        
         nyear = length(woodland_rs_l_tmp)
         
         
@@ -823,12 +856,12 @@ if (doWoodlandCapitals) {
             woodland_rs_tmp = woodland_rs_tmp[[-2]]
             
             
-             
-             
+            
+            
             outname_tmp = ifelse(woodland_scenario_name_tmp=="Baseline", yes = woodland_scenario_name_tmp, no =  paste0(woodland_scenario_name_tmp, "_", year_tmp))
             print(outname_tmp)
             
-              
+            
             
             plot(woodland_rs_tmp)
             # plot(sum(Suitability_rs))
@@ -838,7 +871,7 @@ if (doWoodlandCapitals) {
             # beginCluster(12)
             # cl = makeCluster()
             # registerDoSNOW(cl)
-        
+            
             w_idx = 1
             
             woodland_extracted_m = foreach (w_idx = seq_along(woodland_names), .combine = "cbind") %do% { 
@@ -1651,7 +1684,7 @@ doFRrole = FALSE
 
 if (doFRrole) { 
     
-     
+    
     ### FR role 
     frrole = data.frame(matrix(data = 0, nrow = nrow(aftnames)-1, ncol = nrow(aftnames)-1))
     rownames(frrole) = colnames(frrole) = aftnames$AFT[-16]

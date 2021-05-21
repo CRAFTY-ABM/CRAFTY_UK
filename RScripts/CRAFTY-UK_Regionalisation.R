@@ -180,7 +180,7 @@ year_idx = 1
 registerDoMC(16)
 
 
-# just use UK capitals 
+# DON'T reginalise capitals and just use UK data (with row and col id) 
 
 # for (scene_idx in 4) { # baseline SSP3
 #   

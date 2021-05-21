@@ -160,7 +160,7 @@ summary(woodland_baseline_df)
 scene_idx = 3
 year_idx = 5
 
-scene_idxs = c(2)
+scene_idxs = c(5)
  
 for (scene_idx in scene_idxs) { 
 
