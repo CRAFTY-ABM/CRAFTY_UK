@@ -279,7 +279,7 @@ registerDoMC(16)
 path_inputdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/data_UK/"
 
 
-baseline_name_tmp =  file = paste0(path_output, "Basegrid/Baseline_map_UK_5May.csv")
+baseline_name_tmp =  file = paste0(path_output, "Basegrid/Baseline_map_UK.csv")
 
 baseline_map   = read.csv(baseline_name_tmp)
 

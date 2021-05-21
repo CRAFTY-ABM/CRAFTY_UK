@@ -100,7 +100,7 @@ registerDoMC(16)
 writeFiles = TRUE
 if (writeFiles) { 
     
-    scene_idxs = c(5) #  ssp 1
+    scene_idxs = 2:n_scenario
     
     
     for (scene_idx in scene_idxs) { 

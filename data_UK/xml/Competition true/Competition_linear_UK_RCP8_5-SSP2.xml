@@ -1,0 +1,44 @@
+<competition class="org.volante.abm.example.NormalisedCurveCompetitivenessModel" removeNegative="true">  <!-- normaliseCellResidual="false" normaliseCellSupply="false" -->
+	<curve service="Food.crops">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
+	</curve>
+	<curve service="Fodder.crops">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
+	</curve>
+	<curve service="GF.redMeat">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
+	</curve>
+	<curve service="Fuel">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Softwood">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Hardwood">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Biodiversity">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Carbon">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Recreation">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Flood.reg">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Employment">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="Ldiversity">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+	<curve service="GF.milk">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="2.0" />
+	</curve>
+	<curve service="Sus.Prod">
+		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
+	</curve>
+</competition>

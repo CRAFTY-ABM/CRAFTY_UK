@@ -1,4 +1,4 @@
-<competition class="org.volante.abm.example.NormalisedCurveCompetitivenessModel" removeNegative="true">  <!-- normaliseCellResidual="false" normaliseCellSupply="false" -->
+<competition class="org.volante.abm.example.NormalisedCurveCompetitivenessModel" removeNegative="false">  <!-- normaliseCellResidual="false" normaliseCellSupply="false" -->
 	<curve service="Food.crops">
 		<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="1.0" />
 	</curve>
