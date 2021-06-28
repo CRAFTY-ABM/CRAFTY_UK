@@ -161,7 +161,9 @@ scene_idx = 3
 year_idx = 5
 
 scene_idxs = 1:nrow(scenario_names_df)
- 
+# scene_idxs = 4 
+
+
 for (scene_idx in scene_idxs) { 
 
     scene_name_tmp = scenario_names_df[scene_idx,] 
@@ -318,4 +320,4 @@ for (scene_idx in scene_idxs) {
         }
     }
     
-}
+    }

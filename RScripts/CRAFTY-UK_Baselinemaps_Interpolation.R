@@ -101,7 +101,7 @@ writeFiles = TRUE
 if (writeFiles) { 
     
     scene_idxs = 2:n_scenario
-    
+    # scene_idxs = 2
     
     for (scene_idx in scene_idxs) { 
         

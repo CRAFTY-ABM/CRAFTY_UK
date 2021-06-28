@@ -1,0 +1,4 @@
+<institution class="org.volante.abm.institutions.NeighbourhoodNetworkInstitution">
+	<neighbourhoodRadius>5</neighbourhoodRadius> 
+  <effectFactor>0.01</effectFactor>
+</institution>

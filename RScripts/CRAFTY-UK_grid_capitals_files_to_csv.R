@@ -83,127 +83,7 @@ colnames(cellids)
 # plot(r2)
 # plot(CHESS_BNG_r)
 # 
-
-
-
-
-# Pass the fill.na function to raster::focal and check results. The pad argument creates virtual rows/columns of NA values to keep the vector length constant along the edges of the raster. This is why we can always expect the fifth value of the vector to be the focal value in a 3x3 window thus, the index i=5 in the fill.na function.
-
-# @todo might just use nearest neighbourhood join (nnjoin in QGIS, e.g.)?
-
-fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol = 1) { 
-    
-    
-    if (!is.na(maskchar)) { 
-        r_in[r_in==maskchar] = NA
-    }
-    
-    r_in = projectRaster(r_in, boundary_r)
-    
-    # na_num = sum(getValues(is.na(boundary_r)))
-    # na_num_in = sum(getValues(is.na(r_in)))
-    
-    
-    fill.na <- function(x, i=width+2) {
-        if( is.na(x)[i] ) {
-            return(mean(x, na.rm=TRUE))
-        } else {
-            return(x[i])
-        }
-    }  
-    
-    
-    # while(na_num_in > na_num) 
-    for (i in 1:n_interpol) { 
-        
-        # r2 <- focal(r, w = matrix(1,3,3), fun = fill.na, 
-        # pad = TRUE, na.rm = FALSE )
-        r_in <- focal(r_in, w = matrix(1,width,width), fun = fill.na, pad = TRUE, na.rm=F)
-        na_num_in = sum(getValues(is.na(r_in)))
-        print(na_num_in)
-    }
-    
-    return(r_in * boundary_r)
-    
-}
-
-
-
-# plot(BNG_r_tmp)
-# plot(Shetland_NUTS_BNG_r, add=T, col="red")
-# plot(Orkney_NUTS_BNG_r, add=T, col="blue")
-
-fillShetland <- function(r_in) { 
-    
-    Orkney_r_tmp = projectRaster(r_in, Orkney_NUTS_BNG_r)
-    ork_v = getValues(Orkney_r_tmp)
-    
-    in_df = cbind(Ork=ork_v, Orkney_elev_df)
-    in_df = in_df[!is.na(rowSums(in_df)),]
-    rf_tmp = randomForest(Ork ~ ., data = in_df, ntree=1000, nodesize=1)
-    shetland_v = predict(rf_tmp, newdata = Shetland_elev_df)
-    
-    # gbm_tmp = gbm(formula = Ork ~., data = in_df, interaction.depth = 2)
-    # shetland_v = predict(gbm_tmp, newdata = Shetland_elev_df)
-    
-    out_r = setValues(Shetland_elev_r, shetland_v) # * (Shetland_NUTS_BNG_r!=1)
-    
-    # rng = raster::cellStats(Orkney_r_tmp, stat = range)
-    # par(mfrow=c(2,2))
-    # 
-    # plot(Orkney_elev_r)
-    # plot(Shetland_elev_r)
-    # 
-    # 
-    # plot(Orkney_r_tmp)
-    # plot(out_r, zlim=rng)
-    # 
-    # plot(focal(out_r, w = matrix(1,3,3), fun = sum, na.rm=T))
-    
-    
-    out_r_big = mosaic(r_in, out_r, fun = max)
-    # plot(r_in)
-    # plot(r_out)
-    
-    # plot(Orkney_r_tmp)
-    # plot(out_r, add=F)
-    # plot(r_in, add=T)
-    
-    # plsot(out_r, add=T)
-    
-    return(out_r_big)
-}
-
-
-## 
-
-# r_in = BNG_r_tmp2
-# boundary_r = CHESS_mask_r
-# width = 10 
-# maskchar = 0 
-
-smoothCapitals <- function(r_in, boundary_r, width=10, maskchar=NA) { 
-    
-    if (!is.na(maskchar)) { 
-        r_in[r_in==maskchar] = NA
-    }
-    
-    r_in = projectRaster(r_in, boundary_r)
-    
-    win <- focalWeight(r_in, d = 1E4, type = "circle")
-    
-    r_in <- focal(r_in, w = win, fun = mean, pad = TRUE, na.rm=T)
-     
-    r_in[r_in==maskchar] = NA
-    
-    # plot(r_in * boundary_r)
-     
-    return(r_in * boundary_r)
-    
-}
-
-
-
+ 
 
 doLCM = FALSE 
 
@@ -631,7 +511,7 @@ if (doSuitability) {
 }
 
 
-do4Capitals = FALSE 
+do4Capitals = FALSE
 
 
 if (do4Capitals) { 
@@ -643,7 +523,9 @@ if (do4Capitals) {
     
     ### Manufactured capital (LAD)
     # mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Final version_22Mar2021/M Projections.csv")) # by 11 May 
-    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Addtional correction_6May2021/CRAFTY_Capitals_Manufactured_M Projections.csv"))
+    # mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Addtional correction_6May2021/CRAFTY_Capitals_Manufactured_M Projections.csv"))
+    # mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Adjusted M capital_27May2021/CRAFTY_Capitals_Manufactured_M Projections.csv"))
+    mc_csv = read.csv(paste0(path_data, "Capital/Capitals/Adjusted M capital_21June2021/CRAFTY_Capitals_Manufactured_M Projections.csv"))
     
     (colnames(mc_csv))
     
@@ -656,7 +538,7 @@ if (do4Capitals) {
     head(colnames(sc_csv))
     
     
-    str(colnames(fc_csv))
+    # str(colnames(fc_csv))
     colnames(mc_csv)
     colnames(hc_csv)
     colnames(sc_csv)
@@ -701,7 +583,11 @@ if (do4Capitals) {
     c_idx = 4
     layer_idx = 1
     
-    for (c_idx in 1:length(four_capital_names)) { 
+    c_idxs_in = 1:length(four_capital_names)
+    c_idxs_in = 3
+    
+    
+    for (c_idx in c_idxs_in) { 
         
         capital_name = four_capital_names[c_idx] 
         shp_name = shp_names[c_idx]
@@ -719,45 +605,50 @@ if (do4Capitals) {
             print(layer_name)
             
             BNG_r_tmp = rasterize(BNG_shp[,], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
-            plot(BNG_r_tmp, add=F)
-            
-            plot(UK_BNG_r, add=F)
-            plot(BNG_r_tmp * CHESS_mask_r, add=T)
+            # plot(BNG_r_tmp, add=F)
+            # 
+            # plot(UK_BNG_r, add=F)
+            # plot(BNG_r_tmp * CHESS_mask_r, add=T)
             # 
             BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
             # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-            
-            BNG_r_tmp2_5 = smoothCapitals(BNG_r_tmp2, boundary_r = CHESS_mask_r, maskchar=0, width = 10)
-            
+
             
             if (!(capital_name %in% c("Manufactured", "Human"))) { 
                 
-                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2_5,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 5) 
+                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 7) 
             } else { 
-                BNG_r_tmp3 = BNG_r_tmp2_5
+                BNG_r_tmp3 = BNG_r_tmp2
             }
             
             
-            plot(BNG_r_tmp3 - BNG_r_tmp2)
-            
-            plot(BNG_r_tmp3)
+            # plot(BNG_r_tmp3 - BNG_r_tmp2)
+            # plot(BNG_r_tmp3)
             # 
+            
+            
+            BNG_r_tmp4 = smoothCapitals(BNG_r_tmp3, boundary_r = CHESS_mask_r, maskchar=NULL, width_m = 5000)
+            
+            par(mar=c(0,0,0,0))
+            plot(BNG_r_tmp4, legend=F, axes=F)
+            plot(BNG_r_tmp4 - BNG_r_tmp3)
+            # plot(  BNG_r_tmp3)
+            
             # plot(UK_BNG_r, add=F)
             # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
-            # 
+             
             # plot(CHESS_mask_r - !is.na(BNG_r_tmp), col=c("grey", "red"))
             # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
             
             
-            
-            BNG_extracted_tmp = extract(BNG_r_tmp3, CHESS_BNG_sp, fun = mean)
+            BNG_extracted_tmp = extract(BNG_r_tmp4, CHESS_BNG_sp, fun = mean)
             
             csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
             
             csv_df$capital = BNG_extracted_tmp
             colnames(csv_df)[ncol(csv_df)] = capital_name
             
-            writeRaster(BNG_r_tmp3, filename =  paste0(path_output, "/Capital/Capitals/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
+            writeRaster(BNG_r_tmp4, filename =  paste0(path_output, "/Capital/Capitals/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name, ".tif"), overwrite=T)
             write.csv(csv_df, file =paste0(path_output, "/Capital/Capitals/",capital_name, "/CRAFTY_UK_", capital_name, "_", layer_name,  ".csv"), quote = F, row.names = F)
         }
     }

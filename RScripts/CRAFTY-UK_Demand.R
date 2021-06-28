@@ -72,41 +72,50 @@ demand_df$Year = demand_years
 
 # UK 15 May 
 # 21766.97290234391 Fodder.crops:14112.409852241073 GF.redMeat:40108.11886736392 Fuel:1016.8883724829846 Softwood:5689.9844400473485 Hardwood:2058.4974824261094 Biodiversity:44946.91422698692 Carbon:46121.93703216233 Recreation:42349.64906339934 Flood.reg:36148.20719302831 Employment:55500.99449591252 Ldiversity:34846.58579084016 GF.milk:25826.372107517484 }
- 
-# demand_df$Food.crops = 21766.97290234391 
-# demand_df$Fodder.crops = 14112.409852241073
-# demand_df$GF.redMeat= 40108.11886736392
-# demand_df$Fuel = 1016.8883724829846
-# demand_df$Softwood = 5689.9844400473485
-# demand_df$Hardwood = 2058.4974824261094
-# demand_df$Biodiversity = 44946.91422698692
-# demand_df$Carbon = 46121.93703216233
-# demand_df$Recreation = 42349.64906339934
-# demand_df$Flood.reg = 36148.20719302831
-# demand_df$Employment = 55500.99449591252
-# demand_df$Ldiversity = 34846.58579084016
-# demand_df$GF.milk = 25826.372107517484
-# 
-# demand_df_org = demand_df
-# 
-# write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
 
-library(openxlsx)
-initial_supply_df = read.xlsx(paste0(path_data, "/Scenarios/Latest/InitialSupply_15May2021.xlsx"), 1)
- 
+# UK 22 May  
+# 21019.838,13621.988,38650.303,950.690,5565.719,2018.705,44034.783,45159.180,41491.447,35506.786,53563.917,34435.081,25062.023,9311.735,
+
+# # UK 25 May
+# ServiceSupply:Food.crops,ServiceSupply:Fodder.crops,ServiceSupply:GF.redMeat,ServiceSupply:Fuel,ServiceSupply:Softwood,ServiceSupply:Hardwood,ServiceSupply:Biodiversity,ServiceSupply:Carbon,ServiceSupply:Recreation,ServiceSupply:Flood.reg,ServiceSupply:Employment,ServiceSupply:Ldiversity,ServiceSupply:GF.milk,ServiceSupply:Sus.Prod,Demand:Food.crops,Demand:Fodder.crops,Demand:GF.redMeat,Demand:Fuel,Demand:Softwood,Demand:Hardwood,Demand:Biodiversity,Demand:Carbon,Demand:Recreation,Demand:Flood.reg,Demand:Employment,Demand:Ldiversity,Demand:GF.milk,Demand:Sus.Prod,Region,Tick
+# 21862.666,14189.133,40447.693,1023.830,5753.034,2081.253,45026.054,46211.902,42408.602,36212.947,55867.298,34875.172,26079.491,9716.594,21019.838,13621.988,38650.303,950.690,5565.719,2018.705,44034.783,45159.180,41491.447,35506.786,53563.917,34435.081,25062.023,9311.735,UK,2020
+
+
+demand_df$Food.crops = 21862.666
+demand_df$Fodder.crops = 14189.133
+demand_df$GF.redMeat= 40447.693
+demand_df$Fuel = 1023.830
+demand_df$Softwood = 5753.034
+demand_df$Hardwood = 2081.253
+demand_df$Biodiversity = 45026.054
+demand_df$Carbon = 46211.902
+demand_df$Recreation = 42408.602
+demand_df$Flood.reg = 36212.947
+demand_df$Employment = 55867.298
+demand_df$Ldiversity = 34875.172
+demand_df$GF.milk = 26079.491
+demand_df$Sus.Prod = 9716.594
+
+demand_df_org = demand_df
+# 
+write.csv(demand_df_org, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
+
+# library(openxlsx)
+# initial_supply_df = read.xlsx(paste0(path_data, "/Scenarios/Latest/InitialSupply_15May2021.xlsx"), 1)
+
 
 # demand_df_org = demand_df
 # 
 # write.csv(demand_df, file = paste0(path_output, "/Demand/Baseline_demands_UK.csv"), quote = F, row.names = F)
 
 ### SSP demands (scaled based on Apirl demand by Calum)
- 
+
 
 SSP_names = paste0("SSP", 1:5)
 
-
-initial_supply_df_ssp = initial_supply_df[c(2, 6, 7, 9),]
-initial_supply_df_ssp$Scenario = SSP_names[-3]
+# 
+# initial_supply_df_ssp = initial_supply_df[c(2, 6, 7, 9),]
+# initial_supply_df_ssp$Scenario = SSP_names[-3]
 
 ssp_idx = 2 
 
@@ -114,24 +123,24 @@ demand_names = as.character(unlist(service_names))
 
 
 for (ssp_idx in c(1,2,4,5)) {
-     
+    
     ssp_name = SSP_names[ssp_idx]
     
-    demand_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP", ssp_idx, " demands_scaled_popn.csv"))
-    colnames(demand_cb)[3] = "Year"
-     str(demand_cb)
+    demand_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/170521 versions/demand/SSP", ssp_idx, " demands_scaled_popn.csv"))
+    str(demand_cb)
     
     
-     ## discount by the initial supply
-     init_sup = initial_supply_df_ssp[initial_supply_df_ssp$Scenario == ssp_name, paste0("ServiceSupply:", demand_names)] 
-     names(init_sup) = demand_names
- 
+    ## discount by the initial supply
+    # init_sup = initial_supply_df_ssp[initial_supply_df_ssp$Scenario == ssp_name, paste0("ServiceSupply:", demand_names)] 
+    init_sup = demand_df_org[1,-1]
+    names(init_sup) = demand_names
+    
     demand_cols = demand_names
     
     demand_ssp = demand_df_org
     demand_ssp[, demand_cols] = sapply(demand_cols, FUN = function(x) demand_cb[,x] * as.numeric( init_sup[x]/demand_cb[1,x])) # 2020-2100
     
-     
+    
     
     
     write.csv(demand_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_UK.csv"), quote = F, row.names = F)
@@ -169,16 +178,16 @@ ssp_idx = 3
 # 82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909,8186.424,5195.650,14264.198,294.126,1276.084,1258.192,28367.804,28748.343,27051.469,24740.449,22819.725,26418.280,8079.997,Wales,2020
 
 
-
-demand_df_england_org = demand_df_scotland_org = demand_df_wales_org = demand_df[,]
-demand_df_england_april = demand_df_scotland_april = demand_df_wales_april = demand_df[,]
+# 
+# demand_df_england_org = demand_df_scotland_org = demand_df_wales_org = demand_df[,]
+# demand_df_england_april = demand_df_scotland_april = demand_df_wales_april = demand_df[,]
 
 # demand_df_england_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(7610.754,4893.897,7233.887,284.135,424.737,1074.832,7596.932,7724.278,6888.520,4776.289,15994.747,5802.092,6281.543)))
 #                                     
 # demand_df_scotland_april[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) c(491.706,279.207,4968.312,9.522,689.487,114.545,19353.990,19541.037,18846.684,18741.427,5617.570,19311.690,507.847)))
 # 
 # demand_df_wales_april[,-1] =t(sapply(1:nrow(demand_df), FUN = function(x)  c(82.624,22.584,2084.507,0.025,166.404,75.283,1435.015,1502.984,1329.516,1239.574,1228.717,1315.761,1301.909)))
-       
+
 
 
 # Supply of region England: { Food.crops:7551.71409403912 Fodder.crops:4928.24311531373 GF.redMeat:7107.23448725221 Fuel:322.4028598281733 Softwood:423.6144611443088 Hardwood:1068.526811570599 Biodiversity:3050.638024789987 Carbon:6236.890004581034 Recreation:5518.025461491209 Flood.reg:4248.571378281984 Employment:15911.459268054521 Ldiversity:5471.92154695221 GF.milk:6238.081549551833 }
@@ -186,54 +195,51 @@ demand_df_england_april = demand_df_scotland_april = demand_df_wales_april = dem
 # Supply of region Wales: { Food.crops:74.43612854595882 Fodder.crops:20.719557602314577 GF.redMeat:2029.330174376222 Fuel:0.01833383737195789 Softwood:166.39727070460034 Hardwood:75.2767618765977 Biodiversity:762.3291419704672 Carbon:1419.151580986647 Recreation:1245.6901956526572 Flood.reg:1193.2488211796108 Employment:1219.4901834603138 Ldiversity:1272.097315039078 GF.milk:1301.902690061388 }
 
 
-dem_tmp = initial_supply_df[3:5,] 
-colnames(dem_tmp)[-c(1:2)] = demand_names
-
-demand_df_england_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[1,-c(1:2)])))
+# dem_tmp = initial_supply_df[3:5,] 
+# colnames(dem_tmp)[-c(1:2)] = demand_names
 # 
-demand_df_scotland_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[2,-c(1:2)])))
-# 
-demand_df_wales_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[,-c(1:2)])))
+# demand_df_england_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[1,-c(1:2)])))
+# # 
+# demand_df_scotland_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[2,-c(1:2)])))
+# # 
+# demand_df_wales_org[,-1] = t(sapply(1:nrow(demand_df), FUN = function(x) as.numeric(dem_tmp[,-c(1:2)])))
 
-write.csv(demand_df_england_org, file = paste0(path_output, "Demand/Baseline_demands_England.csv"), quote = F, row.names = F)
-write.csv(demand_df_scotland_org, file = paste0(path_output, "Demand/Baseline_demands_Scotland.csv"), quote = F, row.names = F)
-write.csv(demand_df_wales_org, file = paste0(path_output, "Demand/Baseline_demands_Wales.csv"), quote = F, row.names = F)
+# write.csv(demand_df_england_org, file = paste0(path_output, "Demand/Baseline_demands_England.csv"), quote = F, row.names = F)
+# write.csv(demand_df_scotland_org, file = paste0(path_output, "Demand/Baseline_demands_Scotland.csv"), quote = F, row.names = F)
+# write.csv(demand_df_wales_org, file = paste0(path_output, "Demand/Baseline_demands_Wales.csv"), quote = F, row.names = F)
 
 
 
 
 ssp_idx = 3 
-    
-    # demand_multiplier  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/Updates 180421/SSP", ssp_idx, "/SSP", ssp_idx, " demands.csv"))
-    # str(demand_multiplier)
-    
-    demand_england_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_England.csv"))
-    demand_scotland_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_Scotland.csv"))
-    demand_wales_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/130521 versions/demand/SSP3 demands_scaled_popn_Wales.csv"))
-    
-    
-    
-    demand_cols = demand_names
-    
-    # England 
-    demand_england_ssp = demand_df_england_org 
-    demand_england_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_england_cb[,x] * (demand_df_england_org[1,x]/demand_england_cb[1,x]))
-     
-     
-      write.csv(demand_england_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_England.csv"), quote = F, row.names = F)
-    
-    
-    # Scotland 
-    demand_scotland_ssp = demand_df_scotland_org
-    demand_scotland_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_scotland_cb[,x] * (demand_df_scotland_org[1,x]/demand_scotland_cb[1,x]))
-    
-    write.csv(demand_scotland_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_Scotland.csv"), quote = F, row.names = F)
-    
-    # Wales 
-    demand_wales_ssp = demand_df_wales_org
-    demand_wales_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_wales_cb[,x] * (demand_df_wales_org[1,x]/demand_wales_cb[1,x]))
-    write.csv(demand_wales_ssp, file = paste0(path_output, "Demand/Baseline-", SSP_names[ssp_idx], "_demands_Wales.csv"), quote = F, row.names = F)
-     
+
+demand_england_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/170521 versions/demand/SSP3 demands_scaled_popn_England.csv"))
+demand_scotland_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/170521 versions/demand/SSP3 demands_scaled_popn_Scotland.csv"))
+demand_wales_cb  = read.csv(paste0("~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/Scenarios/170521 versions/demand/SSP3 demands_scaled_popn_Wales.csv"))
+
+
+
+demand_cols = demand_names
+
+# England 
+demand_england_ssp = demand_england_cb 
+demand_england_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_england_cb[,x] *  as.numeric(init_sup[x]/demand_cb[1,x]))
+
+
+write.csv(demand_england_ssp, file = paste0(path_output, "Demand/RCP6_0-", SSP_names[ssp_idx], "_demands_England.csv"), quote = F, row.names = F)
+
+
+# Scotland 
+demand_scotland_ssp = demand_scotland_cb
+demand_scotland_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_scotland_cb[,x] * as.numeric(init_sup[x]/demand_cb[1,x]))
+
+write.csv(demand_scotland_ssp, file = paste0(path_output, "Demand/RCP6_0-", SSP_names[ssp_idx], "_demands_Scotland.csv"), quote = F, row.names = F)
+
+# Wales 
+demand_wales_ssp = demand_wales_cb
+demand_wales_ssp[, demand_cols] = sapply(demand_names, FUN = function(x) demand_wales_cb[,x] * as.numeric(init_sup[x]/demand_cb[1,x]))
+write.csv(demand_wales_ssp, file = paste0(path_output, "Demand/RCP6_0-", SSP_names[ssp_idx], "_demands_Wales.csv"), quote = F, row.names = F)
+
 
 
 
@@ -310,4 +316,3 @@ stop("ends here")
 # barplot(t(as.matrix(food_dec_res[,3:18])), horiz=F)
 # 
 # 
- 

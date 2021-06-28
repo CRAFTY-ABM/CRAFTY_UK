@@ -1,4 +1,4 @@
-<scenario startTick="2020" endTick="2100" world="UK"
+<scenario startTick="2020" endTick="2080" world="UK"
  version="Thresholds" 
  regionalisation="UK"
   scenario="RCP4_5-SSP2">

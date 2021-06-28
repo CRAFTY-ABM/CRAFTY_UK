@@ -87,7 +87,7 @@ var_names = c("givingUpDistributionMean", "givingInDistributionMean", "givingUpP
 
 
 ## read params from an excel table
-bparms_df = readxl::read_xlsx(paste0(path_data, "Scenarios/Latest/Behavioural parameters_complete_17May2021.xlsx"), 1)
+bparms_df = readxl::read_xlsx(paste0(path_data, "Scenarios/Latest/Behavioural parameters_complete_21June2021_v21.xlsx"), 1)
  
 colnames(bparms_df)[c(5, 3, 9,7,8)] = var_names
 

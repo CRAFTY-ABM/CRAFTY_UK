@@ -5,7 +5,7 @@ library(raster)
 library(rgeos)
 # library(doSNOW)
 
-library(fasterize)
+# library(fasterize)
 # library(stars)
 
 library(doMC)
@@ -133,6 +133,12 @@ fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol
 # plot(Orkney_NUTS_BNG_r, add=T, col="blue")
 
 
+
+
+# plot(BNG_r_tmp)
+# plot(Shetland_NUTS_BNG_r, add=T, col="red")
+# plot(Orkney_NUTS_BNG_r, add=T, col="blue")
+
 fillShetland <- function(r_in) { 
     
     Orkney_r_tmp = projectRaster(r_in, Orkney_NUTS_BNG_r)
@@ -172,6 +178,48 @@ fillShetland <- function(r_in) {
     # plsot(out_r, add=T)
     
     return(out_r_big)
+}
+
+
+## 
+
+# r_in = BNG_r_tmp2
+# boundary_r = CHESS_mask_r
+# width = 10 
+# maskchar = 0 
+
+smoothCapitals <- function(r_in, boundary_r, width_m=5000, maskchar=null) { 
+    
+    r_in = projectRaster(r_in, boundary_r)
+    
+    r_out = r_in
+    
+    if (!is.null(maskchar)) { 
+        r_out[r_in==maskchar] = NA
+    }
+     
+    
+    win <- focalWeight(r_in, d = width_m, type = "circle") 
+    
+    mean_withNA = function(x) { 
+        
+        sum(x, na.rm=T) / length(x[!is.na(x)])  * length(x)
+    }
+    
+    r_out <- focal(r_out, w = win, fun = mean_withNA, pad = T, na.rm=F)
+    
+    if (!is.null(maskchar)) { 
+        r_out[r_in==maskchar] = NA
+    }
+    # plot(r_out)
+
+    
+    r_out[is.na(r_in)] = NA
+    
+    # plot(r_out * boundary_r)
+    
+    return(r_out * boundary_r)
+    
 }
 
 
@@ -309,7 +357,8 @@ if (preprocessing) {
         "Flood.reg",
         "Employment",
         "Ldiversity",
-        "GF.milk")
+        "GF.milk",
+        "Sus.Prod")
     
     
     
