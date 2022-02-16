@@ -20,19 +20,31 @@
 	<updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
 
 	<updaterFile>xml/UrbanMaskUpdater/CsvUrbanMaskUpdater_%s.xml</updaterFile>
+	<updaterFile>xml/PAupdater/CsvLCMMaskUpdater.xml</updaterFile>
 	<updaterFile>xml/PAupdater/CsvProtectedAreaL1Updater_%s.xml</updaterFile>    
 	<updaterFile>xml/PAupdater/CsvProtectedAreaL2Updater_%s.xml</updaterFile>    
 
    <!-- Regional institutions -->
 
    <!-- Land use control institution (spatially explicit) -->
-    <institution
+    <!--<institution
    class="org.volante.abm.institutions.LanduseControllingInstitution">
-	</institution>  
+	</institution>  -->
     
 	<!-- FR restricting institution (FR to FR) -->
-	<institution class="org.volante.abm.institutions.FrRestrictingInstitution">
+	<!-- <institution class="org.volante.abm.institutions.FrRestrictingInstitution">
     	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+	</institution> -->
+    
+	<!-- FR restricting institution (FR to FR) -->
+	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/Urban_Restrictions.csv</csvFileRestrictedAllocations>
+		<spatialLayer>FR_IMMUTABLE</spatialLayer>
+	</institution>
+	
+	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution">
+    	<csvFileRestrictedAllocations>csv/LCM_Restrictions.csv</csvFileRestrictedAllocations>
+		<spatialLayer>PROTECTED_L0</spatialLayer>
 	</institution>
 
 	<institution class="org.volante.abm.institutions.FrSpatialRestrictingInstitution"> -->

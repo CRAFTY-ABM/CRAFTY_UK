@@ -1,0 +1,43 @@
+<world>
+	<region id="UK">
+	
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" percentageCells="5" percentageTakeOvers="5" relativeThresholding="true"/> 
+   
+<!--	<demandFile>xml/RegionalDemand.xml</demandFile>-->
+	<demand class="org.volante.abm.example.RegionalMarketPseudoWorldDemandModel" demandCSV="worlds/%r/demand/%s_demands_%r.csv"/>
+
+	<competitionFile>xml/Competition/Competition_linear_UK_%s.xml</competitionFile>
+	<btFile>agents/BehaviouralTypes.xml</btFile>
+   <frFile>agents/FunctionalRoles_multiplicative.xml</frFile>
+   
+   <cellInitialiserFile>xml/CSVCells.xml</cellInitialiserFile>		
+
+	<!-- not implemnted <agentInitiliserFile>	Agents not implemented -->
+	
+	<regionalLaraModelFile>lara/RegionalLaraModel.xml</regionalLaraModelFile>
+
+	<initialiserFile>xml/Initialiser.xml</initialiserFile>
+	<updaterFile>xml/CapitalUpdater/CsvCapitalUpdater_%s.xml</updaterFile>    
+
+
+   <!-- Regional institutions -->
+   <!-- <updaterFile>xml/CsvLandUseUpdater_%s.xml</updaterFile>  -->
+   
+   <!-- Land use control institution (spatially explicit) -->
+
+	<!-- <institution
+		class="org.volante.abm.institutions.LanduseControllingInstitution">
+		<csvFileProhibitedLanduse>worlds/%w/regionalisations/%k/LandUseControl/UrbanMask/%s/UrbanMask2016.csv</csvFileProhibitedLanduse>
+		<xColumn>x</xColumn>
+		<yColumn>y</yColumn>
+		<prohibitedColumn>Urban.mask</prohibitedColumn>
+		<maskChar>1</maskChar>
+	</institution> -->
+	<!-- FR restricting instititon (FR to FR) -->
+	<!-- <institution class="org.volante.abm.institutions.FrRestrictingInsitution">
+    	<csvFileRestrictedAllocations>csv/AllocationTypeRestrictions.csv</csvFileRestrictedAllocations>
+	</institution> -->
+
+
+</region>
+</world>

@@ -1,15 +1,15 @@
 #!/bin/bash -x
-#SBATCH --partition=rome  # If not set, test is used
+#SBATCH --partition=cclake  # If not set, test is used
 #SBATCH --nodes=1             # number of nodes to use
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1  # MPI tasks per node
 #SBATCH --ntasks-per-core=1   # 2 for hyperthreading (HT), 1 otherwise  
 							  # applies to ivy/haswell/fat/test only
 #SBATCH --hint=multithread    # multithread for HT, nomultithread otherwise
-#SBATCH --cpus-per-task=64 # CPU per task (1 for MPI-only)
+#SBATCH --cpus-per-task=80 # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
-#SBATCH --job-name=C_UK_All
+#SBATCH --job-name=C_UK_Rem
 #SBATCH --mail-user=bumsuk.seo@kit.edu
 #SBATCH --mail-type=ALL
 ulimit -s unlimited                    # if needed, otherwise 102400
@@ -21,16 +21,10 @@ module load app/jdk/15.0.2
 #export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
 cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
 
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Normal.sh  &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_Normal.sh & 
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP6_0-SSP3_Thresholds_noSN.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4_Thresholds_SN.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds_SN.sh &
+
 wait
 
 ERROR_CODE=$? 										# 0 if successful

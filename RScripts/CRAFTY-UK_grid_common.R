@@ -10,7 +10,7 @@ library(rgeos)
 
 library(doMC)
 library(randomForest)
-library(gbm)
+# library(gbm3)
 
 
 library(dplyr)
@@ -26,20 +26,28 @@ proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-1
 ### https://gis.stackexchange.com/questions/34276/whats-the-difference-between-epsg4326-and-epsg900913
 proj4.SphericalMercator = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs"  #EPSG:900913
 # EPSG:3857
+
 proj4.OSGB1936 ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs"  # proj4string(LAD2019_shp) # EPSG:27700
 proj4.OSNI1952 = "+proj=tmerc +lat_0=53.5 +lon_0=-8 +k=1 +x_0=200000 +y_0=250000 +ellps=airy +towgs84=482.5,-130.6,564.6,-1.042,-0.214,-0.631,8.15 +units=m +no_defs" # EPSG:29901
 
- 
+
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
- 
+
 
 ### Read the NUTS data 
 # LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__April_2019__Boundaries_UK_BFE.shp"))
 LAD_shp = readOGR(paste0(path_data, "Boundaries/Local_Authority_Districts__December_2019__Boundaries_UK_BFE.shp"))
 
 NUTS_shp = readOGR(paste0(path_data, "Boundaries/NUTS_Level_3__January_2018__Boundaries.shp"))
+NUTS_bng_shp = spTransform(NUTS_shp, CRSobj = crs(proj4.OSGB1936))
 
- 
+NUTS1_shp =  readOGR(paste0(path_data, "Boundaries/NUTS_Level_1_(January_2018)_Boundaries.shp"))
+NUTS1_bng_shp = spTransform(NUTS1_shp, CRSobj = crs(proj4.OSGB1936))
+NUTS1_GB_bng_shp = NUTS1_bng_shp[NUTS1_bng_shp$nuts118nm != "Northern Ireland",]
+
+GB_bng_shp = gUnaryUnion(NUTS1_GB_bng_shp)
+
+
 # LAD_shp_osgb = spTransform(LAD_shp, proj4.OSGB1936)
 # 
 # sum(LAD_shp$Shape__Are)
@@ -90,38 +98,88 @@ colnames(CHESS_LL_coords) = c("Longitude", "Latitude")
 
 
 # Pass the fill.na function to raster::focal and check results. The pad argument creates virtual rows/columns of NA values to keep the vector length constant along the edges of the raster. This is why we can always expect the fifth value of the vector to be the focal value in a 3x3 window thus, the index i=5 in the fill.na function.
+# r_in = BNG_r_tmp2
+# boundary_r = CHESS_mask_r # CHESS_BNG_r
 
 fillCoastalPixels <- function(r_in, boundary_r, maskchar=NA, width=3, n_interpol = 1) { 
     
     
-    if (!is.na(maskchar)) { 
-        r_in[r_in==maskchar] = NA
+    if (proj4string(r_in)!= proj4string(boundary_r)) { 
+        
+        r_in = projectRaster(r_in, boundary_r)
     }
+    # in_na = is.na(r_in)
+    # table(getValues(in_na))
     
-    r_in = projectRaster(r_in, boundary_r)
+    # b_na = is.na(boundary_r)
+    # table(getValues(b_na))
+    
+    na_tofill = (is.na(r_in)) - (is.na(boundary_r)) 
+    
+    # plot(na_tofill)
+    
+    
+    na_tofill_idx = getValues(na_tofill) == 1 
+    # table(na_tofill_idx)
+    
+    # getValues(r_in)[na_tofill_idx]
+    
+    # if (!is.na(maskchar)) { 
+    #     r_in[r_in==maskchar] = NA
+    # } 
+    
+    na_coords = coordinates(na_tofill)[na_tofill_idx,]
+    
     
     # na_num = sum(getValues(is.na(boundary_r)))
     # na_num_in = sum(getValues(is.na(r_in)))
     
     
-    fill.na <- function(x, i=width+2) {
-        if( is.na(x)[i] ) {
-            return(mean(x, na.rm=TRUE))
-        } else {
-            return(x[i])
-        }
-    }  
-    
-    
-    # while(na_num_in > na_num) 
-    for (i in 1:n_interpol) { 
+    #a function for sampling
+    sample_raster_NA <- function(r, xy){
+        apply(X = xy, MARGIN = 1, 
+              FUN = function(xy) r@data@values[which.min(replace(distanceFromPoints(r, xy), is.na(r), NA))])
         
-        # r2 <- focal(r, w = matrix(1,3,3), fun = fill.na, 
-        # pad = TRUE, na.rm = FALSE )
-        r_in <- focal(r_in, w = matrix(1,width,width), fun = fill.na, pad = TRUE, na.rm=F)
-        na_num_in = sum(getValues(is.na(r_in)))
-        print(na_num_in)
     }
+    
+    #lapply to get answers
+    nona_value_neareast = sample_raster_NA(r_in, na_coords)
+    
+    
+    nona_value_neareast= sapply(nona_value_neareast, FUN = mean, na.rm=T)
+    
+    # r_out = r_in 
+    
+    r_in[na_tofill_idx] = nona_value_neareast
+    
+    
+    
+    # fill.na <- function(x, i=width+2) {
+    #     
+    #     
+    #     if( is.na(x)[i] ) {
+    #         return(mean(x, na.rm=TRUE))
+    #     } else {
+    #         return(x[i])
+    #     }
+    # } 
+    
+    # fill.na <- function(x, i=width+2) {
+    #      
+    #     mean(x[!is.na(x)])
+    #   
+    # }  
+    # 
+    # 
+    # # while(na_num_in > na_num) 
+    # for (i in 1:n_interpol) { 
+    #     
+    #     # r2 <- focal(r, w = matrix(1,3,3), fun = fill.na, 
+    #     # pad = TRUE, na.rm = FALSE )
+    #     r_in <- focal(r_in, w = matrix(1,width,width), fun = fill.na, pad = TRUE, na.rm=F)
+    #     na_num_in = sum(getValues(is.na(r_in)))
+    #     print(na_num_in)
+    # }
     
     return(r_in * boundary_r)
     
@@ -182,11 +240,11 @@ fillShetland <- function(r_in) {
 
 
 ## 
-
-# r_in = BNG_r_tmp2
-# boundary_r = CHESS_mask_r
-# width = 10 
-# maskchar = 0 
+# 
+# r_in = BNG_r_tmp3
+# boundary_r = CHESS_BNG_r
+# width_m = 5000
+# maskchar = 0
 
 smoothCapitals <- function(r_in, boundary_r, width_m=5000, maskchar=null) { 
     
@@ -197,22 +255,23 @@ smoothCapitals <- function(r_in, boundary_r, width_m=5000, maskchar=null) {
     if (!is.null(maskchar)) { 
         r_out[r_in==maskchar] = NA
     }
-     
+    
     
     win <- focalWeight(r_in, d = width_m, type = "circle") 
     
-    mean_withNA = function(x) { 
-        
-        sum(x, na.rm=T) / length(x[!is.na(x)])  * length(x)
+    mean_withNA = function(x, na.rm) {
+        x2 =  x[!is.na(x)]
+        sum(x2, na.rm=T) / length(x2)
     }
     
-    r_out <- focal(r_out, w = win, fun = mean_withNA, pad = T, na.rm=F)
+    r_out <- focal(r_out, w = win, fun = mean_withNA, pad = T, na.rm=T)
+    # plot(r_out)
     
-    if (!is.null(maskchar)) { 
+    if (!is.null(maskchar)) {
         r_out[r_in==maskchar] = NA
     }
     # plot(r_out)
-
+    
     
     r_out[is.na(r_in)] = NA
     
@@ -236,7 +295,7 @@ LCM2015_dom_rs = raster(paste0(path_output, "/LCM2015_1km_dominated.tif"))
 UK_BNG_r = LCM2015_dom_rs[[1]]
 UK_LL_r = projectRaster(UK_BNG_r, crs = proj4.LL, method = "ngb")
 
- 
+
 
 
 preprocessing = FALSE 
@@ -272,7 +331,7 @@ if (preprocessing) {
     
     cellids = data.frame(Cell_ID= 1:length(CHESS_BNG_csv$FID), FID = CHESS_BNG_csv$FID, X_col = rowcol_m[chess_idx,2], Y_row= rowcol_m[chess_idx,1], Longitude =  CHESS_LL_coords$Longitude, Latitude= CHESS_LL_coords$Latitude, xcoord_bng = CHESS_BNG_csv$POINT_X, ycoord_bng = CHESS_BNG_csv$POINT_Y )
     colnames(cellids)
- 
+    
     
     write.csv(cellids, paste0(path_output, "/Basegrid/Cell_ID_XY_UK.csv"), quote = F, row.names = F)
     

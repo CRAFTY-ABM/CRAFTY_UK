@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=80 # CPU per task (1 for MPI-only)
 #SBATCH --output=UK-out.%j
 #SBATCH --error=UK-err.%j
-#SBATCH --job-name=C_UK_th1
+#SBATCH --job-name=C_UK_NoRem
 #SBATCH --mail-user=bumsuk.seo@kit.edu
 #SBATCH --mail-type=ALL
 ulimit -s unlimited                    # if needed, otherwise 102400
@@ -21,10 +21,10 @@ module load app/jdk/15.0.2
 #export MV2_ENABLE_AFFINITY=0                      	# for mvapich2 only 
 cd $SLURM_SUBMIT_DIR    # make sure we are in the right directory in case writing files 
 
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP4_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds.sh &
-srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP5_Thresholds.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_Baseline_Thresholds_SN.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP2_6-SSP1_Thresholds_SN.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP4_5-SSP2_Thresholds_SN.sh &
+srun --verbose --nodes 1 KEAL_CMD/CRAFTY_keal_cmd_RCP8_5-SSP2_Thresholds_SN.sh &
 
 wait
 

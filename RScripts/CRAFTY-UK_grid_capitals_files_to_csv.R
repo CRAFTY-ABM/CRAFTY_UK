@@ -4,6 +4,8 @@ path_wd = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK/"
 path_data = "~/Nextcloud/workspace_newEU/CRAFTY UK input CSV files/"
 path_output =  "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY_UK_Output/"
 
+path_gisdata = "~/Dropbox/KIT_Modelling/CRAFTY/CRAFTY GIS data/UK Land Cover data/"
+
 setwd(path_wd)
 
 source("RScripts/CRAFTY-UK_grid_common.R")
@@ -15,7 +17,7 @@ proj4.BNG = "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-1
 
 
 
-CHESS_BNG_csv = read.csv("Basegrid/CHESS_1k_grid.csv") # BNG perhaps
+CHESS_BNG_csv = read.csv(paste0(path_data, "Basegrid/CHESS_1k_grid.csv")) # BNG perhaps
 # proj4string(UK_rs) ="+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs"
 # plot(UK_rs[[1]])
 #  
@@ -91,8 +93,8 @@ doLCM = FALSE
 if (doLCM) { 
     ### LCM2015
     
-    LCM2015_england_rs = stack("Land Cover data/LCM 2015/LCM2015_GB_1km_percent_cover_target_class.tif")
-    LCM2015_nireland_rs = stack("Land Cover data/LCM 2015/lcm2015_ni_1km_percent_cover_target_class.tif")
+    LCM2015_england_rs = stack(paste0(path_gisdata, "/LCM 2015/LCM2015_GB_1km_percent_cover_target_class.tif"))
+    LCM2015_nireland_rs = stack(paste0(path_gisdata, "/LCM 2015/lcm2015_ni_1km_percent_cover_target_class.tif"))
     # - LCM2015 has 21 layers. Would it mean 21 land cover types? 
     # plot(LCM2015_england_rs)
     # plot(LCM2015_nireland_rs)
@@ -209,11 +211,11 @@ if (doShetland) {
     Orkney_NUTS_BNG_r = crop(UK_BNG_r, y = Orkney_ext) # , UK_BNG_r, field = "objectid", fun ="mean", na.rm=T, background=0)
     Orkney_NUTS_BNG_r[Orkney_NUTS_BNG_r==0] = NA
     
-    writeOGR(Shetland_NUTS_BNG_shp, dsn = "SpatialUnit", layer = "Shetland_NUTS_BNG", driver = "ESRI Shapefile")
-    writeOGR(Orkney_NUTS_BNG_shp, dsn = "SpatialUnit", layer = "Orkney_NUTS_BNG", driver = "ESRI Shapefile")
+    writeOGR(Shetland_NUTS_BNG_shp, dsn = "SpatialUnit", layer = "Shetland_NUTS_BNG", driver = "ESRI Shapefile", overwrite_layer = T)
+    writeOGR(Orkney_NUTS_BNG_shp, dsn = "SpatialUnit", layer = "Orkney_NUTS_BNG", driver = "ESRI Shapefile", overwrite_layer = T)
     
-    writeRaster(Orkney_NUTS_BNG_r, paste0(path_output, "/Orkney_NUTS_BNG_r.tif"))
-    writeRaster(Shetland_NUTS_BNG_r, paste0(path_output, "/Shetland_NUTS_BNG_r.tif"))
+    writeRaster(Orkney_NUTS_BNG_r, paste0(path_output, "/Orkney_NUTS_BNG_r.tif"), overwrite=T)
+    writeRaster(Shetland_NUTS_BNG_r, paste0(path_output, "/Shetland_NUTS_BNG_r.tif"), overwrite=T)
     
 } else { 
     
@@ -243,7 +245,8 @@ if (doShetland) {
 # plot(UK_BNG_r, add=T)
 # plot(Shetland_NUTS_BNG_r- UK_BNG_r)
 
-doElevation = FALSE 
+doElevation = FALSE
+
 if (doElevation) { 
     
     
@@ -277,12 +280,17 @@ if (doElevation) {
     Orkney_slope_r = projectRaster(GB_slope_BNG_filled, Orkney_NUTS_BNG_r)
     Shetland_slope_r = projectRaster(GB_slope_BNG_filled, Shetland_NUTS_BNG_r)
     
-    writeRaster(Orkney_elev_r, paste0(path_output, "/Orkney_elev_r.tif"))
-    writeRaster(Shetland_elev_r, paste0(path_output, "/Shetland_elev_r.tif"))
-    writeRaster(Orkney_aspect_r, paste0(path_output, "/Orkney_aspect_r.tif"))
-    writeRaster(Shetland_aspect_r, paste0(path_output, "/Shetland_aspect_r.tif"))
-    writeRaster(Orkney_slope_r, paste0(path_output, "/Orkney_slope_r.tif"))
-    writeRaster(Shetland_slope_r, paste0(path_output, "/Shetland_slope_r.tif"))
+    writeRaster(Orkney_elev_r, paste0(path_output, "/Orkney_elev_r.tif"), overwrite=T)
+    writeRaster(Shetland_elev_r, paste0(path_output, "/Shetland_elev_r.tif"), overwrite=T)
+    
+    writeRaster(Orkney_aspect_r, paste0(path_output, "/Orkney_aspect_r.tif"), overwrite=T)
+    
+    writeRaster(Shetland_aspect_r, paste0(path_output, "/Shetland_aspect_r.tif"), overwrite=T)
+    
+    writeRaster(Orkney_slope_r, paste0(path_output, "/Orkney_slope_r.tif"), overwrite=T)
+    
+    writeRaster(Shetland_slope_r, paste0(path_output, "/Shetland_slope_r.tif"), overwrite=T)
+    
     
 } else { 
     Orkney_elev_r = raster(paste0(path_output, "/Orkney_elev_r.tif"))
@@ -584,7 +592,7 @@ if (do4Capitals) {
     layer_idx = 1
     
     c_idxs_in = 1:length(four_capital_names)
-    c_idxs_in = 3
+    # c_idxs_in = 3
     
     
     for (c_idx in c_idxs_in) { 
@@ -594,7 +602,7 @@ if (do4Capitals) {
         print(capital_name)
         
         BNG_shp = spTransform(get(shp_name), CRSobj = proj4.BNG)
-        plot(st_as_sf(BNG_shp)[,1])
+        # plot(st_as_sf(BNG_shp)[,1])
         
         layer_names = names(BNG_shp)
         
@@ -604,7 +612,7 @@ if (do4Capitals) {
             layer_name = layer_names[layer_idx]
             print(layer_name)
             
-            BNG_r_tmp = rasterize(BNG_shp[,], CHESS_BNG_r, field = layer_name, fun ="last", background=0)
+            BNG_r_tmp = rasterize(BNG_shp[,], CHESS_BNG_r, field = layer_name, fun ="last", background=NA)
             # plot(BNG_r_tmp, add=F)
             # 
             # plot(UK_BNG_r, add=F)
@@ -614,26 +622,26 @@ if (do4Capitals) {
             # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
 
             
-            if (!(capital_name %in% c("Manufactured", "Human"))) { 
+            # if (!(capital_name %in% c("Manufactured", "Human"))) { 
                 
-                BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2,  boundary_r = CHESS_mask_r, maskchar=0, width = 3, n_interpol = 7) 
-            } else { 
-                BNG_r_tmp3 = BNG_r_tmp2
-            }
+            BNG_r_tmp3 = fillCoastalPixels(BNG_r_tmp2, boundary_r = CHESS_BNG_r, maskchar=NULL, width = 3, n_interpol = 7) 
+            # } else { 
+            #     BNG_r_tmp3 = BNG_r_tmp2
+            # }
             
-            
-            # plot(BNG_r_tmp3 - BNG_r_tmp2)
-            # plot(BNG_r_tmp3)
+            # plot(-is.na(BNG_r_tmp3) + is.na(BNG_r_tmp2))
+            # 
+            # plot(is.na(LCM2015_dom_rs[[1]]) - is.na(BNG_r_tmp3))
+            # plot(BNG_r_tmp3, add=T)
             # 
             
             
-            BNG_r_tmp4 = smoothCapitals(BNG_r_tmp3, boundary_r = CHESS_mask_r, maskchar=NULL, width_m = 5000)
+            BNG_r_tmp4 = smoothCapitals(BNG_r_tmp3, boundary_r = CHESS_BNG_r, maskchar=NULL, width_m = 5000)
             
             par(mar=c(0,0,0,0))
             plot(BNG_r_tmp4, legend=F, axes=F)
             plot(BNG_r_tmp4 - BNG_r_tmp3)
-            # plot(  BNG_r_tmp3)
-            
+             
             # plot(UK_BNG_r, add=F)
             # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
              
@@ -719,9 +727,15 @@ if (doWoodlandCapitals) {
     year_idx = 1 
     
     
+    # beginCluster()
+    library(doMC)
+    # cl = makeCluster(23)
+    registerDoMC()
+    beginCluster()
     
-    for (scen_idx in seq_along(woodland_scenario_names)) { 
-        
+    for (scen_idx in 4:5) { 
+        # for (scen_idx in seq_along(woodland_scenario_names)) { 
+            
         print(scen_idx)
         woodland_scenario_name_tmp = woodland_scenario_names[scen_idx]
         woodland_rs_l_tmp = woodland_rs_l[[scen_idx]]
@@ -822,18 +836,80 @@ if (doWoodlandCapitals) {
             
         }
     }
+    
+    # stopCluster(cl)
+    
 }
 
 
 
+
+doLCMmask = FALSE 
+
+if (doLCMmask) { 
+    
+    ## added protection based on LCM2015
+    LCM_protected = c(
+        # Mountain, heath and bog
+        12 #   Inland rock
+        , 13 # Saltwater 
+        , 14 # Freshwater
+        # Coastal 
+        , 15 # Supralittoral rock 
+        , 16 # Supralittoral sediment 
+        , 17 # Littoral rock
+        , 18 # Littoral sediment
+        , 19 # Saltmarsh
+    )
+    
+    # Heather 9 
+    # Heather grassland 10 
+    # Bog 11 
+    
+    
+    
+    
+    LCM_protected_2015_r = LCM2015_dom_rs %in% LCM_protected
+    plot(LCM_protected_2015_r)
+    
+    
+    # urban scenario (Corine)
+    LCM2015_extracted = extract(LCM2015_dom_rs %in% c(LCM_protected), CHESS_BNG_sp, method="simple", fun = count)
+    
+     
+    LCMprotection2015_csv_df = cbind( data.frame( X = cellids$X_col, Y = cellids$Y_row), FR_IMMUTABLE = LCM2015_extracted)
+    str(LCMprotection2015_csv_df)
+    
+    
+    # LCMprotection2015_csv_df = data.frame(FID = CHESS_BNG_csv$FID, long = CHESS_LL_coords$Longitude + 180, lat = CHESS_LL_coords$Latitude, X_BNG = CHESS_BNG_csv$POINT_X, Y_BNG = CHESS_BNG_csv$POINT_Y)
+    # 
+    # LCMprotection2015_csv_df$Protected_LCM = LCM2015_extracted
+    # 
+    write.csv(LCMprotection2015_csv_df, file = paste0(path_output, "/LCMMask_2020.csv"), quote = F, row.names = F)
+    writeRaster(LCM_protected_2015_r, filename = paste0(path_output, "/LCMMask_2020.tif"), driver="GeoTIFF", overwrite=T)
+    
+    
+}
+
+ 
+
 doUrban = FALSE 
 
 if (doUrban) { 
+    
+   
+    
+    
+    
+     
     # urban scenario (Corine)
     Urban2015_extracted = extract(LCM2015_dom_rs %in% c(20:21), CHESS_BNG_sp, method="simple", fun = count)
     
-    Urban2015_csv_df = cbind(basealc_csv_df[, c("X", "Y")], FR_IMMUTABLE = Urban2015_extracted)
+    Urban2015_csv_df = cbind( data.frame( X = cellids$X_col, Y = cellids$Y_row), FR_IMMUTABLE = Urban2015_extracted)
     str(Urban2015_csv_df)
+    
+     
+    
     
     write.csv(Urban2015_csv_df, file = paste0(path_output, "/UrbanMask/UrbanMask2020.csv"), quote = F, row.names = F)
     
@@ -873,7 +949,15 @@ if (doUrban) {
             
             BNG_r_tmp = raster(paste0(Urbanisation_path, SSP_name, ".", SSP_year, ".tif"))
             plot(BNG_r_tmp, add=F)
-            plot(UK_BNG_r, add=F)
+            
+ 
+            
+            
+            # plot(UK_BNG_r, add=F)
+            
+            
+            
+            
             plot(BNG_r_tmp * CHESS_mask_r, add=T)
             # do not need to fill shetland and coastal pixels 
             BNG_r_tmp3 = BNG_r_tmp * CHESS_mask_r 
@@ -930,20 +1014,28 @@ if (doRAMSAR) {
     
     ########### RAMSAR
     
-    RAMSAR_shp = readOGR("Land Cover data/Protected Areas/Ramsar sites/UK_RAMSAR_BNG_20190712.shp")
+    RAMSAR_shp = readOGR(paste0(path_gisdata, "/Protected Areas/Ramsar sites/UK_RAMSAR_BNG_20190712.shp"))
     
     
     # Take Presence/Absence of SPA2019 data at the 1 km grid 
     RAMSAR_shp$PA = 1
     RAMSAR_r = rasterize(RAMSAR_shp[,], UK_BNG_r, field = "PA", fun ="last", background=0)
     # RAMSAR_r = mask(RAMSAR_r, UK_BNG_r)
+    
+    # count intersecting polygons
+    int_tmp = gIntersects(RAMSAR_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    
     plot(RAMSAR_r, add=F)
     plot(is.na(RAMSAR_r), add=F)
     
     # plot(RAMSAR_shp, add=F)
-    # plot(UK_BNG_r, add=T)
+    plot(UK_BNG_r, add=F)
     # plot(RAMSAR_r, add=T)
-    # plot(RAMSAR_shp, add=T)
+    # plot(st_as_sf(RAMSAR_shp), add=T)
+    
+    
+    plot(st_as_sf(RAMSAR_shp[as.vector(int_tmp),]), add=T)
     
     
     writeRaster(RAMSAR_r, filename = paste0(path_output, "/RAMSAR_UK_PA.tif"), overwrite=T)
@@ -960,8 +1052,12 @@ if (doSAC) {
     
     ########### SAC
     
-    SAC_england_shp = readOGR("Land Cover data/Protected Areas/SAC areas/GB_SAC_OSGB36_20191031.shp")
-    SAC_nireland_shp = readOGR("Land Cover data/Protected Areas/SAC areas/NI_SAC_TM65_20191031.shp")
+    SAC_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SAC areas/GB_SAC_OSGB36_20191031.shp"))
+    SAC_nireland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SAC areas/NI_SAC_TM65_20191031.shp"))
+    
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(SAC_england_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
     
     
     # Take Presence/Absence at the 1 km grid 
@@ -973,7 +1069,7 @@ if (doSAC) {
     plot(SAC_england_r, add=F)
     plot(is.na(SAC_nireland_shp), add=F)
     
-    # plot(SAC_england_shp, add=F)
+    plot(SAC_england_shp, add=F)
     # plot(UK_BNG_r, add=T)
     plot(SAC_england_r, add=F)
     plot(SAC_nireland_shp, add=F)
@@ -995,15 +1091,26 @@ doNNR = FALSE
 if (doNNR) { 
     #### NNR
     
-    NNR_england_shp = readOGR("Land Cover data/Protected Areas/National Nature Reserves/England/National_Nature_Reserves___Natural_England.shp")
-    NNR_scotland_shp = readOGR("Land Cover data/Protected Areas/National Nature Reserves/Scotland/NNR_SCOTLAND.shp")
-    NNR_wales_shp = readOGR("Land Cover data/Protected Areas/National Nature Reserves/Wales/NRW_NNRPolygon.shp")
-    NNR_nireland_shp = readOGR("Land Cover data/Protected Areas/National Nature Reserves/Northern Ireland/NNR_and_NR.shp")
+    NNR_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/National Nature Reserves/England/National_Nature_Reserves___Natural_England.shp"))
+    NNR_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/National Nature Reserves/Scotland/NNR_SCOTLAND.shp"))
+    NNR_wales_shp = readOGR(paste0(path_gisdata, "/Protected Areas/National Nature Reserves/Wales/NRW_NNRPolygon.shp"))
+    NNR_nireland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/National Nature Reserves/Northern Ireland/NNR_and_NR.shp"))
     
     NNR_england_shp = spTransform(NNR_england_shp, CRSobj = crs(proj4.BNG))
     NNR_scotland_shp = spTransform(NNR_scotland_shp, CRSobj = crs(proj4.BNG))
     NNR_wales_shp = spTransform(NNR_wales_shp, CRSobj = crs(proj4.BNG))
     NNR_nireland_shp = spTransform(NNR_nireland_shp, CRSobj = crs(proj4.BNG))
+    
+    
+    
+    # # count intersecting polygons (GB)
+    # int_tmp = gIntersects(NNR_england_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    # int_tmp = gIntersects(NNR_wales_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    # int_tmp = gIntersects(NNR_scotland_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    
     
     
     
@@ -1029,13 +1136,24 @@ if (doNNR) {
     ### LNR 
     
     
-    LNR_england_shp = readOGR("Land Cover data/Protected Areas/LNRs/Local_Nature_Reserves__England_-shp/Local_Nature_Reserves__England____Natural_England.shp")
-    LNR_scotland_shp = readOGR("Land Cover data/Protected Areas/LNRs/LNR_SCOTLAND_ESRI/LNR_SCOTLAND.shp")
-    LNR_wales_shp = readOGR("Land Cover data/Protected Areas/LNRs/LocalNatureReservesLNR/NRW_LNRPolygon.shp")
+    LNR_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/LNRs/Local_Nature_Reserves__England_-shp/Local_Nature_Reserves__England____Natural_England.shp"))
+    LNR_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/LNRs/LNR_SCOTLAND_ESRI/LNR_SCOTLAND.shp"))
+    LNR_wales_shp = readOGR(paste0(path_gisdata, "/Protected Areas/LNRs/LocalNatureReservesLNR/NRW_LNRPolygon.shp"))
     
     LNR_england_shp = spTransform(LNR_england_shp, CRSobj = crs(proj4.BNG))
     LNR_scotland_shp = spTransform(LNR_scotland_shp, CRSobj = crs(proj4.BNG))
     LNR_wales_shp = spTransform(LNR_wales_shp, CRSobj = crs(proj4.BNG))
+    
+    
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(LNR_england_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    int_tmp = gIntersects(LNR_wales_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    int_tmp = gIntersects(LNR_scotland_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    
+    
     
     
     
@@ -1069,17 +1187,26 @@ doSSSI = FALSE
 if (doSSSI) { 
     ### SSSI 
     
-    SSSI_england_shp = readOGR("Land Cover data/Protected Areas/SSSIs/Sites_of_Special_Scientific_Interest_Units__England_-shp/Sites_of_Special_Scientific_Interest_Condition_Units__SSSI__England___Natural_England.shp")
-    SSSI_scotland_shp = readOGR("Land Cover data/Protected Areas/SSSIs/SSSI_SCOTLAND_ESRI/SSSI_SCOTLAND.shp")
-    SSSI_wales_shp = readOGR("Land Cover data/Protected Areas/SSSIs/NRW_DS98766_SSSI_2020_06_19/SSSI_June2020.shp")
-    SSSI_nireland_shp = readOGR("Land Cover data/Protected Areas/SSSIs/ASSI - Irish National Grid_5/ASSI.shp")
+    SSSI_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SSSIs/Sites_of_Special_Scientific_Interest_Units__England_-shp/Sites_of_Special_Scientific_Interest_Condition_Units__SSSI__England___Natural_England.shp"))
+    SSSI_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SSSIs/SSSI_SCOTLAND_ESRI/SSSI_SCOTLAND.shp"))
+    SSSI_wales_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SSSIs/NRW_DS98766_SSSI_2020_06_19/SSSI_June2020.shp"))
+    SSSI_nireland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SSSIs/ASSI - Irish National Grid_5/ASSI.shp"))
     
     SSSI_england_shp = spTransform(SSSI_england_shp, CRSobj = crs(proj4.BNG))
     SSSI_scotland_shp = spTransform(SSSI_scotland_shp, CRSobj = crs(proj4.BNG))
     SSSI_wales_shp = spTransform(SSSI_wales_shp, CRSobj = crs(proj4.BNG))
     SSSI_nireland_shp = spTransform(SSSI_nireland_shp, CRSobj = crs(proj4.BNG))
     
+   
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(SSSI_england_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    int_tmp = gIntersects(SSSI_wales_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    int_tmp = gIntersects(SSSI_scotland_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
     
+     
     SSSI_england_shp$PA = SSSI_scotland_shp$PA = SSSI_wales_shp$PA  = SSSI_nireland_shp$PA= 1
     
     
@@ -1119,12 +1246,23 @@ doHC = FALSE
 if (doHC) { 
     ### Heritage Coasts
     
-    HC_england_shp = readOGR("Land Cover data/Protected Areas/Heritage Coasts/Heritage_Coasts_(England)/Heritage_Coast___England___Natural_England.shp")
-    HC_wales_shp = readOGR("Land Cover data/Protected Areas/Heritage Coasts/HeritageCoasts/NRW_HERITAGE_COASTPolygon.shp")
+    HC_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/Heritage Coasts/Heritage_Coasts_(England)/Heritage_Coast___England___Natural_England.shp"))
+    HC_wales_shp = readOGR(paste0(path_gisdata, "/Protected Areas/Heritage Coasts/HeritageCoasts/NRW_HERITAGE_COASTPolygon.shp"))
     
     HC_england_shp = spTransform(HC_england_shp, CRSobj = crs(proj4.BNG))
     HC_wales_shp = spTransform(HC_wales_shp, CRSobj = crs(proj4.BNG))
+  
     
+    
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(HC_england_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    int_tmp = gIntersects(HC_wales_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+ 
+    
+    
+      
     HC_england_shp$PA = HC_wales_shp$PA= 1
     
     HC_england_r = rasterize(HC_england_shp[,], UK_BNG_r, field = "PA", fun ="last", background=0)
@@ -1151,7 +1289,7 @@ doBR = FALSE
 if (doBR) { 
     ### Biosphere Reserves (point data)
     
-    BR_Global_shp = readOGR("Land Cover data/Protected Areas/Biosphere reserves/mab_biosphere_reserves.shp")
+    BR_Global_shp = readOGR(paste0(path_gisdata, "/Protected Areas/Biosphere reserves/mab_biosphere_reserves.shp"))
     
     BR_UK_LL_shp = crop(BR_Global_shp, UK_LL_r)
     
@@ -1167,6 +1305,12 @@ if (doBR) {
     par(mfrow=c(1,1))
     plot(UK_BNG_r)
     plot(BR_UK_shp, add=T)
+    # plot(NUTS1_GB_bng_shp, add=T)
+    
+    
+    # plot(BR_UK_shp[as.vector(gIntersects(BR_UK_shp, GB_bng_shp, byid = T)),], add=T)
+    
+    table(gIntersects(BR_UK_shp, GB_bng_shp, byid = T))
     
     
     writeRaster(BR_r, filename = paste0(path_output, "/BR_UK_PA.tif"), overwrite=T)
@@ -1186,9 +1330,12 @@ doNGO = FALSE
 if (doNGO) {
     
     # RSPB
-    RSPB_GB_shp = readOGR("Land Cover data/Protected Areas/NGOs/RSPB/RSPB_Reserves-shp-UK/RSPB_Reserve_Boundaries_20201027.shp")
+    RSPB_GB_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/RSPB/RSPB_Reserves-shp-UK/RSPB_Reserve_Boundaries_20201027.shp"))
     
     RSPB_GB_shp = spTransform(RSPB_GB_shp, CRSobj = crs(proj4.BNG))
+    
+    # table(gIntersects(RSPB_GB_shp, GB_bng_shp, byid = T))
+     
     
     RSPB_GB_shp$PA= 1
     
@@ -1202,8 +1349,11 @@ if (doNGO) {
     writeRaster(RSPB_r, filename = paste0(path_output, "/RSPB_UK_PA.tif"), overwrite=T)
     
     # JMT (John_Muir_Trust_Boundaries14)
-    JMT_scotland_shp = readOGR("Land Cover data/Protected Areas/NGOs/John_Muir_Trust_Boundaries14/John_Muir_Trust_Boundaries14.shp")
+    JMT_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/John_Muir_Trust_Boundaries14/John_Muir_Trust_Boundaries14.shp"))
     JMT_scotland_shp = spTransform(JMT_scotland_shp, CRSobj = crs(proj4.BNG))
+    
+    # table(gIntersects(JMT_scotland_shp, GB_bng_shp, byid = T))
+    
     
     JMT_scotland_shp$PA= 1
     
@@ -1216,8 +1366,11 @@ if (doNGO) {
     plot(JMT_r)
     
     # ScottishWildlifeTrust_reserves_20180522 (2020 data is rather reduced, less polygons)
-    SWT_scotland_shp = readOGR("Land Cover data/Protected Areas/NGOs/SWT_reserves/ScottishWildlifeTrust_reserves_20180522/ScottishWildlifeTrust_reserves.shp")
+    SWT_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/SWT_reserves/ScottishWildlifeTrust_reserves_20180522/ScottishWildlifeTrust_reserves.shp"))
     SWT_scotland_shp = spTransform(SWT_scotland_shp, CRSobj = crs(proj4.BNG))
+    
+    # table(gIntersects(SWT_scotland_shp, GB_bng_shp, byid = T))
+    
     
     SWT_scotland_shp$PA= 1
     
@@ -1230,11 +1383,17 @@ if (doNGO) {
     plot(SWT_r)
     
     # National Trust (NTS) England?
-    NTS_always_shp = readOGR("Land Cover data/Protected Areas/NGOs/National_Trust/National_Trust_Open_Data3A_Land__Always_Open/National_Trust_Open_Data_Land__Always_Open.shp")
-    NTS_limited_shp = readOGR("Land Cover data/Protected Areas/NGOs/National_Trust/National_Trust_Open_Data3A_Land__Limited_Access/National_Trust_Open_Data_Land__Limited_Access.shp")
+    NTS_always_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/National_Trust/National_Trust_Open_Data3A_Land__Always_Open/National_Trust_Open_Data_Land__Always_Open.shp"))
+    NTS_limited_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/National_Trust/National_Trust_Open_Data3A_Land__Limited_Access/National_Trust_Open_Data_Land__Limited_Access.shp"))
     
     NTS_always_shp = spTransform(NTS_always_shp, CRSobj = crs(proj4.BNG))
     NTS_limited_shp = spTransform(NTS_limited_shp, CRSobj = crs(proj4.BNG))
+    
+    
+    # table(gIntersects(NTS_always_shp, GB_bng_shp, byid = T))
+    # table(gIntersects(NTS_limited_shp, GB_bng_shp, byid = T))
+     
+    
     
     NTS_always_shp$PA = NTS_limited_shp$PA= 1
     
@@ -1252,8 +1411,12 @@ if (doNGO) {
     plot(NTS_r)
     
     # Woodland Trusties
-    WT_GB_shp = readOGR("Land Cover data/Protected Areas/NGOs/woodlandtrustsites_SHP/woodlandtrustsites.shp")
+    WT_GB_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/woodlandtrustsites_SHP/woodlandtrustsites.shp"))
     WT_GB_shp = spTransform(WT_GB_shp, CRSobj = crs(proj4.BNG))
+    
+    
+    # table(gIntersects(WT_GB_shp, GB_bng_shp, byid = T))
+
     
     WT_GB_shp$PA= 1
     
@@ -1266,13 +1429,17 @@ if (doNGO) {
     plot(WT_r)
     
     # Trees for Life (TFL)
-    TFL_dnd_shp = readOGR("Land Cover data/Protected Areas/NGOs/TFL/DundregganBoundary.shp")
-    TFL_ga_shp = readOGR("Land Cover data/Protected Areas/NGOs/TFL/Glen Affric fencelines.shp") # polyline
+    TFL_dnd_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/TFL/DundregganBoundary.shp"))
+    TFL_ga_shp = readOGR(paste0(path_gisdata, "/Protected Areas/NGOs/TFL/Glen Affric fencelines.shp")) # polyline
     
     proj4string(TFL_ga_shp) = proj4string(TFL_dnd_shp)
     
     TFL_dnd_shp = spTransform(TFL_dnd_shp, CRSobj = crs(proj4.BNG))
     TFL_ga_shp = spTransform(TFL_ga_shp, CRSobj = crs(proj4.BNG))
+    
+    
+    table(gIntersects(TFL_dnd_shp, GB_bng_shp, byid = T))
+    table(gIntersects(TFL_ga_shp, GB_bng_shp, byid = T))
     
     
     TFL_ga_sf <- st_as_sf(TFL_ga_shp) 
@@ -1317,15 +1484,26 @@ if (doAONB) {
     
     #### AONB
     
-    AONB_england_shp = readOGR("Land Cover data/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - England/Areas_of_Outstanding_Natural_Beauty__England____Natural_England.shp")
-    NSA_scotland_shp = readOGR("Land Cover data/Protected Areas/AreaOfOutstandingNaturalBeauty/NationalScenicAreas_1998 - Scotland/SG_NationalScenicAreas_1998.shp")
-    AONB_wales_shp = readOGR("Land Cover data/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - Wales/NRW_AONBPolygon.shp")
-    AONB_nireland_shp = readOGR("Land Cover data/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - Irish National Grid/AONB.shp")
+    AONB_england_shp = readOGR(paste0(path_gisdata, "/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - England/Areas_of_Outstanding_Natural_Beauty__England____Natural_England.shp"))
+    NSA_scotland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/AreaOfOutstandingNaturalBeauty/NationalScenicAreas_1998 - Scotland/SG_NationalScenicAreas_1998.shp"))
+    AONB_wales_shp = readOGR(paste0(path_gisdata, "/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - Wales/NRW_AONBPolygon.shp"))
+    AONB_nireland_shp = readOGR(paste0(path_gisdata, "/Protected Areas/AreaOfOutstandingNaturalBeauty/AONB - Irish National Grid/AONB.shp"))
     
     AONB_england_shp = spTransform(AONB_england_shp, CRSobj = crs(proj4.BNG))
     NSA_scotland_shp = spTransform(NSA_scotland_shp, CRSobj = crs(proj4.BNG))
     AONB_wales_shp = spTransform(AONB_wales_shp, CRSobj = crs(proj4.BNG))
     AONB_nireland_shp = spTransform(AONB_nireland_shp, CRSobj = crs(proj4.BNG))
+    
+    # # count intersecting polygons (GB)
+    # int_tmp = gIntersects(AONB_england_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    # int_tmp = gIntersects(AONB_wales_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    # int_tmp = gIntersects(NSA_scotland_shp, GB_bng_shp, byid = T)
+    # table(int_tmp)
+    # 
+    
+    
     
     AONB_england_shp$PA = NSA_scotland_shp$PA = AONB_wales_shp$PA = AONB_nireland_shp$PA = 1
     
@@ -1337,6 +1515,7 @@ if (doAONB) {
     AONB_r = (AONB_england_r + NSA_scotland_r + AONB_wales_r + AONB_nireland_r) > 0 
     
     
+
     
     par(mfrow=c(2,2))
     plot(AONB_england_r)
@@ -1360,8 +1539,14 @@ doSPA = FALSE
 if (doSPA) { 
     ############ SPA2019
     
-    SPA2019_gb_shp = readOGR("Land Cover data/Protected Areas/SPA areas/GB_SPA_OSGB36_20190326.shp")
-    SPA2019_ni_shp = readOGR("Land Cover data/Protected Areas/SPA areas/NI_SPA_TM65_20171114.shp")
+    SPA2019_gb_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SPA areas/GB_SPA_OSGB36_20190326.shp"))
+    SPA2019_ni_shp = readOGR(paste0(path_gisdata, "/Protected Areas/SPA areas/NI_SPA_TM65_20171114.shp"))
+    
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(SPA2019_gb_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    
+    
     
     # Take Presence/Absence of SPA2019 data at the 1 km grid 
     SPA2019_gb_shp$PA = SPA2019_ni_shp$PA=  1
@@ -1397,9 +1582,17 @@ if (doSPA) {
 doNationalParks = FALSE 
 
 if (doNationalParks) { 
+   
     ### National Parks
     
-    NationalParks_shp = readOGR("Land Cover data/Protected Areas/National Parks/National_Parks__December_2018__Boundaries_GB_BGC.shp")
+    NationalParks_shp = readOGR(paste0(path_gisdata, "/Protected Areas/National Parks/National_Parks__December_2018__Boundaries_GB_BGC.shp"))
+    
+    # count intersecting polygons (GB)
+    int_tmp = gIntersects(NationalParks_shp, GB_bng_shp, byid = T)
+    table(int_tmp)
+    
+    
+    
     
     
     # Take Presence/Absence at the 1 km grid 
@@ -1420,13 +1613,16 @@ if (doNationalParks) {
     NationalParks_r = raster(paste0(path_output, "/NationalParks_UK_PA.tif"))
 }
 
-
 doProtectedAreas = FALSE
 if (doProtectedAreas) { 
+
+    
+    
     ### Two-level system
     # old and wrong? 
     # ProtectedAreas_L1_r = (NGO_r + AONB_r + HC_r + NationalParks_r) > 0 
     # ProtectedAreas_L2_r = (NNR_r + LNR_r + SAC_r + SSSI_r + BR_r + SPA2019_r + RAMSAR_r ) > 0 
+    
     
     ProtectedAreas_L1_r = (NNR_r + LNR_r + SAC_r + SSSI_r + BR_r + SPA2019_r + RAMSAR_r + AONB_r + HC_r + NationalParks_r) > 0 
     ProtectedAreas_L2_r = NGO_r  > 0 
@@ -1435,10 +1631,19 @@ if (doProtectedAreas) {
     par(mfrow=c(1,2))
     plot(ProtectedAreas_L1_r, main = "PA_L1")
     plot(ProtectedAreas_L2_r, main= "PA_L2 (NGOs only)")
+    plot(NUTS_bng_shp, add=T)
+    
+    
     
     writeRaster(ProtectedAreas_L1_r, filename = paste0(path_output, "/ProtectedAreas_L1_UK_PA.tif"), overwrite=T)
     writeRaster(ProtectedAreas_L2_r, filename = paste0(path_output, "/ProtectedAreas_L2_UK_PA.tif"), overwrite=T)
     
+    ProtectedAreas_L1_nuts_r = raster::intersect(ProtectedAreas_L1_r, NUTS_bng_shp)
+    par(mfrow=c(1,2))
+    plot(ProtectedAreas_L1_nuts_r, main = "PA_L1")
+    plot(ProtectedAreas_L2_r, main= "PA_L2 (NGOs only)")
+    
+    NUTS_shp
     ProtectedAreas_L1_extracted = extract(ProtectedAreas_L1_r, CHESS_BNG_sp, fun = count)
     ProtectedAreas_L2_extracted = extract(ProtectedAreas_L2_r, CHESS_BNG_sp, fun = count)
     
@@ -1465,7 +1670,7 @@ if (doNFI) {
     
     # takes a lot of time 
     
-    NFI2016_shp = readOGR("Land Cover data/NFI 2016/NATIONAL_FOREST_INVENTORY_GB_2016.shp")
+    NFI2016_shp = readOGR(paste0(path_gisdata, "/NFI 2016/NATIONAL_FOREST_INVENTORY_GB_2016.shp")
     # length(table(NFI2016_shp$IFT_IOA))
     
     NFI2016_shp$OBJECTID = NULL
@@ -1525,7 +1730,7 @@ if (doNFI) {
         print(IOA_tmp)
         NFI2016_shp_tmp = NFI2016_shp[NFI2016_shp$IFT_IOA == IOA_tmp,]
         
-        raster(paste0("Land Cover data/NFI 2016/Fraction/NFI2016_", IOA_tmp, ".tif"))
+        raster(paste0(paste0(path_gisdata, "/NFI 2016/Fraction/NFI2016_", IOA_tmp, ".tif"))
         
     }
     
