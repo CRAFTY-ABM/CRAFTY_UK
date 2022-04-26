@@ -337,6 +337,26 @@ if (preprocessing) {
     
     
     
+    GB_elev_BNG_df = getValues(GB_elev_BNG)[chess_idx]
+    
+    UK_terrain_BNG_df = getValues(UK_terrain_BNG)[chess_idx,]
+    
+    cellids_topo =cbind(cellids, elev = GB_elev_BNG_df, UK_terrain_BNG_df)
+    
+    colnames(cellids_topo)[9:11] = c("elevation", "TerrainRuggednessIndex", "TopographicPositionIndex")
+    
+    
+    # tmp_r  = raster(SpatialPixelsDataFrame(CHESS_BNG_sp, data =data.frame(cellids_topo$TerrainRuggednessIndex)))
+     # plot(cellids_topo$Latitude, cellids_topo$elevation)
+    # plot(cellids_topo$Latitude, cellids_topo$TerrainRuggednessIndex)
+    # plot(cellids_topo$Latitude, cellids_topo$TopographicPositionIndex)
+    
+    
+    
+    write.csv(cellids_topo, paste0(path_output, "/Basegrid/Cell_ID_XY_UK_topography.csv"), quote = F, row.names = F)
+    
+    
+    
     aftnames = data.frame(rbind(c("AF", "Agroforestry", "Extensive", "Agroforestry"),
                                 c("Bioenergy", "Bioenergy", "Intensive", "Bioenergy"),
                                 c("EA", "EA", "Extensive", "Extensive Agriculture"),

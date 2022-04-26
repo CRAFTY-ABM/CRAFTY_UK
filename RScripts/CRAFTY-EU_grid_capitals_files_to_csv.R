@@ -82,11 +82,11 @@ if (doPA_EU) {
     PA200_shp$PA = 1
     
     PA200_r = rasterize(PA200_shp[,], UK_BNG_r, field = "PA", fun ="last", background=0)
-     
+    
     # SAC_r = mask(SAC_r, UK_BNG_r)
     plot(PA200_r, add=F)
- 
- 
+    
+    
     
     writeRaster(PA200_r, filename = paste0(path_output, "/PA200_PA.tif"), overwrite=T)
 }else { 
@@ -256,7 +256,7 @@ smoothCapitals <- function(r_in, boundary_r, width_m=5000, maskchar=NA) {
     }
     
     r_out[is.na(r_in)] = NA
-        
+    
     # plot(r_in * boundary_r)
     
     return(r_out * boundary_r)
@@ -432,7 +432,14 @@ if (doElevation) {
     
     GB_elev <- getData('alt', country = "GB")
     GB_elev_BNG = projectRaster(GB_elev, CHESS_BNG_r, method = "bilinear")
-    UK_terrain_BNG <- projectRaster(terrain(GB_elev_BNG, opt=c('slope', 'aspect'), unit='degrees'), CHESS_BNG_r, method = "bilinear")
+    UK_terrain_BNG <- projectRaster(terrain(GB_elev_BNG, opt=c('slope', 'aspect', 'TPI', 'TRI', 'roughness', 'flowdir'), unit='degrees'), CHESS_BNG_r, method = "bilinear", na.rm=F)
+    
+    # table(is.na(getValues(UK_terrain_BNG)))
+    
+    
+    writeRaster(UK_terrain_BNG, paste0(path_output, "/UK_terrain_BNG.tif"))
+    writeRaster(GB_elev_BNG, paste0(path_output, "/GB_elev_BNG.tif"))
+    
     
     # plot(UK_terrain_BNG)
     # plot(GB_elev_BNG, add=T, col="red")
@@ -787,7 +794,7 @@ if (do4Capitals) {
             # 
             BNG_r_tmp2 = BNG_r_tmp * CHESS_mask_r 
             # BNG_r_tmp2 = fillShetland(BNG_r_tmp)
-
+            
             
             if (!(capital_name %in% c("Manufactured", "Human"))) { 
                 
@@ -808,7 +815,7 @@ if (do4Capitals) {
             
             # plot(UK_BNG_r, add=F)
             # plot(BNG_r_tmp3 * CHESS_mask_r, add=F)
-             
+            
             # plot(CHESS_mask_r - !is.na(BNG_r_tmp), col=c("grey", "red"))
             # plot(CHESS_mask_r - !is.na(BNG_r_tmp3), col=c("grey", "red"))
             
